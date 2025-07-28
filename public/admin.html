@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台 - 电商交易平台</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .nav a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #333;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .admin-container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        .tab.active {
+            border-bottom: 3px solid #4CAF50;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-pending {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+        .status-processing {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        .status-shipped {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+        .status-delivered {
+            background-color: #f1f8e9;
+            color: #689f38;
+        }
+        .status-cancelled {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #45a049;
+        }
+        .btn-danger {
+            background-color: #f44336;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+        .btn-warning {
+            background-color: #ff9800;
+            color: white;
+        }
+        .btn-warning:hover {
+            background-color: #f57c00;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .product-form {
+            max-width: 600px;
+        }
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">电商交易平台 - 管理后台</div>
+            <nav class="nav">
+                <a href="/">首页</a>
+                <a href="/products">商品</a>
+                <a href="/cart">购物车</a>
+            </nav>
+            <div class="user-info">
+                <div id="user-actions">
+                    <a href="/login">登录</a>
+                    <a href="/register">注册</a>
+                </div>
+            </div>
+        </header>
+
+        <div class="admin-container">
+            <h2>管理后台</h2>
+            
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('orders')">订单管理</div>
+                <div class="tab" onclick="switchTab('products')">商品管理</div>
+                <div class="tab" onclick="switchTab('add-product')">添加商品</div>
+            </div>
+            
+            <div id="orders" class="tab-content active">
+                <h3>订单列表</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>订单号</th>
+                            <th>用户</th>
+                            <th>金额</th>
+                            <th>状态</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-table-body">
+                        <tr>
+                            <td colspan="6" class="no-data">加载中...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="products" class="tab-content">
+                <h3>商品列表</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>商品</th>
+                            <th>价格</th>
+                            <th>库存</th>
+                            <th>分类</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-table-body">
+                        <tr>
+                            <td colspan="5" class="no-data">加载中...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="add-product" class="tab-content">
+                <h3>添加商品</h3>
+                <form class="product-form" id="product-form">
+                    <div class="form-group">
+                        <label for="name">商品名称</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">商品描述</label>
+                        <textarea id="description" name="description" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">价格</label>
+                        <input type="number" id="price" name="price" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">库存</label>
+                        <input type="number" id="quantity" name="quantity" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">分类</label>
+                        <input type="text" id="category" name="category" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="imageUrl">图片URL</label>
+                        <input type="text" id="imageUrl" name="imageUrl">
+                    </div>
+                    <button type="submit" class="btn btn-primary">添加商品</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载时检查用户权限
+        document.addEventListener('DOMContentLoaded', function() {
+            checkUserStatus();
+            loadOrders();
+        });
+
+        // 检查用户登录状态和权限
+        async function checkUserStatus() {
+            const token = localStorage.getItem('token');
+            const userActions = document.getElementById('user-actions');
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/users/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const user = await response.json();
+                    if (user.role !== 'admin') {
+                        alert('您没有管理员权限');
+                        window.location.href = '/';
+                        return;
+                    }
+                    
+                    userActions.innerHTML = `
+                        <span>管理员: ${user.username}</span>
+                        <a href="#" onclick="logout()">退出</a>
+                    `;
+                } else {
+                    window.location.href = '/login';
+                }
+            } catch (error) {
+                console.error('检查用户状态失败:', error);
+                window.location.href = '/login';
+            }
+        }
+
+        // 用户退出
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        }
+
+        // 切换标签页
+        function switchTab(tabName) {
+            // 隐藏所有标签内容
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 移除所有标签的活动状态
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 显示选中的标签内容
+            document.getElementById(tabName).classList.add('active');
+            
+            // 设置选中标签为活动状态
+            event.target.classList.add('active');
+            
+            // 根据选中的标签加载数据
+            if (tabName === 'orders') {
+                loadOrders();
+            } else if (tabName === 'products') {
+                loadProducts();
+            }
+        }
+
+        // 加载订单数据
+        async function loadOrders() {
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch('/api/orders', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const orders = await response.json();
+                    displayOrders(orders);
+                } else {
+                    document.getElementById('orders-table-body').innerHTML = 
+                        '<tr><td colspan="6" class="no-data">加载订单失败</td></tr>';
+                }
+            } catch (error) {
+                console.error('加载订单失败:', error);
+                document.getElementById('orders-table-body').innerHTML = 
+                    '<tr><td colspan="6" class="no-data">加载订单失败</td></tr>';
+            }
+        }
+
+        // 显示订单数据
+        function displayOrders(orders) {
+            const tbody = document.getElementById('orders-table-body');
+            
+            if (orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="no-data">暂无订单</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = orders.map(order => `
+                <tr>
+                    <td>${order._id.substring(0, 8)}</td>
+                    <td>${order.user.username}</td>
+                    <td>¥${order.totalAmount.toFixed(2)}</td>
+                    <td><span class="status-badge status-${order.status}">${order.status}</span></td>
+                    <td>${new Date(order.createdAt).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-primary" onclick="viewOrder('${order._id}')">查看</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 查看订单详情
+        function viewOrder(orderId) {
+            alert('订单详情功能待完善，订单ID: ' + orderId);
+        }
+
+        // 加载商品数据
+        async function loadProducts() {
+            try {
+                const response = await fetch('/api/products');
+                
+                if (response.ok) {
+                    const products = await response.json();
+                    displayProducts(products);
+                } else {
+                    document.getElementById('products-table-body').innerHTML = 
+                        '<tr><td colspan="5" class="no-data">加载商品失败</td></tr>';
+                }
+            } catch (error) {
+                console.error('加载商品失败:', error);
+                document.getElementById('products-table-body').innerHTML = 
+                    '<tr><td colspan="5" class="no-data">加载商品失败</td></tr>';
+            }
+        }
+
+        // 显示商品数据
+        function displayProducts(products) {
+            const tbody = document.getElementById('products-table-body');
+            
+            if (products.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="no-data">暂无商品</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = products.map(product => `
+                <tr>
+                    <td>
+                        <div><strong>${product.name}</strong></div>
+                        <div style="font-size: 12px; color: #666;">${product.description.substring(0, 50)}...</div>
+                    </td>
+                    <td>¥${product.price.toFixed(2)}</td>
+                    <td>${product.quantity}</td>
+                    <td>${product.category}</td>
+                    <td>
+                        <button class="btn btn-primary" onclick="editProduct('${product._id}')">编辑</button>
+                        <button class="btn btn-danger" onclick="deleteProduct('${product._id}')">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 编辑商品
+        function editProduct(productId) {
+            alert('编辑商品功能待完善，商品ID: ' + productId);
+        }
+
+        // 删除商品
+        async function deleteProduct(productId) {
+            const token = localStorage.getItem('token');
+            
+            if (!confirm('确定要删除这个商品吗？')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/products/${productId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    alert('商品删除成功');
+                    loadProducts();
+                } else {
+                    const data = await response.json();
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('删除商品失败:', error);
+                alert('删除商品失败，请稍后重试');
+            }
+        }
+
+        // 处理添加商品表单提交
+        document.getElementById('product-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const token = localStorage.getItem('token');
+            const formData = new FormData(this);
+            const productData = Object.fromEntries(formData.entries());
+            
+            // 转换数字类型
+            productData.price = parseFloat(productData.price);
+            productData.quantity = parseInt(productData.quantity);
+            
+            try {
+                const response = await fetch('/api/products', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(productData)
+                });
+                
+                if (response.ok) {
+                    alert('商品添加成功');
+                    this.reset();
+                    switchTab('products');
+                    loadProducts();
+                } else {
+                    const data = await response.json();
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('添加商品失败:', error);
+                alert('添加商品失败，请稍后重试');
+            }
+        });
+    </script>
+</body>
+</html>

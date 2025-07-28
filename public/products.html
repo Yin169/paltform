@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品列表 - 电商交易平台</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .nav a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #333;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .product-card {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .product-card h3 {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .product-card .price {
+            font-weight: bold;
+            color: #4CAF50;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .product-card .description {
+            color: #666;
+            margin-bottom: 15px;
+            height: 60px;
+            overflow: hidden;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            flex: 1;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .add-to-cart {
+            background-color: #2196F3;
+        }
+        .add-to-cart:hover {
+            background-color: #1976D2;
+        }
+        .search-bar {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .search-bar input {
+            width: 70%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .search-bar button {
+            width: 25%;
+            margin-left: 20px;
+        }
+        .no-products {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 8px;
+        }
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #f44336;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">电商交易平台</div>
+            <nav class="nav">
+                <a href="/">首页</a>
+                <a href="/products">商品</a>
+                <a href="/cart">购物车</a>
+            </nav>
+            <div class="user-info">
+                <div class="cart-icon" onclick="window.location.href='/cart'">
+                    <span>🛒</span>
+                    <div class="cart-count" id="cart-count">0</div>
+                </div>
+                <div id="user-actions">
+                    <a href="/login">登录</a>
+                    <a href="/register">注册</a>
+                </div>
+            </div>
+        </header>
+
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="搜索商品...">
+            <button onclick="searchProducts()">搜索</button>
+        </div>
+
+        <h2>商品列表</h2>
+        <div class="products" id="products-container">
+            <!-- 商品将通过JavaScript动态加载 -->
+        </div>
+    </div>
+
+    <script>
+        // 页面加载时获取商品
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProducts();
+            updateCartCount();
+            checkUserStatus();
+        });
+
+        // 检查用户登录状态
+        function checkUserStatus() {
+            const token = localStorage.getItem('token');
+            const userActions = document.getElementById('user-actions');
+            
+            if (token) {
+                userActions.innerHTML = `
+                    <span>欢迎, ${JSON.parse(localStorage.getItem('user')).username}</span>
+                    <a href="#" onclick="logout()">退出</a>
+                `;
+            }
+        }
+
+        // 用户退出
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.reload();
+        }
+
+        // 加载商品
+        async function loadProducts() {
+            try {
+                const response = await fetch('/api/products');
+                const products = await response.json();
+                
+                const container = document.getElementById('products-container');
+                
+                if (products.length === 0) {
+                    container.innerHTML = '<div class="no-products">暂无商品</div>';
+                    return;
+                }
+                
+                container.innerHTML = products.map(product => `
+                    <div class="product-card">
+                        <img src="${product.imageUrl || 'https://via.placeholder.com/300x200?text=商品图片'}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                        <div class="description">${product.description}</div>
+                        <div class="price">¥${product.price.toFixed(2)}</div>
+                        <div class="actions">
+                            <button class="add-to-cart" onclick="addToCart('${product._id}', 1)">加入购物车</button>
+                            <button onclick="viewProduct('${product._id}')">查看详情</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('加载商品失败:', error);
+                document.getElementById('products-container').innerHTML = 
+                    '<div class="no-products">加载商品失败，请稍后重试</div>';
+            }
+        }
+
+        // 搜索商品
+        async function searchProducts() {
+            const searchTerm = document.getElementById('search-input').value;
+            // 简单实现，实际应调用搜索API
+            console.log('搜索:', searchTerm);
+        }
+
+        // 查看商品详情
+        function viewProduct(productId) {
+            // 跳转到商品详情页（需要后端支持）
+            alert('商品详情功能待完善，商品ID: ' + productId);
+        }
+
+        // 添加到购物车
+        async function addToCart(productId, quantity) {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                alert('请先登录');
+                window.location.href = '/login';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ productId, quantity })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert('商品已添加到购物车');
+                    updateCartCount();
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('添加到购物车失败:', error);
+                alert('添加到购物车失败，请稍后重试');
+            }
+        }
+
+        // 更新购物车数量
+        async function updateCartCount() {
+            const token = localStorage.getItem('token');
+            const cartCountElement = document.getElementById('cart-count');
+            
+            if (!token) {
+                cartCountElement.style.display = 'none';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/cart', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const cart = await response.json();
+                    const totalItems = cart.items.reduce((total, item) => total + item.quantity, 0);
+                    cartCountElement.textContent = totalItems;
+                    cartCountElement.style.display = totalItems > 0 ? 'flex' : 'none';
+                }
+            } catch (error) {
+                console.error('获取购物车信息失败:', error);
+            }
+        }
+    </script>
+</body>
+</html>
