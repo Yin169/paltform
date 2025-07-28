@@ -16,7 +16,7 @@
 - **数据库**: MongoDB with Mongoose
 - **认证**: JWT (JSON Web Tokens)
 - **前端**: HTML, CSS, JavaScript
-- **部署**: GitHub Pages (前端), Heroku/Render (后端)
+- **部署**: GitHub Pages (前端), Heroku/Render/AWS (后端)
 
 ## 本地运行
 
@@ -181,6 +181,14 @@
    - 设置构建命令: `npm install`
    - 设置启动命令: `npm start`
    - 添加环境变量
+
+### AWS 部署
+
+查看 [AWS_DEPLOYMENT.md](file:///Users/yincheangng/worksapce/Github/paltform/AWS_DEPLOYMENT.md) 获取详细的 AWS 部署说明，包括：
+- Elastic Beanstalk 部署（推荐新手）
+- EC2 部署
+- Fargate 容器化部署
+- Lambda 无服务器部署
 
 ## 管理员权限设置
 
