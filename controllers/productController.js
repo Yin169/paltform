@@ -60,8 +60,8 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ message: '商品未找到' });
     }
     
-    // 检查是否是商品所有者
-    if (product.seller.toString() !== req.user._id.toString()) {
+    // 检查是否是商品所有者或管理员
+    if (product.seller.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
       return res.status(403).json({ message: '无权限修改此商品' });
     }
     
@@ -90,8 +90,8 @@ const deleteProduct = async (req, res) => {
       return res.status(404).json({ message: '商品未找到' });
     }
     
-    // 检查是否是商品所有者
-    if (product.seller.toString() !== req.user._id.toString()) {
+    // 检查是否是商品所有者或管理员
+    if (product.seller.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
       return res.status(403).json({ message: '无权限删除此商品' });
     }
     

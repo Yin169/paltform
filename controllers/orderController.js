@@ -72,6 +72,27 @@ const getUserOrders = async (req, res) => {
   }
 };
 
+// 获取所有订单（管理员功能）
+const getAllOrders = async (req, res) => {
+  try {
+    // 检查是否为管理员
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: '无权限访问此资源' });
+    }
+    
+    const orders = await Order.find()
+      .populate([
+        { path: 'user', select: 'username email' },
+        { path: 'items.product', select: 'name price' }
+      ])
+      .sort({ createdAt: -1 });
+    
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: '服务器错误', error: err.message });
+  }
+};
+
 // 获取订单详情
 const getOrderById = async (req, res) => {
   try {
@@ -135,6 +156,7 @@ const updateOrderStatus = async (req, res) => {
 module.exports = {
   createOrder,
   getUserOrders,
+  getAllOrders,
   getOrderById,
   updateOrderStatus
 };
