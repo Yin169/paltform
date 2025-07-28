@@ -641,8 +641,65 @@
         }
 
         // 查看商品详情
-        function viewProduct(productId) {
-            alert('商品详情功能待完善，商品ID: ' + productId);
+        async function viewProduct(productId) {
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch(`/api/products/${productId}`);
+                
+                if (response.ok) {
+                    const product = await response.json();
+                    showProductDetails(product);
+                } else {
+                    alert('加载商品信息失败');
+                }
+            } catch (error) {
+                console.error('加载商品信息失败:', error);
+                alert('加载商品信息失败');
+            }
+        }
+
+        // 显示商品详情
+        function showProductDetails(product) {
+            const modal = document.getElementById('product-modal');
+            const form = document.getElementById('edit-product-form');
+            
+            // 显示商品详情而不是编辑表单
+            form.innerHTML = `
+                <h3>${product.name}</h3>
+                <div style="margin-bottom: 15px;">
+                    <img src="${product.imageUrl || 'https://via.placeholder.com/200x200?text=商品图片'}" 
+                         alt="${product.name}" style="max-width: 200px; max-height: 200px;">
+                </div>
+                <div class="form-group">
+                    <label>商品描述</label>
+                    <p>${product.description}</p>
+                </div>
+                <div class="form-group">
+                    <label>价格</label>
+                    <p>¥${product.price.toFixed(2)}</p>
+                </div>
+                <div class="form-group">
+                    <label>库存</label>
+                    <p>${product.quantity}</p>
+                </div>
+                <div class="form-group">
+                    <label>分类</label>
+                    <p>${product.category}</p>
+                </div>
+                <div class="form-group">
+                    <label>卖家</label>
+                    <p>${product.seller.username}</p>
+                </div>
+                <div class="form-group">
+                    <label>创建时间</label>
+                    <p>${new Date(product.createdAt).toLocaleString()}</p>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="editProduct('${product._id}')">编辑商品</button>
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('product-modal').style.display='none'">关闭</button>
+            `;
+            
+            modal.style.display = 'block';
         }
 
         // 编辑商品

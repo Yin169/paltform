@@ -185,9 +185,12 @@
             const userActions = document.getElementById('user-actions');
             
             if (token) {
+                const user = JSON.parse(localStorage.getItem('user'));
                 userActions.innerHTML = `
-                    <span>欢迎, ${JSON.parse(localStorage.getItem('user')).username}</span>
+                    <span>欢迎, ${user.username}</span>
                     <a href="#" onclick="logout()">退出</a>
+                    ${user.role === 'admin' ? '<a href="/admin">管理后台</a>' : ''}
+                    <a href="/orders">我的订单</a>
                 `;
             }
         }
@@ -240,8 +243,8 @@
 
         // 查看商品详情
         function viewProduct(productId) {
-            // 跳转到商品详情页（需要后端支持）
-            alert('商品详情功能待完善，商品ID: ' + productId);
+            // 跳转到商品详情页
+            window.location.href = '/product?id=' + productId;
         }
 
         // 添加到购物车

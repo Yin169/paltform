@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品详情 - 电商交易平台</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .nav a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #333;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .product-detail {
+            background-color: #fff;
+            padding: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            display: flex;
+            gap: 30px;
+        }
+        .product-image {
+            flex: 1;
+        }
+        .product-image img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .product-info {
+            flex: 1;
+        }
+        .product-title {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        .product-price {
+            font-size: 24px;
+            color: #4CAF50;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        .product-description {
+            color: #666;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        .product-meta {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .product-meta p {
+            margin: 8px 0;
+        }
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .quantity-btn {
+            width: 40px;
+            height: 40px;
+            background-color: #ddd;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .quantity-input {
+            width: 60px;
+            height: 40px;
+            text-align: center;
+            margin: 0 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .add-to-cart-btn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-right: 15px;
+        }
+        .add-to-cart-btn:hover {
+            background-color: #1976D2;
+        }
+        .buy-now-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .buy-now-btn:hover {
+            background-color: #45a049;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2196F3;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        #message {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">电商交易平台</div>
+            <nav class="nav">
+                <a href="/">首页</a>
+                <a href="/products">商品</a>
+                <a href="/cart">购物车</a>
+            </nav>
+            <div class="user-info">
+                <div id="user-actions">
+                    <a href="/login">登录</a>
+                    <a href="/register">注册</a>
+                </div>
+            </div>
+        </header>
+
+        <a href="/products" class="back-link">← 返回商品列表</a>
+        
+        <div id="message"></div>
+        
+        <div id="product-detail-container">
+            <!-- 商品详情将通过JavaScript动态加载 -->
+        </div>
+    </div>
+
+    <script>
+        // 页面加载时获取商品详情
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            
+            if (productId) {
+                loadProduct(productId);
+            } else {
+                showMessage('商品ID无效', 'error');
+            }
+            
+            checkUserStatus();
+        });
+
+        // 检查用户登录状态
+        function checkUserStatus() {
+            const token = localStorage.getItem('token');
+            const userActions = document.getElementById('user-actions');
+            
+            if (token) {
+                const user = JSON.parse(localStorage.getItem('user'));
+                userActions.innerHTML = `
+                    <span>欢迎, ${user.username}</span>
+                    <a href="#" onclick="logout()">退出</a>
+                `;
+            }
+        }
+
+        // 用户退出
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.reload();
+        }
+
+        // 加载商品详情
+        async function loadProduct(productId) {
+            try {
+                const response = await fetch(`/api/products/${productId}`);
+                
+                if (response.ok) {
+                    const product = await response.json();
+                    displayProduct(product);
+                } else {
+                    showMessage('加载商品详情失败', 'error');
+                }
+            } catch (error) {
+                console.error('加载商品详情失败:', error);
+                showMessage('加载商品详情失败，请检查网络连接', 'error');
+            }
+        }
+
+        // 显示商品详情
+        function displayProduct(product) {
+            const container = document.getElementById('product-detail-container');
+            
+            container.innerHTML = `
+                <div class="product-detail">
+                    <div class="product-image">
+                        <img src="${product.imageUrl || 'https://via.placeholder.com/500x500?text=商品图片'}" alt="${product.name}">
+                    </div>
+                    <div class="product-info">
+                        <h1 class="product-title">${product.name}</h1>
+                        <div class="product-price">¥${product.price.toFixed(2)}</div>
+                        <div class="product-description">
+                            <h3>商品描述</h3>
+                            <p>${product.description}</p>
+                        </div>
+                        <div class="product-meta">
+                            <p><strong>分类:</strong> ${product.category}</p>
+                            <p><strong>库存:</strong> ${product.quantity} 件</p>
+                            <p><strong>卖家:</strong> ${product.seller.username}</p>
+                        </div>
+                        <div class="quantity-control">
+                            <button class="quantity-btn" onclick="updateQuantity(-1)">-</button>
+                            <input type="number" id="quantity" class="quantity-input" value="1" min="1" max="${product.quantity}">
+                            <button class="quantity-btn" onclick="updateQuantity(1)">+</button>
+                        </div>
+                        <div>
+                            <button class="add-to-cart-btn" onclick="addToCart('${product._id}')">加入购物车</button>
+                            <button class="buy-now-btn" onclick="buyNow('${product._id}')">立即购买</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 更新数量
+        function updateQuantity(change) {
+            const quantityInput = document.getElementById('quantity');
+            let quantity = parseInt(quantityInput.value) + change;
+            const maxQuantity = parseInt(quantityInput.max);
+            
+            if (quantity < 1) quantity = 1;
+            if (quantity > maxQuantity) quantity = maxQuantity;
+            
+            quantityInput.value = quantity;
+        }
+
+        // 显示消息
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = type;
+            messageEl.style.display = 'block';
+            
+            setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 3000);
+        }
+
+        // 添加到购物车
+        async function addToCart(productId) {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            const quantity = parseInt(document.getElementById('quantity').value);
+            
+            try {
+                const response = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ productId, quantity })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showMessage('商品已添加到购物车', 'success');
+                } else {
+                    showMessage(data.message, 'error');
+                }
+            } catch (error) {
+                console.error('添加到购物车失败:', error);
+                showMessage('添加到购物车失败，请稍后重试', 'error');
+            }
+        }
+
+        // 立即购买
+        async function buyNow(productId) {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            const quantity = parseInt(document.getElementById('quantity').value);
+            
+            try {
+                // 先添加到购物车
+                const response = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ productId, quantity })
+                });
+                
+                if (response.ok) {
+                    // 跳转到购物车页面
+                    window.location.href = '/cart';
+                } else {
+                    const data = await response.json();
+                    showMessage(data.message, 'error');
+                }
+            } catch (error) {
+                console.error('立即购买失败:', error);
+                showMessage('立即购买失败，请稍后重试', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

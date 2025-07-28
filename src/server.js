@@ -50,6 +50,10 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/admin.html'));
 });
 
+app.get('/orders', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/orders.html'));
+});
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce', {
   useNewUrlParser: true,

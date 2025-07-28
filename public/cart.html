@@ -207,9 +207,12 @@
             const userActions = document.getElementById('user-actions');
             
             if (token) {
+                const user = JSON.parse(localStorage.getItem('user'));
                 userActions.innerHTML = `
-                    <span>欢迎, ${JSON.parse(localStorage.getItem('user')).username}</span>
+                    <span>欢迎, ${user.username}</span>
                     <a href="#" onclick="logout()">退出</a>
+                    ${user.role === 'admin' ? '<a href="/admin">管理后台</a>' : ''}
+                    <a href="/orders">我的订单</a>
                 `;
             }
         }
@@ -431,7 +434,7 @@
         }
 
         // 结算
-        function checkout() {
+        async function checkout() {
             const token = localStorage.getItem('token');
             
             if (!token) {
@@ -439,8 +442,57 @@
                 return;
             }
             
-            alert('结算功能待完善');
-            // 这里应该跳转到结算页面
+            // 获取购物车数据
+            try {
+                const response = await fetch('/api/cart', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const cart = await response.json();
+                    
+                    if (!cart.items || cart.items.length === 0) {
+                        alert('购物车为空，无法结算');
+                        return;
+                    }
+                    
+                    // 准备订单数据
+                    const orderData = {
+                        items: cart.items.map(item => ({
+                            product: item.product._id,
+                            quantity: item.quantity
+                        })),
+                        shippingAddress: {} // 简化处理，实际应用中应该收集地址信息
+                    };
+                    
+                    // 创建订单
+                    const orderResponse = await fetch('/api/orders', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(orderData)
+                    });
+                    
+                    if (orderResponse.ok) {
+                        const order = await orderResponse.json();
+                        alert('订单创建成功！订单号：' + order._id);
+                        // 重新加载购物车（应该为空了）
+                        loadCart();
+                    } else {
+                        const errorData = await orderResponse.json();
+                        alert('订单创建失败：' + errorData.message);
+                    }
+                } else {
+                    alert('获取购物车信息失败');
+                }
+            } catch (error) {
+                console.error('结算过程中发生错误:', error);
+                alert('结算过程中发生错误，请稍后重试');
+            }
         }
     </script>
 </body>
