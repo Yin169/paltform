@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "make:admin": "node scripts/makeAdmin.js"
+    "make:admin": "node scripts/makeAdmin.js",
+    "build": "echo \"No build required for this project\""
   },
   "keywords": [],
   "author": "",
