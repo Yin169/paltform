@@ -9,10 +9,12 @@ COPY package*.json ./
 
 # 安装依赖
 RUN npm install
-RUN docker-compose up -d
 
 # 复制应用源代码
 COPY . .
+
+# 创建目录用于存储静态文件
+RUN mkdir -p public/graphs
 
 # 暴露端口
 EXPOSE 3000

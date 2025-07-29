@@ -93,6 +93,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
+// 使用 Render 提供的 PORT 环境变量，如果没有则使用 3000
 const PORT = process.env.PORT || 3000;
 
 // Connect to MongoDB
@@ -108,21 +109,23 @@ const server = app.listen(PORT, () => {
   console.log(`服务器运行在端口 ${PORT}`);
 });
 
-// 处理端口被占用的情况
-server.on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.log(`端口 ${PORT} 已被占用，尝试使用端口 ${PORT + 1}`);
-    setTimeout(() => {
-      server.close();
-      const newPort = parseInt(PORT) + 1;
-      process.env.PORT = newPort;
-      app.listen(newPort, () => {
-        console.log(`服务器运行在端口 ${newPort}`);
-      });
-    }, 1000);
-  } else {
-    console.error('服务器启动错误:', err);
-  }
-});
+// 处理端口被占用的情况（在 Render 环境中不适用）
+if (!process.env.RENDER) {
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.log(`端口 ${PORT} 已被占用，尝试使用端口 ${PORT + 1}`);
+      setTimeout(() => {
+        server.close();
+        const newPort = parseInt(PORT) + 1;
+        process.env.PORT = newPort;
+        app.listen(newPort, () => {
+          console.log(`服务器运行在端口 ${newPort}`);
+        });
+      }, 1000);
+    } else {
+      console.error('服务器启动错误:', err);
+    }
+  });
+}
 
 module.exports = app;
