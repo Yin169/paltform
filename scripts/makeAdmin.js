@@ -23,7 +23,8 @@ async function makeAdmin() {
   
   if (!username) {
     console.log('请提供用户名作为参数');
-    console.log('用法: node scripts/makeAdmin.js <用户名>');
+    console.log('用法: npm run make:admin <用户名>');
+    console.log('或者: node scripts/makeAdmin.js <用户名>');
     process.exit(1);
   }
   
@@ -33,6 +34,7 @@ async function makeAdmin() {
     
     if (!user) {
       console.log(`用户 "${username}" 未找到`);
+      console.log('请确保用户已注册');
       process.exit(1);
     }
     
@@ -43,10 +45,11 @@ async function makeAdmin() {
     }
     
     // 更新用户角色为管理员
+    const oldRole = user.role;
     user.role = 'admin';
     await user.save();
     
-    console.log(`用户 "${username}" 已成功设置为管理员`);
+    console.log(`用户 "${username}" 已成功从 "${oldRole}" 角色设置为 "admin" 管理员角色`);
     process.exit(0);
   } catch (err) {
     console.error('设置管理员时出错:', err);

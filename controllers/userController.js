@@ -5,23 +5,57 @@ const { updateUserProfile } = require('./profileController');
 // 用户注册
 const register = async (req, res) => {
   try {
-    const { username, email, password, role, profile, addresses } = req.body;
+    const { username, email, password, role } = req.body;
     
-    // 检查用户是否已存在
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
-    if (existingUser) {
-      return res.status(400).json({ message: '用户名或邮箱已存在' });
+    // 检查必填字段
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: '请填写所有必填字段' });
     }
     
-    // 创建新用户
-    const user = new User({ 
-      username, 
-      email, 
-      password,
-      role: role || 'user', // 默认为普通用户，允许注册为卖家
-      profile: profile || {},
-      addresses: addresses || []
+    // 检查密码长度
+    if (password.length < 6) {
+      return res.status(400).json({ message: '密码长度至少为6位' });
+    }
+    
+    // 检查邮箱格式
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: '请输入有效的邮箱地址' });
+    }
+    
+    // 检查用户名长度
+    if (username.length < 3 || username.length > 30) {
+      return res.status(400).json({ message: '用户名长度必须在3-30个字符之间' });
+    }
+    
+    // 检查角色是否有效
+    const validRoles = ['user', 'seller'];
+    if (role && !validRoles.includes(role)) {
+      return res.status(400).json({ message: '无效的用户角色' });
+    }
+    
+    // 检查用户是否已存在
+    const existingUser = await User.findOne({ 
+      $or: [{ email }, { username }] 
     });
+    
+    if (existingUser) {
+      if (existingUser.email === email) {
+        return res.status(400).json({ message: '该邮箱已被注册' });
+      }
+      if (existingUser.username === username) {
+        return res.status(400).json({ message: '该用户名已被使用' });
+      }
+    }
+    
+    // 创建用户
+    const user = new User({
+      username,
+      email,
+      password,
+      role: role || 'user' // 默认为普通用户
+    });
+    
     await user.save();
     
     // 生成JWT令牌
@@ -32,18 +66,19 @@ const register = async (req, res) => {
     );
     
     res.status(201).json({
-      message: '用户注册成功',
       token,
       user: {
-        id: user._id,
+        _id: user._id,
         username: user.username,
         email: user.email,
-        role: user.role,
-        profile: user.profile,
-        addresses: user.addresses
+        role: user.role
       }
     });
   } catch (err) {
+    if (err.name === 'ValidationError') {
+      const messages = Object.values(err.errors).map(e => e.message);
+      return res.status(400).json({ message: '数据验证失败', errors: messages });
+    }
     res.status(500).json({ message: '服务器错误', error: err.message });
   }
 };
@@ -53,16 +88,26 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     
+    // 检查必填字段
+    if (!email || !password) {
+      return res.status(400).json({ message: '请提供邮箱和密码' });
+    }
+    
     // 查找用户
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: '邮箱或密码错误' });
+      return res.status(401).json({ message: '邮箱或密码错误' });
     }
     
     // 验证密码
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(400).json({ message: '邮箱或密码错误' });
+      return res.status(401).json({ message: '邮箱或密码错误' });
+    }
+    
+    // 检查账户是否激活
+    if (!user.isActive) {
+      return res.status(401).json({ message: '账户已被禁用' });
     }
     
     // 生成JWT令牌
@@ -73,15 +118,12 @@ const login = async (req, res) => {
     );
     
     res.json({
-      message: '登录成功',
       token,
       user: {
-        id: user._id,
+        _id: user._id,
         username: user.username,
         email: user.email,
-        role: user.role,
-        profile: user.profile,
-        addresses: user.addresses
+        role: user.role
       }
     });
   } catch (err) {

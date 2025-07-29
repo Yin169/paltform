@@ -44,13 +44,23 @@ const createProduct = async (req, res) => {
   try {
     const { name, description, price, category, quantity, imageUrl } = req.body;
     
+    // 验证必填字段
+    if (!name || !description || price === undefined || category === undefined || quantity === undefined) {
+      return res.status(400).json({ message: '请填写所有必填字段' });
+    }
+    
+    // 验证数值字段
+    if (price < 0 || quantity < 0) {
+      return res.status(400).json({ message: '价格和库存不能为负数' });
+    }
+    
     const product = new Product({
       name,
       description,
       price,
       category,
       quantity,
-      imageUrl,
+      imageUrl: imageUrl || '',
       seller: req.user._id
     });
     
@@ -67,6 +77,10 @@ const createProduct = async (req, res) => {
     
     res.status(201).json(savedProduct);
   } catch (err) {
+    if (err.name === 'ValidationError') {
+      const messages = Object.values(err.errors).map(e => e.message);
+      return res.status(400).json({ message: '数据验证失败', errors: messages });
+    }
     res.status(500).json({ message: '服务器错误', error: err.message });
   }
 };
@@ -87,12 +101,23 @@ const updateProduct = async (req, res) => {
       return res.status(403).json({ message: '无权限更新此商品' });
     }
     
-    product.name = name || product.name;
-    product.description = description || product.description;
-    product.price = price || product.price;
-    product.category = category || product.category;
-    product.quantity = quantity || product.quantity;
-    product.imageUrl = imageUrl || product.imageUrl;
+    // 更新字段（只更新提供的字段）
+    if (name !== undefined) product.name = name;
+    if (description !== undefined) product.description = description;
+    if (price !== undefined) {
+      if (price < 0) {
+        return res.status(400).json({ message: '价格不能为负数' });
+      }
+      product.price = price;
+    }
+    if (category !== undefined) product.category = category;
+    if (quantity !== undefined) {
+      if (quantity < 0) {
+        return res.status(400).json({ message: '库存不能为负数' });
+      }
+      product.quantity = quantity;
+    }
+    if (imageUrl !== undefined) product.imageUrl = imageUrl;
     
     const updatedProduct = await product.save();
     await updatedProduct.populate('seller', 'username');
@@ -107,6 +132,10 @@ const updateProduct = async (req, res) => {
     
     res.json(updatedProduct);
   } catch (err) {
+    if (err.name === 'ValidationError') {
+      const messages = Object.values(err.errors).map(e => e.message);
+      return res.status(400).json({ message: '数据验证失败', errors: messages });
+    }
     res.status(500).json({ message: '服务器错误', error: err.message });
   }
 };

@@ -1,16 +1,23 @@
 {
   "name": "paltform",
   "version": "1.0.0",
-  "description": "",
+  "description": "电商交易平台",
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "simulate": "node scripts/simulate.js",
+    "make:admin": "node scripts/makeAdmin.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "ecommerce",
+    "platform",
+    "nodejs",
+    "express",
+    "mongodb"
+  ],
+  "author": "Ecommerce Team",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

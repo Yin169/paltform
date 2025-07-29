@@ -77,6 +77,11 @@ router.get('/customer-profiles', auth, sellerAuth, async (req, res) => {
     const sellerProducts = await Product.find({ seller: req.user._id });
     const productIds = sellerProducts.map(p => p._id);
     
+    // 如果没有商品，返回空数组
+    if (productIds.length === 0) {
+      return res.json([]);
+    }
+    
     // 获取包含卖家商品的订单
     const orders = await Order.find({ 
       'items.product': { $in: productIds } 
@@ -226,6 +231,11 @@ router.get('/product-profiles', auth, sellerAuth, async (req, res) => {
     // 获取卖家的所有商品
     const products = await Product.find({ seller: req.user._id });
     const productIds = products.map(p => p._id);
+    
+    // 如果没有商品，返回空数组
+    if (productIds.length === 0) {
+      return res.json([]);
+    }
     
     // 获取包含卖家商品的订单
     const orders = await Order.find({ 

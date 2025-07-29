@@ -341,14 +341,26 @@
                     
                     if (response.ok) {
                         const user = await response.json();
-                        userActions.innerHTML = `
+                        let userLinks = `
                             <span><i class="fas fa-user"></i> ${user.username}</span>
                             <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
-                            ${user.role === 'admin' ? '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>' : ''}
-                            ${user.role === 'seller' || user.role === 'admin' ? '<a href="/seller"><i class="fas fa-store"></i> 卖家中心</a>' : ''}
+                        `;
+                        
+                        // 根据用户角色添加相应链接
+                        if (user.role === 'admin') {
+                            userLinks += '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>';
+                        }
+                        
+                        if (user.role === 'seller' || user.role === 'admin') {
+                            userLinks += '<a href="/seller"><i class="fas fa-store"></i> 卖家中心</a>';
+                        }
+                        
+                        userLinks += `
                             <a href="/orders"><i class="fas fa-list"></i> 我的订单</a>
                             <a href="/profile"><i class="fas fa-user-circle"></i> 我的画像</a>
                         `;
+                        
+                        userActions.innerHTML = userLinks;
                     }
                 } catch (error) {
                     console.error('检查用户状态失败:', error);

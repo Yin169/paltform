@@ -80,6 +80,11 @@ app.get('/seller', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/seller.html'));
 });
 
+// 处理所有未匹配的路由，返回首页以支持前端路由
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
+
 const PORT = process.env.PORT || 3000;
 
 // Connect to MongoDB
