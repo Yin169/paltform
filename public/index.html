@@ -5,127 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>电商交易平台</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles/main.css">
     <style>
-        :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3f37c9;
-            --success-color: #4cc9f0;
-            --accent-color: #f72585;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
-            --gray-color: #6c757d;
-            --border-color: #dee2e6;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.15);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fb;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Header Styles */
-        header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 15px 0;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 28px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo i {
-            margin-right: 10px;
-        }
-        
-        .nav a {
-            color: white;
-            text-decoration: none;
-            margin-left: 25px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 8px 12px;
-            border-radius: 4px;
-        }
-        
-        .nav a:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        
-        .user-info a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        
-        .user-info a:hover {
-            opacity: 0.8;
-        }
-        
-        .cart-icon {
-            position: relative;
-            font-size: 22px;
-        }
-        
-        #cart-count {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background-color: var(--accent-color);
-            color: white;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        
         /* Hero Section */
         .hero {
-            background: linear-gradient(rgba(67, 97, 238, 0.8), rgba(63, 55, 201, 0.9)), url('https://images.unsplash.com/photo-1607082350899-7e105aa886ae?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background: linear-gradient(rgba(67, 97, 238, 0.85), rgba(63, 55, 201, 0.9)), url('https://images.unsplash.com/photo-1607082350899-7e105aa886ae?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
             background-size: cover;
             background-position: center;
             color: white;
             text-align: center;
-            padding: 100px 20px;
+            padding: 120px 20px;
             border-radius: 10px;
             margin: 30px 0;
             box-shadow: var(--shadow);
@@ -186,7 +75,7 @@
         
         .feature {
             background: white;
-            padding: 30px;
+            padding: 40px 30px;
             border-radius: 10px;
             box-shadow: var(--shadow);
             transition: all 0.3s ease;
@@ -215,6 +104,111 @@
             font-size: 1.1rem;
         }
         
+        /* Categories Section */
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 50px 0;
+        }
+        
+        .category {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .category:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .category img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .category-info {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .category-info h3 {
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+        
+        .category-info p {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            background: white;
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin: 50px 0;
+            text-align: center;
+        }
+        
+        .testimonial {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .testimonial-content {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--gray-color);
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, var(--accent-color), #b5179e);
+            color: white;
+            text-align: center;
+            padding: 70px 20px;
+            border-radius: 10px;
+            margin: 50px 0;
+            box-shadow: var(--shadow);
+        }
+        
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .cta p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta .btn {
+            background: white;
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+        
+        .cta .btn:hover {
+            background: #f8f9fa;
+            color: #d81b60;
+        }
+        
         /* Footer */
         footer {
             background: var(--dark-color);
@@ -226,27 +220,24 @@
         
         /* Responsive Design */
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .nav {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .nav a {
-                margin: 5px 10px;
-            }
-            
             .hero h1 {
                 font-size: 2.5rem;
             }
             
             .hero p {
                 font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .cta h2 {
+                font-size: 2rem;
+            }
+            
+            .cta p {
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -301,87 +292,101 @@
                     <i class="fas fa-shield-alt"></i>
                 </div>
                 <h3>安全支付</h3>
-                <p>多种支付方式，SSL加密保护，保障您的资金安全</p>
+                <p>多种支付方式，银行级别加密，保障您的资金安全</p>
             </div>
             <div class="feature">
                 <div class="feature-icon">
                     <i class="fas fa-truck"></i>
                 </div>
                 <h3>快速配送</h3>
-                <p>高效的物流体系，快速送达您的手中，支持跟踪</p>
+                <p>全国范围内快速配送，让您尽快收到心仪商品</p>
             </div>
         </div>
+
+        <h2 class="section-title">热门分类</h2>
+        <div class="categories">
+            <div class="category">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="电子产品">
+                <div class="category-info">
+                    <h3>电子产品</h3>
+                    <p>最新科技产品</p>
+                </div>
+            </div>
+            <div class="category">
+                <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="时尚">
+                <div class="category-info">
+                    <h3>时尚服饰</h3>
+                    <p>潮流服装搭配</p>
+                </div>
+            </div>
+            <div class="category">
+                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="家居">
+                <div class="category-info">
+                    <h3>家居用品</h3>
+                    <p>打造温馨家园</p>
+                </div>
+            </div>
+            <div class="category">
+                <img src="https://images.unsplash.com/photo-1534353436294-0dbd4bdac845?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="图书">
+                <div class="category-info">
+                    <h3>图书文具</h3>
+                    <p>知识改变命运</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="testimonials">
+            <div class="testimonial">
+                <p class="testimonial-content">"这个电商平台的商品质量非常好，配送速度也很快。客服态度也很棒，有问题都能及时解决。强烈推荐！"</p>
+                <p class="testimonial-author">- 张先生，忠实用户</p>
+            </div>
+        </div>
+
+        <section class="cta">
+            <h2>成为我们的卖家</h2>
+            <p>加入我们庞大的卖家社区，将您的商品展示给数百万潜在客户</p>
+            <a href="/seller-register" class="btn">立即注册成为卖家</a>
+        </section>
+
+        <footer>
+            <p>&copy; 2023 电商交易平台. 保留所有权利.</p>
+        </footer>
     </div>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2023 电商交易平台. 保留所有权利.</p>
-        </div>
-    </footer>
-
     <script>
-        // 页面加载时检查用户状态
+        // 检查用户是否已登录
         document.addEventListener('DOMContentLoaded', function() {
-            checkUserStatus();
+            const user = localStorage.getItem('user');
+            const userActions = document.getElementById('user-actions');
+            const cartCount = document.getElementById('cart-count');
+            
+            if (user) {
+                const userData = JSON.parse(user);
+                userActions.innerHTML = `
+                    <span>欢迎, ${userData.username}</span>
+                    <a href="/profile">个人中心</a>
+                    <a href="#" id="logout">退出</a>
+                `;
+                
+                // 添加退出登录功能
+                document.getElementById('logout').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.reload();
+                });
+            }
+
+            // 获取购物车数量
             updateCartCount();
         });
 
-        // 检查用户登录状态
-        async function checkUserStatus() {
-            const token = localStorage.getItem('token');
-            const userActions = document.getElementById('user-actions');
-            
-            if (token) {
-                try {
-                    const response = await fetch('/api/users/profile', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-                    
-                    if (response.ok) {
-                        const user = await response.json();
-                        let userLinks = `
-                            <span><i class="fas fa-user"></i> ${user.username}</span>
-                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
-                        `;
-                        
-                        // 根据用户角色添加相应链接
-                        if (user.role === 'admin') {
-                            userLinks += '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>';
-                        }
-                        
-                        if (user.role === 'seller' || user.role === 'admin') {
-                            userLinks += '<a href="/seller"><i class="fas fa-store"></i> 卖家中心</a>';
-                        }
-                        
-                        userLinks += `
-                            <a href="/orders"><i class="fas fa-list"></i> 我的订单</a>
-                            <a href="/profile"><i class="fas fa-user-circle"></i> 我的画像</a>
-                        `;
-                        
-                        userActions.innerHTML = userLinks;
-                    }
-                } catch (error) {
-                    console.error('检查用户状态失败:', error);
-                }
-            }
-        }
-
-        // 用户退出
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.reload();
-        }
-
-        // 更新购物车数量
         async function updateCartCount() {
             const token = localStorage.getItem('token');
-            const cartCountElement = document.getElementById('cart-count');
+            const cartCount = document.getElementById('cart-count');
             
             if (!token) {
-                cartCountElement.style.display = 'none';
+                cartCount.style.display = 'none';
                 return;
             }
             
@@ -394,12 +399,18 @@
                 
                 if (response.ok) {
                     const cart = await response.json();
-                    const totalItems = cart.items ? cart.items.reduce((total, item) => total + item.quantity, 0) : 0;
-                    cartCountElement.textContent = totalItems;
-                    cartCountElement.style.display = totalItems > 0 ? 'flex' : 'none';
+                    const totalItems = cart.items.reduce((total, item) => total + item.quantity, 0);
+                    
+                    if (totalItems > 0) {
+                        cartCount.textContent = totalItems;
+                        cartCount.style.display = 'flex';
+                    } else {
+                        cartCount.style.display = 'none';
+                    }
                 }
             } catch (error) {
                 console.error('获取购物车信息失败:', error);
+                cartCount.style.display = 'none';
             }
         }
     </script>

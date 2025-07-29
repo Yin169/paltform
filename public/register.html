@@ -4,130 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>用户注册 - 电商交易平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles/main.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        header {
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #4CAF50;
-        }
-        .nav a {
-            margin-left: 20px;
-            text-decoration: none;
-            color: #333;
-        }
-        .auth-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 70vh;
-        }
-        .auth-form {
-            background-color: #fff;
-            padding: 30px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            border-radius: 8px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        .form-group button {
-            width: 100%;
-            padding: 12px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .form-group button:hover {
-            background-color: #45a049;
-        }
-        .form-footer {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .form-footer a {
-            color: #4CAF50;
-            text-decoration: none;
-        }
-        .error-message {
-            color: red;
-            margin-bottom: 15px;
-            display: none;
+            background-color: #f5f7fb;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <div class="logo">电商交易平台</div>
-            <nav class="nav">
-                <a href="/">首页</a>
-                <a href="/products">商品</a>
-                <a href="/login">登录</a>
-                <a href="/register">注册</a>
-                <a href="/cart">购物车</a>
-            </nav>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    电商交易平台
+                </div>
+                <nav class="nav">
+                    <a href="/">首页</a>
+                    <a href="/products">商品</a>
+                    <a href="/login">登录</a>
+                    <a href="/register">注册</a>
+                    <a href="/cart">购物车</a>
+                </nav>
+                <div class="user-info">
+                    <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
+                    <a href="/register"><i class="fas fa-user-plus"></i> 注册</a>
+                </div>
+            </div>
         </header>
 
         <div class="auth-container">
             <div class="auth-form">
-                <h2 style="text-align: center; margin-bottom: 30px;">用户注册</h2>
+                <h2 class="form-title">用户注册</h2>
                 <div class="error-message" id="error-message"></div>
                 <form id="register-form">
                     <div class="form-group">
                         <label for="username">用户名</label>
-                        <input type="text" id="username" name="username" required>
+                        <input type="text" id="username" name="username" required placeholder="请输入您的用户名">
                     </div>
                     <div class="form-group">
                         <label for="email">邮箱</label>
-                        <input type="email" id="email" name="email" required>
+                        <input type="email" id="email" name="email" required placeholder="请输入您的邮箱">
                     </div>
                     <div class="form-group">
                         <label for="password">密码</label>
-                        <input type="password" id="password" name="password" required>
+                        <input type="password" id="password" name="password" required placeholder="请输入您的密码">
                     </div>
                     <div class="form-group">
                         <label for="confirm-password">确认密码</label>
-                        <input type="password" id="confirm-password" name="confirm-password" required>
+                        <input type="password" id="confirm-password" name="confirm-password" required placeholder="请再次输入您的密码">
                     </div>
                     <div class="form-group">
-                        <button type="submit">注册</button>
+                        <button type="submit" class="btn btn-block">注册</button>
                     </div>
                 </form>
                 <div class="form-footer">

@@ -6,39 +6,45 @@ const auth = async (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
     
     if (!token) {
-      return res.status(401).json({ message: 'Access denied. No token provided.' });
+      return res.status(401).json({ message: '访问被拒绝。未提供令牌。' });
     }
     
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret');
     const user = await User.findById(decoded.userId);
     
     if (!user) {
-      return res.status(401).json({ message: 'Invalid token. User not found.' });
+      return res.status(401).json({ message: '令牌无效。未找到用户。' });
+    }
+    
+    // 检查账户是否激活
+    if (!user.isActive) {
+      return res.status(401).json({ message: '账户已被禁用。' });
     }
     
     req.user = user;
     next();
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
-      return res.status(401).json({ message: 'Token has expired.' });
+      return res.status(401).json({ message: '令牌已过期。请重新登录。' });
     }
     if (err.name === 'JsonWebTokenError') {
-      return res.status(401).json({ message: 'Invalid token format.' });
+      return res.status(401).json({ message: '令牌格式无效。' });
     }
-    res.status(500).json({ message: 'Authentication error.', error: err.message });
+    console.error('认证错误:', err);
+    res.status(500).json({ message: '认证过程中发生错误。', error: err.message });
   }
 };
 
 const adminAuth = (req, res, next) => {
   if (req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Access denied. Admin rights required.' });
+    return res.status(403).json({ message: '访问被拒绝。需要管理员权限。' });
   }
   next();
 };
 
 const sellerAuth = (req, res, next) => {
   if (req.user.role !== 'seller' && req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Access denied. Seller rights required.' });
+    return res.status(403).json({ message: '访问被拒绝。需要卖家权限。' });
   }
   next();
 };

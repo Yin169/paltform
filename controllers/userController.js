@@ -96,17 +96,20 @@ const login = async (req, res) => {
     // 查找用户
     const user = await User.findOne({ email });
     if (!user) {
+      console.log(`登录失败: 未找到邮箱为 ${email} 的用户`);
       return res.status(401).json({ message: '邮箱或密码错误' });
     }
     
     // 验证密码
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
+      console.log(`登录失败: 邮箱 ${email} 的密码不匹配`);
       return res.status(401).json({ message: '邮箱或密码错误' });
     }
     
     // 检查账户是否激活
     if (!user.isActive) {
+      console.log(`登录失败: 邮箱 ${email} 的账户已被禁用`);
       return res.status(401).json({ message: '账户已被禁用' });
     }
     
@@ -116,6 +119,8 @@ const login = async (req, res) => {
       process.env.JWT_SECRET || 'fallback_secret',
       { expiresIn: process.env.JWT_EXPIRE || '7d' }
     );
+    
+    console.log(`用户 ${user.username} (${user.email}) 登录成功`);
     
     res.json({
       token,
@@ -127,6 +132,7 @@ const login = async (req, res) => {
       }
     });
   } catch (err) {
+    console.error('登录过程中发生错误:', err);
     res.status(500).json({ message: '服务器错误', error: err.message });
   }
 };
@@ -134,7 +140,10 @@ const login = async (req, res) => {
 // 获取用户信息
 const getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user._id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: '用户未找到' });
+    }
     res.json(user);
   } catch (err) {
     res.status(500).json({ message: '服务器错误', error: err.message });

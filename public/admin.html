@@ -1043,73 +1043,100 @@
     <div id="notification" class="notification"></div>
 
     <script>
-        // 页面加载时检查用户权限
+        // 页面加载时检查用户状态
         document.addEventListener('DOMContentLoaded', function() {
             checkUserStatus();
-            loadDashboard();
-            
-            // 关闭模态框
-            document.querySelectorAll('.close').forEach(closeBtn => {
-                closeBtn.onclick = function() {
-                    this.closest('.modal').style.display = 'none';
-                }
-            });
-            
-            window.onclick = function(event) {
-                if (event.target.classList.contains('modal')) {
-                    event.target.style.display = 'none';
-                }
-            }
+            loadDashboardStats();
+            loadRecentOrders();
         });
 
-        // 显示通知
-        function showNotification(message, type) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = 'notification ' + type;
-            notification.style.display = 'block';
-            
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
-        }
-
-        // 检查用户登录状态和权限
+        // 检查用户登录状态
         async function checkUserStatus() {
             const token = localStorage.getItem('token');
             const userActions = document.getElementById('user-actions');
             
-            if (!token) {
-                window.location.href = '/login';
-                return;
-            }
-            
-            try {
-                const response = await fetch('/api/users/profile', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const user = await response.json();
+            // 首先尝试使用localStorage中的用户信息（如果存在）
+            const storedUser = localStorage.getItem('user');
+            if (token && storedUser) {
+                try {
+                    const user = JSON.parse(storedUser);
+                    // 检查用户是否为管理员
                     if (user.role !== 'admin') {
-                        showNotification('您没有管理员权限', 'error');
-                        setTimeout(() => {
-                            window.location.href = '/';
-                        }, 2000);
+                        // 如果不是管理员，重定向到首页
+                        window.location.assign('/');
                         return;
                     }
                     
-                    userActions.innerHTML = `
-                        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出 (${user.username})</a>
+                    // 显示管理员信息
+                    let userLinks = `
+                        <span><i class="fas fa-user"></i> ${user.username} (管理员)</span>
+                        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
                     `;
-                } else {
-                    window.location.href = '/login';
+                    
+                    userLinks += `
+                        <a href="/"><i class="fas fa-home"></i> 返回首页</a>
+                    `;
+                    
+                    userActions.innerHTML = userLinks;
+                } catch (e) {
+                    console.error('解析存储的用户信息失败:', e);
+                    // 出现错误，清除本地存储并重定向到登录页面
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.assign('/login');
                 }
-            } catch (error) {
-                console.error('检查用户状态失败:', error);
-                window.location.href = '/login';
+            }
+            
+            // 然后通过API验证令牌并更新用户信息
+            if (token) {
+                try {
+                    const response = await fetch('/api/users/profile', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const user = await response.json();
+                        // 检查用户是否为管理员
+                        if (user.role !== 'admin') {
+                            // 如果不是管理员，重定向到首页
+                            window.location.assign('/');
+                            return;
+                        }
+                        
+                        // 更新localStorage中的用户信息
+                        localStorage.setItem('user', JSON.stringify(user));
+                        
+                        // 更新UI显示
+                        let userLinks = `
+                            <span><i class="fas fa-user"></i> ${user.username} (管理员)</span>
+                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
+                        `;
+                        
+                        userLinks += `
+                            <a href="/"><i class="fas fa-home"></i> 返回首页</a>
+                        `;
+                        
+                        userActions.innerHTML = userLinks;
+                    } else {
+                        const errorData = await response.json();
+                        console.log('用户状态检查失败:', errorData.message);
+                        // Token无效，清除本地存储
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        window.location.assign('/login');
+                    }
+                } catch (error) {
+                    console.error('检查用户状态失败:', error);
+                    // 发生错误时，清除本地存储
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.assign('/login');
+                }
+            } else {
+                // 没有token，重定向到登录页面
+                window.location.assign('/login');
             }
         }
 
@@ -1117,7 +1144,7 @@
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            window.location.href = '/login';
+            window.location.assign('/login');
         }
 
         // 切换标签页
@@ -1158,6 +1185,12 @@
         async function loadDashboard() {
             const token = localStorage.getItem('token');
             
+            // 检查token是否存在
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
             try {
                 // 加载订单统计
                 const ordersResponse = await fetch('/api/orders/all', {
@@ -1176,6 +1209,10 @@
                     
                     // 显示最近订单
                     displayRecentOrders(orders.slice(0, 5));
+                } else {
+                    const errorData = await ordersResponse.json();
+                    console.error('加载订单失败:', errorData);
+                    showNotification('加载订单失败: ' + (errorData.message || '未知错误'), 'error');
                 }
                 
                 // 加载商品统计
@@ -1183,18 +1220,32 @@
                 if (productsResponse.ok) {
                     const products = await productsResponse.json();
                     document.getElementById('total-products').textContent = products.length;
+                } else {
+                    const errorData = await productsResponse.json();
+                    console.error('加载商品失败:', errorData);
+                    showNotification('加载商品失败: ' + (errorData.message || '未知错误'), 'error');
                 }
                 
                 // 加载用户统计
-                const usersResponse = await fetch('/api/users/profile');
+                const usersResponse = await fetch('/api/admin/users', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 if (usersResponse.ok) {
-                    // 这里应该调用获取所有用户的API，暂时用模拟数据
-                    document.getElementById('total-users').textContent = '0'; // 实际应用中应从API获取
+                    const users = await usersResponse.json();
+                    document.getElementById('total-users').textContent = users.length;
+                } else {
+                    const errorData = await usersResponse.json();
+                    console.error('加载用户失败:', errorData);
+                    if (errorData.message) {
+                        showNotification('加载用户失败: ' + errorData.message, 'error');
+                    }
                 }
                 
             } catch (error) {
                 console.error('加载仪表盘数据失败:', error);
-                showNotification('加载仪表盘数据失败', 'error');
+                showNotification('加载仪表盘数据失败: ' + error.message, 'error');
             }
         }
 
@@ -1504,6 +1555,12 @@
         async function loadProducts() {
             const token = localStorage.getItem('token');
             
+            // 检查token是否存在
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
             try {
                 const response = await fetch('/api/products');
                 
@@ -1511,13 +1568,15 @@
                     const products = await response.json();
                     displayProducts(products);
                 } else {
+                    const errorData = await response.json();
+                    console.error('加载商品失败:', errorData);
                     document.getElementById('products-table-body').innerHTML = 
-                        '<tr><td colspan="6" class="no-data">加载商品失败</td></tr>';
+                        `<tr><td colspan="6" class="no-data">加载商品失败: ${errorData.message || '未知错误'}</td></tr>`;
                 }
             } catch (error) {
                 console.error('加载商品失败:', error);
                 document.getElementById('products-table-body').innerHTML = 
-                    '<tr><td colspan="6" class="no-data">加载商品失败</td></tr>';
+                    `<tr><td colspan="6" class="no-data">加载商品失败: ${error.message}</td></tr>`;
             }
         }
 
@@ -1619,6 +1678,12 @@
         async function loadUsers() {
             const token = localStorage.getItem('token');
             
+            // 检查token是否存在
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
             try {
                 const response = await fetch('/api/admin/users', {
                     headers: {
@@ -1630,13 +1695,15 @@
                     const users = await response.json();
                     displayUsers(users);
                 } else {
+                    const errorData = await response.json();
+                    console.error('加载用户失败:', errorData);
                     document.getElementById('users-table-body').innerHTML = 
-                        '<tr><td colspan="5" class="no-data">加载用户失败</td></tr>';
+                        `<tr><td colspan="5" class="no-data">加载用户失败: ${errorData.message || '未知错误'}</td></tr>`;
                 }
             } catch (error) {
                 console.error('加载用户失败:', error);
                 document.getElementById('users-table-body').innerHTML = 
-                    '<tr><td colspan="5" class="no-data">加载用户失败</td></tr>';
+                    `<tr><td colspan="5" class="no-data">加载用户失败: ${error.message}</td></tr>`;
             }
         }
 
@@ -1706,6 +1773,12 @@
         async function loadUserProfiles() {
             const token = localStorage.getItem('token');
             
+            // 检查token是否存在
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
             try {
                 const response = await fetch('/api/admin/user-profiles', {
                     headers: {
@@ -1717,9 +1790,10 @@
                     const profiles = await response.json();
                     displayUserProfiles(profiles);
                 } else {
-                    const error = await response.json();
+                    const errorData = await response.json();
+                    console.error('加载用户画像失败:', errorData);
                     document.getElementById('user-profiles-table-body').innerHTML = 
-                        `<tr><td colspan="7" class="no-data">加载用户画像失败: ${error.message}</td></tr>`;
+                        `<tr><td colspan="7" class="no-data">加载用户画像失败: ${errorData.message || '未知错误'}</td></tr>`;
                 }
             } catch (error) {
                 console.error('加载用户画像失败:', error);
@@ -2016,6 +2090,12 @@
         async function loadProductProfiles() {
             const token = localStorage.getItem('token');
             
+            // 检查token是否存在
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
             try {
                 const response = await fetch('/api/admin/product-profiles', {
                     headers: {
@@ -2027,9 +2107,10 @@
                     const profiles = await response.json();
                     displayProductProfiles(profiles);
                 } else {
-                    const error = await response.json();
+                    const errorData = await response.json();
+                    console.error('加载商品画像失败:', errorData);
                     document.getElementById('product-profiles-table-body').innerHTML = 
-                        `<tr><td colspan="7" class="no-data">加载商品画像失败: ${error.message}</td></tr>`;
+                        `<tr><td colspan="7" class="no-data">加载商品画像失败: ${errorData.message || '未知错误'}</td></tr>`;
                 }
             } catch (error) {
                 console.error('加载商品画像失败:', error);

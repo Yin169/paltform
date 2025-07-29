@@ -233,6 +233,24 @@
             margin: 15px 0;
         }
         
+        .product-seller {
+            margin: 10px 0;
+            padding: 5px 0;
+            border-top: 1px dashed var(--border-color);
+            border-bottom: 1px dashed var(--border-color);
+        }
+        
+        .product-seller a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 5px;
+        }
+        
+        .product-seller a:hover {
+            text-decoration: underline;
+        }
+        
         .actions {
             display: flex;
             gap: 10px;
@@ -357,21 +375,109 @@
             loadProducts();
             checkUserStatus();
             updateCartCount();
+            // 如果没有用户信息，尝试从localStorage加载
+            if (!window.userInfo && localStorage.getItem('user')) {
+                try {
+                    window.userInfo = JSON.parse(localStorage.getItem('user'));
+                } catch (e) {
+                    localStorage.removeItem('user');
+                }
+            }
         });
+        
+        // 全局变量存储用户信息
+        let userInfo = null;
 
         // 检查用户登录状态
-        function checkUserStatus() {
+        async function checkUserStatus() {
             const token = localStorage.getItem('token');
             const userActions = document.getElementById('user-actions');
             
+            // 首先尝试使用localStorage中的用户信息（如果存在）
+            const storedUser = localStorage.getItem('user');
+            if (token && storedUser) {
+                try {
+                    const user = JSON.parse(storedUser);
+                    // 立即显示用户基本信息
+                    let userLinks = `
+                        <span><i class="fas fa-user"></i> ${user.username}</span>
+                        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
+                    `;
+                    
+                    // 根据用户角色添加相应链接
+                    if (user.role === 'admin') {
+                        userLinks += '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>';
+                    }
+                    
+                    if (user.role === 'seller' || user.role === 'admin') {
+                        userLinks += '<a href="/seller"><i class="fas fa-store"></i> 卖家中心</a>';
+                    }
+                    
+                    userLinks += `
+                        <a href="/orders"><i class="fas fa-list"></i> 我的订单</a>
+                    `;
+                    
+                    userActions.innerHTML = userLinks;
+                } catch (e) {
+                    console.error('解析存储的用户信息失败:', e);
+                }
+            }
+            
+            // 然后通过API验证令牌并更新用户信息
             if (token) {
-                const user = JSON.parse(localStorage.getItem('user'));
-                userActions.innerHTML = `
-                    <span><i class="fas fa-user"></i> ${user.username}</span>
-                    <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
-                    ${user.role === 'admin' ? '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>' : ''}
-                    <a href="/orders"><i class="fas fa-list"></i> 我的订单</a>
-                `;
+                try {
+                    const response = await fetch('/api/users/profile', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const user = await response.json();
+                        // 更新localStorage中的用户信息
+                        localStorage.setItem('user', JSON.stringify(user));
+                        
+                        // 更新UI显示
+                        let userLinks = `
+                            <span><i class="fas fa-user"></i> ${user.username}</span>
+                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
+                        `;
+                        
+                        // 根据用户角色添加相应链接
+                        if (user.role === 'admin') {
+                            userLinks += '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>';
+                        }
+                        
+                        if (user.role === 'seller' || user.role === 'admin') {
+                            userLinks += '<a href="/seller"><i class="fas fa-store"></i> 卖家中心</a>';
+                        }
+                        
+                        userLinks += `
+                            <a href="/orders"><i class="fas fa-list"></i> 我的订单</a>
+                        `;
+                        
+                        userActions.innerHTML = userLinks;
+                    } else {
+                        const errorData = await response.json();
+                        console.log('用户状态检查失败:', errorData.message);
+                        // Token无效，清除本地存储
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        userActions.innerHTML = `
+                            <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
+                            <a href="/register"><i class="fas fa-user-plus"></i> 注册</a>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('检查用户状态失败:', error);
+                    // 发生错误时，清除本地存储
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    userActions.innerHTML = `
+                        <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
+                        <a href="/register"><i class="fas fa-user-plus"></i> 注册</a>
+                    `;
+                }
             }
         }
 
@@ -386,6 +492,11 @@
         async function loadProducts() {
             try {
                 const response = await fetch('/api/products');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const products = await response.json();
                 
                 const container = document.getElementById('products-container');
@@ -404,6 +515,12 @@
                             <h3>${product.name}</h3>
                             <div class="product-description">${product.description}</div>
                             <div class="product-price">¥${product.price.toFixed(2)}</div>
+                            ${product.seller ? `
+                            <div class="product-seller">
+                                <i class="fas fa-store"></i>
+                                <a href="/shop?seller=${product.seller._id}" target="_blank">${product.seller.username}</a>
+                            </div>
+                            ` : ''}
                             <div class="actions">
                                 <button class="btn add-to-cart" onclick="addToCart('${product._id}', 1)"><i class="fas fa-cart-plus"></i> 加入购物车</button>
                                 <button class="btn view-details" onclick="viewProduct('${product._id}')"><i class="fas fa-eye"></i> 查看详情</button>
@@ -414,7 +531,7 @@
             } catch (error) {
                 console.error('加载商品失败:', error);
                 document.getElementById('products-container').innerHTML = 
-                    '<div class="no-products">加载商品失败，请稍后重试</div>';
+                    `<div class="no-products">加载商品失败: ${error.message}，请稍后重试</div>`;
             }
         }
 
@@ -453,6 +570,10 @@
                             <h3>${product.name}</h3>
                             <div class="product-description">${product.description}</div>
                             <div class="product-price">¥${product.price.toFixed(2)}</div>
+                            <div class="product-seller">
+                                <i class="fas fa-store"></i>
+                                <a href="/shop?seller=${product.seller._id}" target="_blank">${product.seller.username}</a>
+                            </div>
                             <div class="actions">
                                 <button class="btn add-to-cart" onclick="addToCart('${product._id}', 1)"><i class="fas fa-cart-plus"></i> 加入购物车</button>
                                 <button class="btn view-details" onclick="viewProduct('${product._id}')"><i class="fas fa-eye"></i> 查看详情</button>

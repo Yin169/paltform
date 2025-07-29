@@ -5,251 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>卖家注册 - 电商交易平台</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles/main.css">
     <style>
-        :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3f37c9;
-            --success-color: #4cc9f0;
-            --accent-color: #f72585;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
-            --gray-color: #6c757d;
-            --border-color: #dee2e6;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.15);
+        body {
+            background-color: #f5f7fb;
         }
         
-        * {
-            margin: 0;
-            padding: 0;
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            resize: vertical;
+            min-height: 100px;
+            transition: all 0.3s ease;
             box-sizing: border-box;
         }
         
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: #333;
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Header Styles */
-        header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 15px 0;
-            box-shadow: var(--shadow);
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 28px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo i {
-            margin-right: 10px;
-        }
-        
-        .nav a {
-            color: white;
-            text-decoration: none;
-            margin-left: 25px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 8px 12px;
-            border-radius: 4px;
-        }
-        
-        .nav a:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-        
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 0;
-        }
-        
-        .register-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: var(--shadow-hover);
-            width: 100%;
-            max-width: 500px;
-            padding: 40px;
-            animation: slideUp 0.5s ease;
-        }
-        
-        @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        .register-card h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--primary-color);
-            font-size: 28px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--dark-color);
-        }
-        
-        .form-group input {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-        
-        .form-group input:focus {
-            border-color: var(--primary-color);
+        .form-group textarea:focus {
             outline: none;
+            border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
         }
         
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow);
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
         }
         
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-hover);
-        }
-        
-        .btn:active {
-            transform: translateY(-1px);
-        }
-        
-        .links {
-            text-align: center;
-            margin-top: 25px;
-        }
-        
-        .links a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        
-        .links a:hover {
-            color: var(--secondary-color);
-            text-decoration: underline;
-        }
-        
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 8px;
-            color: white;
-            font-weight: 500;
-            box-shadow: var(--shadow);
-            z-index: 1000;
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
-        }
-        
-        .notification.success {
-            background: #28a745;
-        }
-        
-        .notification.error {
-            background: #dc3545;
-        }
-        
-        .password-requirements {
-            font-size: 14px;
-            color: var(--gray-color);
-            margin-top: 5px;
-        }
-        
-        .password-requirements ul {
-            padding-left: 20px;
-            margin-top: 5px;
-        }
-        
-        .password-requirements li {
-            margin-bottom: 3px;
-        }
-        
-        /* Footer */
-        footer {
-            background: var(--dark-color);
-            color: white;
-            text-align: center;
-            padding: 20px 0;
-            margin-top: 50px;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .nav {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .nav a {
-                margin: 5px 10px;
-            }
-            
-            .register-card {
-                padding: 30px 20px;
-                margin: 0 15px;
-            }
+        .checkbox-group input {
+            width: auto;
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -262,78 +51,61 @@
                     电商交易平台
                 </div>
                 <nav class="nav">
-                    <a href="/"><i class="fas fa-home"></i> 首页</a>
-                    <a href="/products"><i class="fas fa-box"></i> 商品</a>
-                    <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
-                    <a href="/register"><i class="fas fa-user-plus"></i> 用户注册</a>
+                    <a href="/">首页</a>
+                    <a href="/products">商品</a>
+                    <a href="/login">登录</a>
+                    <a href="/register">注册</a>
+                    <a href="/cart">购物车</a>
                 </nav>
+                <div class="user-info">
+                    <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
+                    <a href="/register"><i class="fas fa-user-plus"></i> 注册</a>
+                </div>
             </div>
         </header>
-    </div>
 
-    <div class="main-content">
-        <div class="register-card">
-            <h2><i class="fas fa-store"></i> 卖家注册</h2>
-            <form id="seller-register-form">
-                <div class="form-group">
-                    <label for="username">用户名</label>
-                    <input type="text" id="username" name="username" required placeholder="请输入用户名">
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">邮箱地址</label>
-                    <input type="email" id="email" name="email" required placeholder="请输入邮箱地址">
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">密码</label>
-                    <input type="password" id="password" name="password" required placeholder="请输入密码">
-                    <div class="password-requirements">
-                        <p>密码要求:</p>
-                        <ul>
-                            <li>至少6个字符</li>
-                            <li>建议包含字母和数字</li>
-                        </ul>
+        <div class="auth-container">
+            <div class="auth-form">
+                <h2 class="form-title">卖家注册</h2>
+                <div class="error-message" id="error-message"></div>
+                <form id="seller-register-form">
+                    <div class="form-group">
+                        <label for="username">店铺名称</label>
+                        <input type="text" id="username" name="username" required placeholder="请输入您的店铺名称">
                     </div>
+                    <div class="form-group">
+                        <label for="email">邮箱</label>
+                        <input type="email" id="email" name="email" required placeholder="请输入您的邮箱">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">密码</label>
+                        <input type="password" id="password" name="password" required placeholder="请输入您的密码">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">确认密码</label>
+                        <input type="password" id="confirm-password" name="confirm-password" required placeholder="请再次输入您的密码">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">店铺描述</label>
+                        <textarea id="description" name="description" placeholder="请简单描述您的店铺"></textarea>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="agree" name="agree" required>
+                        <label for="agree">我同意平台服务条款和隐私政策</label>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-block">注册成为卖家</button>
+                    </div>
+                </form>
+                <div class="form-footer">
+                    <p>已有账户？ <a href="/login">立即登录</a></p>
+                    <p>普通用户？ <a href="/register">用户注册</a></p>
                 </div>
-                
-                <div class="form-group">
-                    <label for="confirm-password">确认密码</label>
-                    <input type="password" id="confirm-password" name="confirm-password" required placeholder="请再次输入密码">
-                </div>
-                
-                <button type="submit" class="btn">注册成为卖家</button>
-            </form>
-            
-            <div class="links">
-                <p>已有账户? <a href="/login">立即登录</a></p>
-                <p>想注册普通用户? <a href="/register">用户注册</a></p>
             </div>
         </div>
     </div>
 
-    <div id="notification" class="notification"></div>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2023 电商交易平台. 保留所有权利.</p>
-        </div>
-    </footer>
-
     <script>
-        // 显示通知
-        function showNotification(message, type) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = 'notification ' + type;
-            notification.style.display = 'block';
-            
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
-        }
-        
-        // 表单提交处理
         document.getElementById('seller-register-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -341,48 +113,47 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
+            const description = document.getElementById('description').value;
+            const agree = document.getElementById('agree').checked;
+            const errorMessage = document.getElementById('error-message');
             
-            // 基本验证
-            if (password.length < 6) {
-                showNotification('密码长度至少为6位', 'error');
+            // 检查是否同意条款
+            if (!agree) {
+                errorMessage.textContent = '请先同意平台服务条款和隐私政策';
+                errorMessage.style.display = 'block';
                 return;
             }
             
+            // 检查密码是否匹配
             if (password !== confirmPassword) {
-                showNotification('两次输入的密码不一致', 'error');
+                errorMessage.textContent = '两次输入的密码不一致';
+                errorMessage.style.display = 'block';
                 return;
             }
             
             try {
-                const response = await fetch('/api/users/register', {
+                const response = await fetch('/api/users/seller/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        username,
-                        email,
-                        password,
-                        role: 'seller'  // 强制设置为卖家角色
-                    })
+                    body: JSON.stringify({ username, email, password, description })
                 });
                 
                 const data = await response.json();
                 
                 if (response.ok) {
-                    showNotification('卖家注册成功！', 'success');
-                    // 保存token到localStorage
+                    // 注册成功，保存token到localStorage
                     localStorage.setItem('token', data.token);
-                    // 跳转到卖家中心
-                    setTimeout(() => {
-                        window.location.href = '/seller';
-                    }, 2000);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    window.location.href = '/seller';
                 } else {
-                    showNotification(data.message || '注册失败', 'error');
+                    errorMessage.textContent = data.message;
+                    errorMessage.style.display = 'block';
                 }
             } catch (error) {
-                console.error('注册失败:', error);
-                showNotification('注册过程中发生错误，请稍后重试', 'error');
+                errorMessage.textContent = '注册过程中发生错误，请稍后重试';
+                errorMessage.style.display = 'block';
             }
         });
     </script>
