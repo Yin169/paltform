@@ -8,6 +8,8 @@ const userRoutes = require('../routes/userRoutes');
 const productRoutes = require('../routes/productRoutes');
 const orderRoutes = require('../routes/orderRoutes');
 const cartRoutes = require('../routes/cartRoutes');
+const profileRoutes = require('../routes/profileRoutes');
+const adminRoutes = require('../routes/adminRoutes');
 
 dotenv.config();
 
@@ -24,6 +26,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/profile', profileRoutes);
+app.use('/api/admin', adminRoutes);
 
 // 页面路由
 app.get('/', (req, res) => {
@@ -52,6 +56,10 @@ app.get('/admin', (req, res) => {
 
 app.get('/orders', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/orders.html'));
+});
+
+app.get('/profile', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/profile.html'));
 });
 
 // Connect to MongoDB

@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的画像 - 电商交易平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --accent-color: #f72585;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --border-color: #dee2e6;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fb;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+        
+        .nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .user-info a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .user-info a:hover {
+            opacity: 0.8;
+        }
+        
+        .cart-icon {
+            position: relative;
+            font-size: 22px;
+        }
+        
+        #cart-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        /* Page Title */
+        .page-header {
+            margin: 30px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            color: var(--secondary-color);
+        }
+        
+        /* Profile Container */
+        .profile-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* User Info Card */
+        .user-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .user-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 20px;
+        }
+        
+        .user-name {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+        
+        .user-email {
+            color: var(--gray-color);
+            margin-bottom: 20px;
+        }
+        
+        .user-score {
+            background: linear-gradient(135deg, var(--accent-color), #b5179e);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .score-label {
+            font-size: 1rem;
+        }
+        
+        .user-status {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-vip {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-new {
+            background-color: #cce7ff;
+            color: #004085;
+        }
+        
+        /* Profile Sections */
+        .profile-section {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .metric-card {
+            background-color: #f8f9fc;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+        
+        .metric-label {
+            color: var(--gray-color);
+            font-size: 1rem;
+        }
+        
+        .preference-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .preference-tag {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        /* Recommendations */
+        .recommended-products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .product-card {
+            background-color: #f8f9fc;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .product-image {
+            height: 150px;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .product-info {
+            padding: 15px;
+        }
+        
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .product-price {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        
+        /* Loading and Error States */
+        .loading, .error {
+            text-align: center;
+            padding: 50px;
+            color: var(--gray-color);
+        }
+        
+        .loading i, .error i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav a {
+                margin: 5px 10px;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    电商交易平台
+                </div>
+                <nav class="nav">
+                    <a href="/"><i class="fas fa-home"></i> 首页</a>
+                    <a href="/products"><i class="fas fa-box"></i> 商品</a>
+                    <a href="/cart"><i class="fas fa-shopping-cart"></i> 购物车</a>
+                </nav>
+                <div class="user-info">
+                    <div id="user-actions">
+                        <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
+                        <a href="/register"><i class="fas fa-user-plus"></i> 注册</a>
+                    </div>
+                    <a href="/cart" class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-count">0</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-header">
+            <h1 class="page-title"><i class="fas fa-user-circle"></i> 我的画像</h1>
+        </div>
+
+        <div id="profile-content">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>正在加载用户画像...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载时获取用户画像
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserProfile();
+            checkUserStatus();
+            updateCartCount();
+        });
+
+        // 检查用户登录状态
+        async function checkUserStatus() {
+            const token = localStorage.getItem('token');
+            const userActions = document.getElementById('user-actions');
+            
+            if (token) {
+                try {
+                    const response = await fetch('/api/users/profile', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const user = await response.json();
+                        userActions.innerHTML = `
+                            <span><i class="fas fa-user"></i> ${user.username}</span>
+                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
+                            ${user.role === 'admin' ? '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>' : ''}
+                            <a href="/orders"><i class="fas fa-list"></i> 我的订单</a>
+                            <a href="/profile"><i class="fas fa-user-circle"></i> 我的画像</a>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('检查用户状态失败:', error);
+                }
+            }
+        }
+
+        // 用户退出
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.reload();
+        }
+
+        // 加载用户画像
+        async function loadUserProfile() {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/profile/user', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const profile = await response.json();
+                    displayUserProfile(profile);
+                } else {
+                    document.getElementById('profile-content').innerHTML = `
+                        <div class="error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>加载用户画像失败</p>
+                            <button class="btn" style="background: var(--primary-color); color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-top: 20px;" onclick="loadUserProfile()">重新加载</button>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('加载用户画像失败:', error);
+                document.getElementById('profile-content').innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>网络错误，请检查连接后重试</p>
+                        <button class="btn" style="background: var(--primary-color); color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-top: 20px;" onclick="loadUserProfile()">重新加载</button>
+                    </div>
+                `;
+            }
+        }
+
+        // 显示用户画像
+        async function displayUserProfile(profile) {
+            // 获取用户基本信息
+            const userResponse = await fetch('/api/users/profile', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            const user = await userResponse.json();
+            
+            // 获取推荐商品
+            const recommendationsResponse = await fetch('/api/profile/recommendations', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            const recommendedProducts = await recommendationsResponse.json();
+            
+            const content = document.getElementById('profile-content');
+            content.innerHTML = `
+                <div class="profile-container">
+                    <div class="user-card">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h2 class="user-name">${user.username}</h2>
+                        <p class="user-email">${user.email}</p>
+                        
+                        <div class="user-score">
+                            <div class="score-value">${profile.valueScore || 0}</div>
+                            <div class="score-label">用户价值评分</div>
+                        </div>
+                        
+                        <div class="user-status status-${profile.lifecycleStage || 'new'}">
+                            ${getLifecycleStageText(profile.lifecycleStage || 'new')}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="profile-section">
+                            <h3 class="section-title"><i class="fas fa-chart-line"></i> 消费行为</h3>
+                            <div class="section-content">
+                                <div class="metric-card">
+                                    <div class="metric-value">¥${(profile.behavior?.totalSpent || 0).toFixed(2)}</div>
+                                    <div class="metric-label">累计消费</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-value">${profile.behavior?.purchaseFrequency || 0}</div>
+                                    <div class="metric-label">购买次数</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-value">¥${(profile.behavior?.avgOrderValue || 0).toFixed(2)}</div>
+                                    <div class="metric-label">平均订单金额</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-value">${profile.behavior?.cartAbandonmentRate ? (profile.behavior.cartAbandonmentRate * 100).toFixed(0) : 0}%</div>
+                                    <div class="metric-label">购物车放弃率</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-section">
+                            <h3 class="section-title"><i class="fas fa-heart"></i> 偏好分析</h3>
+                            <div class="section-content">
+                                <div class="metric-card">
+                                    <div class="metric-label">偏好类别</div>
+                                    <div class="preference-list">
+                                        ${profile.behavior?.preferredCategories?.map(cat => 
+                                            `<span class="preference-tag">${cat}</span>`
+                                        ).join('') || '<span class="preference-tag">暂无数据</span>'}
+                                    </div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-label">价格敏感度</div>
+                                    <div class="metric-value">${getPriceSensitivityText(profile.preferences?.priceSensitivity || 'medium')}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="profile-section">
+                    <h3 class="section-title"><i class="fas fa-gift"></i> 为您推荐</h3>
+                    <div class="recommended-products">
+                        ${recommendedProducts.map(product => `
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <img src="${product.imageUrl || 'https://via.placeholder.com/150x150?text=商品图片'}" alt="${product.name}" style="width:100%; height:100%; object-fit:cover;">
+                                </div>
+                                <div class="product-info">
+                                    <div class="product-name">${product.name}</div>
+                                    <div class="product-price">¥${product.price.toFixed(2)}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 获取生命周期阶段文本
+        function getLifecycleStageText(stage) {
+            const stageMap = {
+                'new': '新用户',
+                'active': '活跃用户',
+                'at_risk': '流失风险',
+                'churned': '已流失',
+                'vip': 'VIP用户'
+            };
+            return stageMap[stage] || stage;
+        }
+
+        // 获取价格敏感度文本
+        function getPriceSensitivityText(sensitivity) {
+            const sensitivityMap = {
+                'low': '低敏感度',
+                'medium': '中等敏感度',
+                'high': '高敏感度'
+            };
+            return sensitivityMap[sensitivity] || sensitivity;
+        }
+
+        // 更新购物车数量
+        async function updateCartCount() {
+            const token = localStorage.getItem('token');
+            const cartCountElement = document.getElementById('cart-count');
+            
+            if (!token) {
+                cartCountElement.style.display = 'none';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/cart', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const cart = await response.json();
+                    const totalItems = cart.items ? cart.items.reduce((total, item) => total + item.quantity, 0) : 0;
+                    cartCountElement.textContent = totalItems;
+                    cartCountElement.style.display = totalItems > 0 ? 'flex' : 'none';
+                }
+            } catch (error) {
+                console.error('获取购物车信息失败:', error);
+            }
+        }
+    </script>
+</body>
+</html>

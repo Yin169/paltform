@@ -1,5 +1,6 @@
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
+const { updateUserProfile } = require('./profileController');
 
 // 获取用户购物车
 const getCart = async (req, res) => {
@@ -81,7 +82,10 @@ const addToCart = async (req, res) => {
       path: 'items.product',
       select: 'name price quantity imageUrl'
     });
-
+    
+    // 更新用户画像
+    await updateUserProfile(req.user._id);
+    
     res.json(cart);
   } catch (err) {
     res.status(500).json({ message: '服务器错误', error: err.message });
@@ -134,7 +138,10 @@ const updateCartItem = async (req, res) => {
       path: 'items.product',
       select: 'name price quantity imageUrl'
     });
-
+    
+    // 更新用户画像
+    await updateUserProfile(req.user._id);
+    
     res.json(cart);
   } catch (err) {
     res.status(500).json({ message: '服务器错误', error: err.message });
@@ -169,7 +176,10 @@ const removeFromCart = async (req, res) => {
       path: 'items.product',
       select: 'name price quantity imageUrl'
     });
-
+    
+    // 更新用户画像
+    await updateUserProfile(req.user._id);
+    
     res.json(cart);
   } catch (err) {
     res.status(500).json({ message: '服务器错误', error: err.message });
@@ -187,7 +197,10 @@ const clearCart = async (req, res) => {
 
     cart.items = [];
     await cart.save();
-
+    
+    // 更新用户画像
+    await updateUserProfile(req.user._id);
+    
     res.json({ message: '购物车已清空' });
   } catch (err) {
     res.status(500).json({ message: '服务器错误', error: err.message });

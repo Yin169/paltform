@@ -1,5 +1,6 @@
 const Order = require('../models/Order');
 const Product = require('../models/Product');
+const { updateUserProfile, updateProductProfile } = require('./profileController');
 
 // 创建订单
 const createOrder = async (req, res) => {
@@ -49,6 +50,12 @@ const createOrder = async (req, res) => {
       { path: 'user', select: 'username email' },
       { path: 'items.product', select: 'name price' }
     ]);
+    
+    // 更新用户和商品画像
+    await updateUserProfile(req.user._id);
+    for (const item of orderItems) {
+      await updateProductProfile(item.product);
+    }
     
     res.status(201).json(savedOrder);
   } catch (err) {

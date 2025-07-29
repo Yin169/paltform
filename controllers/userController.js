@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const { updateUserProfile } = require('./profileController');
 
 // 用户注册
 const register = async (req, res) => {
