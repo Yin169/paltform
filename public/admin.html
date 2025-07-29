@@ -17,6 +17,7 @@
             --border-color: #dee2e6;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             --shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.15);
+            --sidebar-width: 250px;
         }
         
         * {
@@ -30,54 +31,78 @@
             background-color: #f5f7fb;
             color: #333;
             line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Header Styles */
-        header {
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
-            padding: 15px 0;
+            height: 100vh;
+            position: fixed;
+            overflow-y: auto;
+            transition: all 0.3s ease;
             box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
             z-index: 100;
         }
         
-        .header-content {
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar-menu {
+            padding: 10px 0;
+        }
+        
+        .menu-item {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+        }
+        
+        header {
+            background: white;
+            padding: 15px 20px;
+            box-shadow: var(--shadow);
+            border-radius: 10px;
+            margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        
-        .logo {
-            font-size: 28px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo i {
-            margin-right: 10px;
-        }
-        
-        .nav a {
-            color: white;
-            text-decoration: none;
-            margin-left: 25px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 8px 12px;
-            border-radius: 4px;
-        }
-        
-        .nav a:hover {
-            background-color: rgba(255, 255, 255, 0.2);
         }
         
         .user-info {
@@ -87,23 +112,29 @@
         }
         
         .user-info a {
-            color: white;
+            color: var(--dark-color);
             text-decoration: none;
             font-weight: 500;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .user-info a:hover {
-            opacity: 0.8;
+            color: var(--primary-color);
         }
         
         .page-header {
-            margin: 30px 0;
+            margin-bottom: 30px;
         }
         
         .page-title {
             font-size: 2rem;
             color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
         
         /* Admin Container */
@@ -113,40 +144,6 @@
             box-shadow: var(--shadow);
             border-radius: 10px;
             margin-bottom: 30px;
-        }
-        
-        /* Tabs */
-        .tabs {
-            display: flex;
-            border-bottom: 2px solid var(--border-color);
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-        
-        .tab {
-            padding: 15px 25px;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            color: var(--gray-color);
-        }
-        
-        .tab:hover {
-            color: var(--primary-color);
-        }
-        
-        .tab.active {
-            border-bottom: 3px solid var(--primary-color);
-            color: var(--primary-color);
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
         }
         
         /* Dashboard Stats */
@@ -166,6 +163,11 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
         }
         
         .stat-card i {
@@ -182,6 +184,10 @@
         }
         
         /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+        
         table {
             width: 100%;
             border-collapse: collapse;
@@ -294,6 +300,7 @@
         
         .btn-primary:hover {
             background-color: var(--secondary-color);
+            transform: translateY(-2px);
         }
         
         .btn-warning {
@@ -303,6 +310,7 @@
         
         .btn-warning:hover {
             background-color: #e0a800;
+            transform: translateY(-2px);
         }
         
         .btn-danger {
@@ -312,6 +320,7 @@
         
         .btn-danger:hover {
             background-color: #c82333;
+            transform: translateY(-2px);
         }
         
         .btn-info {
@@ -321,6 +330,7 @@
         
         .btn-info:hover {
             background-color: #138496;
+            transform: translateY(-2px);
         }
         
         .btn-secondary {
@@ -330,6 +340,7 @@
         
         .btn-secondary:hover {
             background-color: #5a6268;
+            transform: translateY(-2px);
         }
         
         /* Forms */
@@ -385,6 +396,12 @@
             max-width: 800px;
             box-shadow: var(--shadow-hover);
             position: relative;
+            animation: modalOpen 0.3s ease;
+        }
+        
+        @keyframes modalOpen {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .close {
@@ -421,6 +438,7 @@
             background-color: #f8f9fc;
             padding: 20px;
             border-radius: 8px;
+            box-shadow: var(--shadow);
         }
         
         .profile-card h4 {
@@ -428,19 +446,25 @@
             color: var(--secondary-color);
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .profile-item {
-            margin: 10px 0;
+            margin: 15px 0;
+            display: flex;
+            flex-wrap: wrap;
         }
         
         .profile-label {
             font-weight: 600;
             color: var(--dark-color);
+            min-width: 120px;
         }
         
         .profile-value {
-            margin-left: 10px;
+            flex: 1;
         }
         
         /* Charts */
@@ -454,95 +478,215 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            background: #f8f9fc;
+            padding: 15px;
+            border-radius: 8px;
         }
         
         .search-bar input {
             flex: 1;
-            padding: 10px 15px;
+            padding: 12px 15px;
             border: 2px solid var(--border-color);
             border-radius: 6px;
         }
         
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
         .search-bar button {
-            padding: 10px 20px;
+            padding: 12px 20px;
             background-color: var(--primary-color);
             color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        
+        .search-bar button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         /* Responsive Design */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
             }
             
-            .nav {
-                display: flex;
-                flex-wrap: wrap;
+            .sidebar-header h2 span,
+            .menu-item span {
+                display: none;
+            }
+            
+            .sidebar-header h2 {
                 justify-content: center;
             }
             
-            .nav a {
-                margin: 5px 10px;
+            .menu-item {
+                justify-content: center;
+                padding: 20px;
             }
             
-            .tabs {
-                flex-direction: column;
+            .main-content {
+                margin-left: 70px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                overflow: hidden;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .sidebar.active {
+                width: 250px;
+            }
+            
+            .sidebar.active .sidebar-header h2 span,
+            .sidebar.active .menu-item span {
+                display: inline;
+            }
+            
+            .sidebar.active .sidebar-header h2 {
+                justify-content: flex-start;
+            }
+            
+            .sidebar.active .menu-item {
+                justify-content: flex-start;
             }
             
             table {
-                display: block;
-                overflow-x: auto;
+                font-size: 14px;
             }
             
-            .modal-content {
-                width: 95%;
-                padding: 20px;
+            th, td {
+                padding: 10px 8px;
             }
+            
+            .profile-item {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .profile-label {
+                min-width: auto;
+            }
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: var(--shadow-hover);
+            z-index: 2000;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        .notification.success {
+            background-color: #28a745;
+        }
+        
+        .notification.error {
+            background-color: #dc3545;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-cogs"></i> <span>管理后台</span></h2>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-item active" onclick="switchTab('dashboard')">
+                <i class="fas fa-chart-bar"></i>
+                <span>仪表盘</span>
+            </div>
+            <div class="menu-item" onclick="switchTab('orders')">
+                <i class="fas fa-list"></i>
+                <span>订单管理</span>
+            </div>
+            <div class="menu-item" onclick="switchTab('products')">
+                <i class="fas fa-boxes"></i>
+                <span>商品管理</span>
+            </div>
+            <div class="menu-item" onclick="switchTab('users')">
+                <i class="fas fa-users"></i>
+                <span>用户管理</span>
+            </div>
+            <div class="menu-item" onclick="switchTab('user-profiles')">
+                <i class="fas fa-user-circle"></i>
+                <span>用户画像</span>
+            </div>
+            <div class="menu-item" onclick="switchTab('product-profiles')">
+                <i class="fas fa-chart-bar"></i>
+                <span>商品画像</span>
+            </div>
+            <div class="menu-item" onclick="switchTab('graph')">
+                <i class="fas fa-project-diagram"></i>
+                <span>图谱可视化</span>
+            </div>
+            <div class="menu-item" onclick="switchTab('simulation')">
+                <i class="fas fa-robot"></i>
+                <span>模拟系统</span>
+            </div>
+            <div class="menu-item" onclick="switchTab('add-product')">
+                <i class="fas fa-plus-circle"></i>
+                <span>添加商品</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
         <header>
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-shopping-bag"></i>
-                    电商交易平台
-                </div>
-                <nav class="nav">
-                    <a href="/"><i class="fas fa-home"></i> 首页</a>
-                    <a href="/products"><i class="fas fa-box"></i> 商品</a>
-                    <a href="/cart"><i class="fas fa-shopping-cart"></i> 购物车</a>
-                </nav>
-                <div class="user-info">
-                    <div id="user-actions">
-                        <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
-                    </div>
+            <div class="page-header">
+                <h1 class="page-title"><i class="fas fa-cog"></i> 管理后台</h1>
+            </div>
+            <div class="user-info">
+                <div id="user-actions">
+                    <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
                 </div>
             </div>
         </header>
 
-        <div class="page-header">
-            <h1 class="page-title"><i class="fas fa-cog"></i> 管理后台</h1>
-        </div>
-
         <div class="admin-container">
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('dashboard')">仪表盘</div>
-                <div class="tab" onclick="switchTab('orders')">订单管理</div>
-                <div class="tab" onclick="switchTab('products')">商品管理</div>
-                <div class="tab" onclick="switchTab('users')">用户管理</div>
-                <div class="tab" onclick="switchTab('user-profiles')">用户画像</div>
-                <div class="tab" onclick="switchTab('product-profiles')">商品画像</div>
-                <div class="tab" onclick="switchTab('graph')">图谱可视化</div>
-                <div class="tab" onclick="switchTab('simulation')">模拟系统</div>
-                <div class="tab" onclick="switchTab('add-product')">添加商品</div>
-            </div>
-
             <!-- 仪表盘 -->
             <div id="dashboard" class="tab-content active">
                 <div class="dashboard-stats">
@@ -568,68 +712,78 @@
                     </div>
                 </div>
                 
-                <h2>最近订单</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>订单号</th>
-                            <th>用户</th>
-                            <th>金额</th>
-                            <th>状态</th>
-                            <th>日期</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id="recent-orders-table">
-                        <tr>
-                            <td colspan="6" class="no-data">加载中...</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <h2><i class="fas fa-history"></i> 最近订单</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>订单号</th>
+                                <th>用户</th>
+                                <th>金额</th>
+                                <th>状态</th>
+                                <th>日期</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-orders-table">
+                            <tr>
+                                <td colspan="6" class="no-data">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- 订单管理 -->
             <div id="orders" class="tab-content">
                 <h2><i class="fas fa-list"></i> 订单管理</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>订单号</th>
-                            <th>用户</th>
-                            <th>金额</th>
-                            <th>状态</th>
-                            <th>日期</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id="orders-table-body">
-                        <tr>
-                            <td colspan="6" class="no-data">加载中...</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="search-bar">
+                    <input type="text" id="order-search" placeholder="搜索订单...">
+                    <button onclick="searchOrders()"><i class="fas fa-search"></i> 搜索</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>订单号</th>
+                                <th>用户</th>
+                                <th>金额</th>
+                                <th>状态</th>
+                                <th>日期</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table-body">
+                            <tr>
+                                <td colspan="6" class="no-data">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- 商品管理 -->
             <div id="products" class="tab-content">
                 <h2><i class="fas fa-boxes"></i> 商品管理</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>商品信息</th>
-                            <th>价格</th>
-                            <th>库存</th>
-                            <th>分类</th>
-                            <th>卖家</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id="products-table-body">
-                        <tr>
-                            <td colspan="6" class="no-data">加载中...</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>商品信息</th>
+                                <th>价格</th>
+                                <th>库存</th>
+                                <th>分类</th>
+                                <th>卖家</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table-body">
+                            <tr>
+                                <td colspan="6" class="no-data">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- 用户管理 -->
@@ -639,22 +793,24 @@
                     <input type="text" id="user-search" placeholder="搜索用户...">
                     <button onclick="searchUsers()"><i class="fas fa-search"></i> 搜索</button>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>用户名</th>
-                            <th>邮箱</th>
-                            <th>角色</th>
-                            <th>注册时间</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id="users-table-body">
-                        <tr>
-                            <td colspan="5" class="no-data">加载中...</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>用户名</th>
+                                <th>邮箱</th>
+                                <th>角色</th>
+                                <th>注册时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <tr>
+                                <td colspan="5" class="no-data">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- 用户画像 -->
@@ -664,24 +820,26 @@
                     <input type="text" id="user-profile-search" placeholder="搜索用户画像...">
                     <button onclick="searchUserProfiles()"><i class="fas fa-search"></i> 搜索</button>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>用户</th>
-                            <th>价值评分</th>
-                            <th>生命周期</th>
-                            <th>总消费</th>
-                            <th>购买次数</th>
-                            <th>偏好类别</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id="user-profiles-table-body">
-                        <tr>
-                            <td colspan="7" class="no-data">加载中...</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>用户</th>
+                                <th>价值评分</th>
+                                <th>生命周期</th>
+                                <th>总消费</th>
+                                <th>购买次数</th>
+                                <th>偏好类别</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-profiles-table-body">
+                            <tr>
+                                <td colspan="7" class="no-data">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- 商品画像 -->
@@ -691,24 +849,26 @@
                     <input type="text" id="product-profile-search" placeholder="搜索商品画像...">
                     <button onclick="searchProductProfiles()"><i class="fas fa-search"></i> 搜索</button>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>商品</th>
-                            <th>受欢迎度</th>
-                            <th>生命周期</th>
-                            <th>总销量</th>
-                            <th>平均月销量</th>
-                            <th>转化率</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id="product-profiles-table-body">
-                        <tr>
-                            <td colspan="7" class="no-data">加载中...</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>商品</th>
+                                <th>受欢迎度</th>
+                                <th>生命周期</th>
+                                <th>总销量</th>
+                                <th>平均月销量</th>
+                                <th>转化率</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="product-profiles-table-body">
+                            <tr>
+                                <td colspan="7" class="no-data">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- 图谱可视化 -->
@@ -879,6 +1039,9 @@
         </div>
     </div>
 
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
     <script>
         // 页面加载时检查用户权限
         document.addEventListener('DOMContentLoaded', function() {
@@ -898,6 +1061,18 @@
                 }
             }
         });
+
+        // 显示通知
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification ' + type;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
 
         // 检查用户登录状态和权限
         async function checkUserStatus() {
@@ -919,14 +1094,15 @@
                 if (response.ok) {
                     const user = await response.json();
                     if (user.role !== 'admin') {
-                        alert('您没有管理员权限');
-                        window.location.href = '/';
+                        showNotification('您没有管理员权限', 'error');
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 2000);
                         return;
                     }
                     
                     userActions.innerHTML = `
-                        <span><i class="fas fa-user-shield"></i> 管理员: ${user.username}</span>
-                        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
+                        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出 (${user.username})</a>
                     `;
                 } else {
                     window.location.href = '/login';
@@ -951,16 +1127,16 @@
                 tab.classList.remove('active');
             });
             
-            // 移除所有标签的活动状态
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
+            // 移除所有菜单项的活动状态
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
             });
             
             // 显示选中的标签内容
             document.getElementById(tabName).classList.add('active');
             
-            // 设置选中标签为活动状态
-            event.target.classList.add('active');
+            // 设置选中菜单项为活动状态
+            event.target.closest('.menu-item').classList.add('active');
             
             // 根据选中的标签加载数据
             if (tabName === 'orders') {
@@ -1018,6 +1194,7 @@
                 
             } catch (error) {
                 console.error('加载仪表盘数据失败:', error);
+                showNotification('加载仪表盘数据失败', 'error');
             }
         }
 
@@ -1038,8 +1215,8 @@
                     <td><span class="status-badge status-${order.status}">${order.status}</span></td>
                     <td>${new Date(order.createdAt).toLocaleDateString()}</td>
                     <td>
-                        <button class="btn btn-info" onclick="viewOrder('${order._id}')"><i class="fas fa-eye"></i> 详情</button>
-                        <button class="btn btn-warning" onclick="showUpdateStatus('${order._id}', '${order.status}')"><i class="fas fa-edit"></i> 更新状态</button>
+                        <button class="btn btn-info btn-sm" onclick="viewOrder('${order._id}')"><i class="fas fa-eye"></i> 详情</button>
+                        <button class="btn btn-warning btn-sm" onclick="showUpdateStatus('${order._id}', '${order.status}')"><i class="fas fa-edit"></i> 更新状态</button>
                     </td>
                 </tr>
             `).join('');
@@ -1087,8 +1264,8 @@
                     <td><span class="status-badge status-${order.status}">${order.status}</span></td>
                     <td>${new Date(order.createdAt).toLocaleDateString()}</td>
                     <td>
-                        <button class="btn btn-info" onclick="viewOrder('${order._id}')"><i class="fas fa-eye"></i> 详情</button>
-                        <button class="btn btn-warning" onclick="showUpdateStatus('${order._id}', '${order.status}')"><i class="fas fa-edit"></i> 更新状态</button>
+                        <button class="btn btn-info btn-sm" onclick="viewOrder('${order._id}')"><i class="fas fa-eye"></i> 详情</button>
+                        <button class="btn btn-warning btn-sm" onclick="showUpdateStatus('${order._id}', '${order.status}')"><i class="fas fa-edit"></i> 更新状态</button>
                     </td>
                 </tr>
             `).join('');
@@ -1109,11 +1286,11 @@
                     const order = await response.json();
                     showOrderDetails(order);
                 } else {
-                    alert('加载订单详情失败');
+                    showNotification('加载订单详情失败', 'error');
                 }
             } catch (error) {
                 console.error('加载订单详情失败:', error);
-                alert('加载订单详情失败');
+                showNotification('加载订单详情失败', 'error');
             }
         }
 
@@ -1178,16 +1355,16 @@
                 });
                 
                 if (response.ok) {
-                    alert('订单状态更新成功');
+                    showNotification('订单状态更新成功', 'success');
                     loadOrders(); // 重新加载订单列表
                     loadDashboard(); // 重新加载仪表盘
                 } else {
                     const data = await response.json();
-                    alert(data.message);
+                    showNotification(data.message, 'error');
                 }
             } catch (error) {
                 console.error('更新订单状态失败:', error);
-                alert('更新订单状态失败');
+                showNotification('更新订单状态失败', 'error');
             }
         }
 
@@ -1202,11 +1379,11 @@
                     const product = await response.json();
                     showProductDetails(product);
                 } else {
-                    alert('加载商品信息失败');
+                    showNotification('加载商品信息失败', 'error');
                 }
             } catch (error) {
                 console.error('加载商品信息失败:', error);
-                alert('加载商品信息失败');
+                showNotification('加载商品信息失败', 'error');
             }
         }
 
@@ -1264,11 +1441,11 @@
                     const product = await response.json();
                     showEditProductForm(product);
                 } else {
-                    alert('加载商品信息失败');
+                    showNotification('加载商品信息失败', 'error');
                 }
             } catch (error) {
                 console.error('加载商品信息失败:', error);
-                alert('加载商品信息失败');
+                showNotification('加载商品信息失败', 'error');
             }
         }
 
@@ -1310,16 +1487,16 @@
                 });
                 
                 if (response.ok) {
-                    alert('商品更新成功');
+                    showNotification('商品更新成功', 'success');
                     document.getElementById('product-modal').style.display = 'none';
                     loadProducts(); // 重新加载商品列表
                 } else {
                     const data = await response.json();
-                    alert(data.message);
+                    showNotification(data.message, 'error');
                 }
             } catch (error) {
                 console.error('更新商品失败:', error);
-                alert('更新商品失败，请稍后重试');
+                showNotification('更新商品失败，请稍后重试', 'error');
             }
         });
 
@@ -1364,9 +1541,9 @@
                     <td>${product.category}</td>
                     <td>${product.seller.username}</td>
                     <td>
-                        <button class="btn btn-info" onclick="viewProduct('${product._id}')"><i class="fas fa-eye"></i> 查看</button>
-                        <button class="btn btn-primary" onclick="editProduct('${product._id}')"><i class="fas fa-edit"></i> 编辑</button>
-                        <button class="btn btn-danger" onclick="deleteProduct('${product._id}')"><i class="fas fa-trash"></i> 删除</button>
+                        <button class="btn btn-info btn-sm" onclick="viewProduct('${product._id}')"><i class="fas fa-eye"></i> 查看</button>
+                        <button class="btn btn-primary btn-sm" onclick="editProduct('${product._id}')"><i class="fas fa-edit"></i> 编辑</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteProduct('${product._id}')"><i class="fas fa-trash"></i> 删除</button>
                     </td>
                 </tr>
             `).join('');
@@ -1389,15 +1566,15 @@
                 });
                 
                 if (response.ok) {
-                    alert('商品删除成功');
+                    showNotification('商品删除成功', 'success');
                     loadProducts();
                 } else {
                     const data = await response.json();
-                    alert(data.message);
+                    showNotification(data.message, 'error');
                 }
             } catch (error) {
                 console.error('删除商品失败:', error);
-                alert('删除商品失败，请稍后重试');
+                showNotification('删除商品失败，请稍后重试', 'error');
             }
         }
 
@@ -1424,17 +1601,17 @@
                 });
                 
                 if (response.ok) {
-                    alert('商品添加成功');
+                    showNotification('商品添加成功', 'success');
                     this.reset();
                     switchTab('products');
                     loadProducts();
                 } else {
                     const data = await response.json();
-                    alert(data.message);
+                    showNotification(data.message, 'error');
                 }
             } catch (error) {
                 console.error('添加商品失败:', error);
-                alert('添加商品失败，请稍后重试');
+                showNotification('添加商品失败，请稍后重试', 'error');
             }
         });
 
@@ -1479,7 +1656,7 @@
                     <td><span class="status-badge status-${user.role}">${user.role}</span></td>
                     <td>${new Date(user.createdAt).toLocaleDateString()}</td>
                     <td>
-                        <button class="btn btn-info" onclick="viewUser('${user._id}')"><i class="fas fa-eye"></i> 查看</button>
+                        <button class="btn btn-info btn-sm" onclick="viewUser('${user._id}')"><i class="fas fa-eye"></i> 查看</button>
                     </td>
                 </tr>
             `).join('');
@@ -1522,7 +1699,7 @@
 
         // 查看用户详情
         async function viewUser(userId) {
-            alert('用户详情功能待实现，用户ID: ' + userId);
+            showNotification('用户详情功能待实现，用户ID: ' + userId, 'success');
         }
 
         // 加载用户画像数据
@@ -1568,7 +1745,7 @@
                     <td>${profile.behavior?.purchaseFrequency || 0}</td>
                     <td>${(profile.behavior?.preferredCategories || []).join(', ') || '无'}</td>
                     <td>
-                        <button class="btn btn-info" onclick="viewUserProfile('${profile.user._id}')"><i class="fas fa-chart-pie"></i> 详情</button>
+                        <button class="btn btn-info btn-sm" onclick="viewUserProfile('${profile.user._id}')"><i class="fas fa-chart-pie"></i> 详情</button>
                     </td>
                 </tr>
             `).join('');
@@ -1623,11 +1800,11 @@
                     const profile = await response.json();
                     showUserProfileDetails(profile);
                 } else {
-                    alert('加载用户画像详情失败');
+                    showNotification('加载用户画像详情失败', 'error');
                 }
             } catch (error) {
                 console.error('加载用户画像详情失败:', error);
-                alert('加载用户画像详情失败');
+                showNotification('加载用户画像详情失败', 'error');
             }
         }
 
@@ -1875,7 +2052,7 @@
                     <td>${profile.salesMetrics?.avgMonthlySales?.toFixed(2) || 0}</td>
                     <td>${(profile.userBehavior?.conversionRate * 100 || 0).toFixed(2)}%</td>
                     <td>
-                        <button class="btn btn-info" onclick="viewProductProfile('${profile.product._id}')"><i class="fas fa-chart-bar"></i> 详情</button>
+                        <button class="btn btn-info btn-sm" onclick="viewProductProfile('${profile.product._id}')"><i class="fas fa-chart-bar"></i> 详情</button>
                     </td>
                 </tr>
             `).join('');
@@ -1942,11 +2119,11 @@
                     const profile = await response.json();
                     showProductProfileDetails(profile);
                 } else {
-                    alert('加载商品画像详情失败');
+                    showNotification('加载商品画像详情失败', 'error');
                 }
             } catch (error) {
                 console.error('加载商品画像详情失败:', error);
-                alert('加载商品画像详情失败');
+                showNotification('加载商品画像详情失败', 'error');
             }
         }
 

@@ -36,4 +36,11 @@ const adminAuth = (req, res, next) => {
   next();
 };
 
-module.exports = { auth, adminAuth };
+const sellerAuth = (req, res, next) => {
+  if (req.user.role !== 'seller' && req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Access denied. Seller rights required.' });
+  }
+  next();
+};
+
+module.exports = { auth, adminAuth, sellerAuth };

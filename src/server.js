@@ -12,6 +12,7 @@ const profileRoutes = require('../routes/profileRoutes');
 const adminRoutes = require('../routes/adminRoutes');
 const graphRoutes = require('../routes/graphRoutes');
 const simulationRoutes = require('../routes/simulationRoutes');
+const sellerRoutes = require('../routes/sellerRoutes');
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/graph', graphRoutes);
 app.use('/api/simulation', simulationRoutes);
+app.use('/api/seller', sellerRoutes);
 
 // 页面路由
 app.get('/', (req, res) => {
@@ -66,8 +68,16 @@ app.get('/profile', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/profile.html'));
 });
 
+app.get('/seller-register', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/seller-register.html'));
+});
+
 app.get('/graph', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/graph.html'));
+});
+
+app.get('/seller', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/seller.html'));
 });
 
 const PORT = process.env.PORT || 3000;

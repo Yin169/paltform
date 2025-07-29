@@ -5,7 +5,7 @@ const { updateUserProfile } = require('./profileController');
 // 用户注册
 const register = async (req, res) => {
   try {
-    const { username, email, password, profile, addresses } = req.body;
+    const { username, email, password, role, profile, addresses } = req.body;
     
     // 检查用户是否已存在
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
@@ -18,6 +18,7 @@ const register = async (req, res) => {
       username, 
       email, 
       password,
+      role: role || 'user', // 默认为普通用户，允许注册为卖家
       profile: profile || {},
       addresses: addresses || []
     });

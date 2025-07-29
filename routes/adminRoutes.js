@@ -1,6 +1,7 @@
 const express = require('express');
 const User = require('../models/User');
 const Product = require('../models/Product');
+const Order = require('../models/Order');
 const UserProfile = require('../models/UserProfile');
 const ProductProfile = require('../models/ProductProfile');
 const { auth, adminAuth } = require('../middleware/auth');
@@ -25,6 +26,97 @@ router.get('/users/:userId', auth, adminAuth, async (req, res) => {
       return res.status(404).json({ message: '用户未找到' });
     }
     res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: '服务器错误', error: err.message });
+  }
+});
+
+// 获取所有卖家信息（管理员）
+router.get('/sellers', auth, adminAuth, async (req, res) => {
+  try {
+    // 查找所有有商品的用户（即卖家）
+    const sellers = await User.find({ 
+      _id: { $in: await Product.distinct('seller') } 
+    }).select('-password');
+    
+    // 为每个卖家添加统计信息
+    const sellersWithStats = await Promise.all(sellers.map(async (seller) => {
+      // 获取卖家的商品数量
+      const productCount = await Product.countDocuments({ seller: seller._id });
+      
+      // 获取卖家的所有商品
+      const sellerProducts = await Product.find({ seller: seller._id });
+      const productIds = sellerProducts.map(p => p._id);
+      
+      // 获取包含卖家商品的订单
+      const orders = await Order.find({ 
+        'items.product': { $in: productIds } 
+      }).populate('items.product');
+      
+      // 计算总销售额
+      let totalSales = 0;
+      orders.forEach(order => {
+        order.items.forEach(item => {
+          if (productIds.includes(item.product._id)) {
+            totalSales += item.price * item.quantity;
+          }
+        });
+      });
+      
+      return {
+        ...seller.toObject(),
+        productCount,
+        totalSales,
+        totalOrders: orders.length
+      };
+    }));
+    
+    res.json(sellersWithStats);
+  } catch (err) {
+    res.status(500).json({ message: '服务器错误', error: err.message });
+  }
+});
+
+// 获取特定卖家详细信息（管理员）
+router.get('/sellers/:sellerId', auth, adminAuth, async (req, res) => {
+  try {
+    const seller = await User.findById(req.params.sellerId).select('-password');
+    
+    if (!seller) {
+      return res.status(404).json({ message: '卖家未找到' });
+    }
+    
+    // 获取卖家的商品数量
+    const productCount = await Product.countDocuments({ seller: seller._id });
+    
+    // 获取卖家的所有商品
+    const sellerProducts = await Product.find({ seller: seller._id });
+    const productIds = sellerProducts.map(p => p._id);
+    
+    // 获取包含卖家商品的订单
+    const orders = await Order.find({ 
+      'items.product': { $in: productIds } 
+    }).populate('items.product');
+    
+    // 计算总销售额
+    let totalSales = 0;
+    orders.forEach(order => {
+      order.items.forEach(item => {
+        if (productIds.includes(item.product._id)) {
+          totalSales += item.price * item.quantity;
+        }
+      });
+    });
+    
+    // 构建返回数据
+    const sellerData = {
+      ...seller.toObject(),
+      productCount,
+      totalSales,
+      totalOrders: orders.length
+    };
+    
+    res.json(sellerData);
   } catch (err) {
     res.status(500).json({ message: '服务器错误', error: err.message });
   }
