@@ -481,193 +481,170 @@
 
         // 显示用户画像
         async function displayUserProfile(profile) {
-            // 获取用户基本信息
-            const userResponse = await fetch('/api/users/profile', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+            try {
+                // 获取用户基本信息
+                const userResponse = await fetch('/api/users/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                const user = await userResponse.json();
+                
+                // 获取推荐商品
+                let recommendedProducts = [];
+                try {
+                    const recommendationsResponse = await fetch('/api/profile/recommendations', {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                    if (recommendationsResponse.ok) {
+                        recommendedProducts = await recommendationsResponse.json();
+                    }
+                } catch (error) {
+                    console.error('获取推荐商品失败:', error);
                 }
-            });
-            const user = await userResponse.json();
-            
-            // 获取推荐商品
-            const recommendationsResponse = await fetch('/api/profile/recommendations', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            const recommendedProducts = await recommendationsResponse.json();
-            
-            const content = document.getElementById('profile-content');
-            content.innerHTML = `
-                <div class="profile-container">
-                    <div class="user-card">
-                        <div class="user-avatar">
-                            <i class="fas fa-user"></i>
+                
+                const content = document.getElementById('profile-content');
+                content.innerHTML = `
+                    <div class="profile-container">
+                        <div class="user-card">
+                            <div class="user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h2 class="user-name">${user.username || '未知用户'}</h2>
+                            <p class="user-email">${user.email || '未提供邮箱'}</p>
+                            
+                            <div class="user-score">
+                                <div class="score-value">${profile.valueScore || 0}</div>
+                                <div class="score-label">用户价值评分</div>
+                            </div>
+                            
+                            <div class="user-status status-${profile.lifecycleStage || 'new'}">
+                                ${getLifecycleStageText(profile.lifecycleStage || 'new')}
+                            </div>
+                            
+                            ${user.profile && user.profile.gender ? `
+                            <div class="user-detail">
+                                <i class="fas fa-venus-mars"></i> 
+                                ${getGenderText(user.profile.gender)}
+                            </div>` : ''}
+                            
+                            ${user.profile && user.profile.birthDate ? `
+                            <div class="user-detail">
+                                <i class="fas fa-birthday-cake"></i> 
+                                ${calculateAge(new Date(user.profile.birthDate))}岁
+                            </div>` : ''}
+                            
+                            ${user.addresses && user.addresses.length > 0 ? `
+                            <div class="user-detail">
+                                <i class="fas fa-map-marker-alt"></i> 
+                                ${user.addresses[0].city || ''} ${user.addresses[0].state || ''}
+                            </div>` : ''}
                         </div>
-                        <h2 class="user-name">${user.username}</h2>
-                        <p class="user-email">${user.email}</p>
                         
-                        <div class="user-score">
-                            <div class="score-value">${profile.valueScore || 0}</div>
-                            <div class="score-label">用户价值评分</div>
+                        <div>
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-chart-line"></i> 消费行为</h3>
+                                <div class="section-content">
+                                    <div class="metric-card">
+                                        <div class="metric-value">¥${(profile.behavior?.totalSpent || 0).toFixed(2)}</div>
+                                        <div class="metric-label">累计消费</div>
+                                    </div>
+                                    <div class="metric-card">
+                                        <div class="metric-value">${profile.behavior?.purchaseFrequency || 0}</div>
+                                        <div class="metric-label">购买次数</div>
+                                    </div>
+                                    <div class="metric-card">
+                                        <div class="metric-value">¥${(profile.behavior?.avgOrderValue || 0).toFixed(2)}</div>
+                                        <div class="metric-label">平均订单金额</div>
+                                    </div>
+                                    <div class="metric-card">
+                                        <div class="metric-value">${profile.behavior?.cartAbandonmentRate ? (profile.behavior.cartAbandonmentRate * 100).toFixed(0) : 0}%</div>
+                                        <div class="metric-label">购物车放弃率</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-heart"></i> 偏好分析</h3>
+                                <div class="section-content">
+                                    <div class="metric-card">
+                                        <div class="metric-label">偏好类别</div>
+                                        <div class="preference-list">
+                                            ${(profile.behavior?.preferredCategories || []).map(cat => 
+                                                `<span class="preference-tag">${cat}</span>`
+                                            ).join('') || '<span class="preference-tag">暂无数据</span>'}
+                                        </div>
+                                    </div>
+                                    <div class="metric-card">
+                                        <div class="metric-label">价格敏感度</div>
+                                        <div class="metric-value">${getPriceSensitivityText(profile.preferences?.priceSensitivity || 'medium')}</div>
+                                    </div>
+                                    
+                                    ${(profile.purchasePreferences?.favoriteCategories || []).length > 0 ? `
+                                    <div class="metric-card">
+                                        <div class="metric-label">最喜欢类别</div>
+                                        <div class="preference-list">
+                                            ${profile.purchasePreferences.favoriteCategories.map(cat => 
+                                                `<span class="preference-tag">${cat.category}</span>`
+                                            ).join('')}
+                                        </div>
+                                    </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            
+                            ${profile.demographics ? `
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-user-alt"></i> 个人信息</h3>
+                                <div class="section-content">
+                                    ${profile.demographics.gender && profile.demographics.gender !== 'unknown' ? `
+                                    <div class="metric-card">
+                                        <div class="metric-label">性别</div>
+                                        <div class="metric-value">${getGenderText(profile.demographics.gender)}</div>
+                                    </div>
+                                    ` : ''}
+                                    
+                                    ${profile.demographics.age ? `
+                                    <div class="metric-card">
+                                        <div class="metric-label">年龄</div>
+                                        <div class="metric-value">${profile.demographics.age}</div>
+                                    </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            ` : ''}
                         </div>
-                        
-                        <div class="user-status status-${profile.lifecycleStage || 'new'}">
-                            ${getLifecycleStageText(profile.lifecycleStage || 'new')}
-                        </div>
-                        
-                        ${user.profile && user.profile.gender ? `
-                        <div class="user-detail">
-                            <i class="fas fa-venus-mars"></i> 
-                            ${getGenderText(user.profile.gender)}
-                        </div>` : ''}
-                        
-                        ${user.profile && user.profile.birthDate ? `
-                        <div class="user-detail">
-                            <i class="fas fa-birthday-cake"></i> 
-                            ${calculateAge(new Date(user.profile.birthDate))}岁
-                        </div>` : ''}
-                        
-                        ${user.addresses && user.addresses.length > 0 ? `
-                        <div class="user-detail">
-                            <i class="fas fa-map-marker-alt"></i> 
-                            ${user.addresses[0].city || ''} ${user.addresses[0].state || ''}
-                        </div>` : ''}
                     </div>
                     
-                    <div>
-                        <div class="profile-section">
-                            <h3 class="section-title"><i class="fas fa-chart-line"></i> 消费行为</h3>
-                            <div class="section-content">
-                                <div class="metric-card">
-                                    <div class="metric-value">¥${(profile.behavior?.totalSpent || 0).toFixed(2)}</div>
-                                    <div class="metric-label">累计消费</div>
-                                </div>
-                                <div class="metric-card">
-                                    <div class="metric-value">${profile.behavior?.purchaseFrequency || 0}</div>
-                                    <div class="metric-label">购买次数</div>
-                                </div>
-                                <div class="metric-card">
-                                    <div class="metric-value">¥${(profile.behavior?.avgOrderValue || 0).toFixed(2)}</div>
-                                    <div class="metric-label">平均订单金额</div>
-                                </div>
-                                <div class="metric-card">
-                                    <div class="metric-value">${profile.behavior?.cartAbandonmentRate ? (profile.behavior.cartAbandonmentRate * 100).toFixed(0) : 0}%</div>
-                                    <div class="metric-label">购物车放弃率</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="profile-section">
-                            <h3 class="section-title"><i class="fas fa-heart"></i> 偏好分析</h3>
-                            <div class="section-content">
-                                <div class="metric-card">
-                                    <div class="metric-label">偏好类别</div>
-                                    <div class="preference-list">
-                                        ${profile.behavior?.preferredCategories?.map(cat => 
-                                            `<span class="preference-tag">${cat}</span>`
-                                        ).join('') || '<span class="preference-tag">暂无数据</span>'}
+                    <div class="profile-section">
+                        <h3 class="section-title"><i class="fas fa-gift"></i> 为您推荐</h3>
+                        <div class="recommended-products">
+                            ${(Array.isArray(recommendedProducts) ? recommendedProducts : []).map(product => `
+                                <div class="product-card">
+                                    <div class="product-image">
+                                        <img src="${(product && product.imageUrl) || 'https://via.placeholder.com/150x150?text=商品图片'}" alt="${(product && product.name) || '商品'}" style="width:100%; height:100%; object-fit:cover;">
+                                    </div>
+                                    <div class="product-info">
+                                        <div class="product-name">${(product && product.name) || '未命名商品'}</div>
+                                        <div class="product-price">¥${product && typeof product.price === 'number' ? product.price.toFixed(2) : '0.00'}</div>
                                     </div>
                                 </div>
-                                <div class="metric-card">
-                                    <div class="metric-label">价格敏感度</div>
-                                    <div class="metric-value">${getPriceSensitivityText(profile.preferences?.priceSensitivity || 'medium')}</div>
-                                </div>
-                                
-                                ${profile.purchasePreferences?.favoriteCategories?.length > 0 ? `
-                                <div class="metric-card">
-                                    <div class="metric-label">最喜欢类别</div>
-                                    <div class="preference-list">
-                                        ${profile.purchasePreferences.favoriteCategories.map(cat => 
-                                            `<span class="preference-tag">${cat.category}</span>`
-                                        ).join('')}
-                                    </div>
-                                </div>
-                                ` : ''}
-                            </div>
+                            `).join('')}
                         </div>
-                        
-                        ${profile.demographics ? `
-                        <div class="profile-section">
-                            <h3 class="section-title"><i class="fas fa-user-alt"></i> 个人信息</h3>
-                            <div class="section-content">
-                                ${profile.demographics.gender && profile.demographics.gender !== 'unknown' ? `
-                                <div class="metric-card">
-                                    <div class="metric-label">性别</div>
-                                    <div class="metric-value">${getGenderText(profile.demographics.gender)}</div>
-                                </div>
-                                ` : ''}
-                                
-                                ${profile.demographics.age ? `
-                                <div class="metric-card">
-                                    <div class="metric-label">年龄</div>
-                                    <div class="metric-value">${profile.demographics.age}岁</div>
-                                </div>
-                                ` : ''}
-                                
-                                ${profile.demographics.ageGroup && profile.demographics.ageGroup !== 'unknown' ? `
-                                <div class="metric-card">
-                                    <div class="metric-label">年龄段</div>
-                                    <div class="metric-value">${profile.demographics.ageGroup}</div>
-                                </div>
-                                ` : ''}
-                                
-                                ${profile.demographics.occupation ? `
-                                <div class="metric-card">
-                                    <div class="metric-label">职业</div>
-                                    <div class="metric-value">${profile.demographics.occupation}</div>
-                                </div>
-                                ` : ''}
-                            </div>
-                        </div>
-                        ` : ''}
-                        
-                        ${profile.location ? `
-                        <div class="profile-section">
-                            <h3 class="section-title"><i class="fas fa-map-marked-alt"></i> 位置信息</h3>
-                            <div class="section-content">
-                                ${profile.location.homeAddress ? `
-                                <div class="metric-card">
-                                    <div class="metric-label">常居地</div>
-                                    <div class="metric-value">
-                                        ${profile.location.homeAddress.city || ''} 
-                                        ${profile.location.homeAddress.state || ''}
-                                    </div>
-                                </div>
-                                ` : ''}
-                                
-                                ${profile.location.currentAddress ? `
-                                <div class="metric-card">
-                                    <div class="metric-label">当前位置</div>
-                                    <div class="metric-value">
-                                        ${profile.location.currentAddress.city || ''} 
-                                        ${profile.location.currentAddress.state || ''}
-                                    </div>
-                                </div>
-                                ` : ''}
-                            </div>
-                        </div>
-                        ` : ''}
                     </div>
-                </div>
-                
-                <div class="profile-section">
-                    <h3 class="section-title"><i class="fas fa-gift"></i> 为您推荐</h3>
-                    <div class="recommended-products">
-                        ${recommendedProducts.map(product => `
-                            <div class="product-card">
-                                <div class="product-image">
-                                    <img src="${product.imageUrl || 'https://via.placeholder.com/150x150?text=商品图片'}" alt="${product.name}" style="width:100%; height:100%; object-fit:cover;">
-                                </div>
-                                <div class="product-info">
-                                    <div class="product-name">${product.name}</div>
-                                    <div class="product-price">¥${product.price.toFixed(2)}</div>
-                                </div>
-                            </div>
-                        `).join('')}
+                `;
+            } catch (error) {
+                console.error('显示用户画像失败:', error);
+                document.getElementById('profile-content').innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>显示用户画像失败: ${error.message}</p>
+                        <button class="btn" style="background: var(--primary-color); color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-top: 20px;" onclick="loadUserProfile()">重新加载</button>
                     </div>
-                </div>
-            `;
+                `;
+            }
         }
 
         // 获取性别文本

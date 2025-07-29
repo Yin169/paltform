@@ -1598,7 +1598,7 @@
                     <td>¥${product.price.toFixed(2)}</td>
                     <td>${product.quantity}</td>
                     <td>${product.category}</td>
-                    <td>${product.seller.username}</td>
+                    <td>${product.seller ? product.seller.username : '未知卖家'}</td>
                     <td>
                         <button class="btn btn-info btn-sm" onclick="viewProduct('${product._id}')"><i class="fas fa-eye"></i> 查看</button>
                         <button class="btn btn-primary btn-sm" onclick="editProduct('${product._id}')"><i class="fas fa-edit"></i> 编辑</button>
