@@ -8,8 +8,8 @@ const graphService = require('../services/graphService');
 class Simulator {
   // 生成随机用户名
   generateRandomUsername() {
-    const prefixes = ['user', 'client', 'customer', 'buyer', 'shopper'];
-    const suffixes = ['123', '456', '789', 'abc', 'xyz', 'def'];
+    const prefixes = ['user', 'client', 'customer', 'buyer', 'shopper', 'member', 'vip'];
+    const suffixes = ['123', '456', '789', 'abc', 'xyz', 'def', 'vip', 'pro'];
     const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
     const randomSuffix = suffixes[Math.floor(Math.random() * suffixes.length)];
     const randomNumber = Math.floor(Math.random() * 10000);
@@ -18,7 +18,7 @@ class Simulator {
 
   // 生成随机邮箱
   generateRandomEmail(username) {
-    const domains = ['example.com', 'test.com', 'demo.com', 'shop.com'];
+    const domains = ['example.com', 'test.com', 'demo.com', 'shop.com', 'store.com', 'market.com'];
     const domain = domains[Math.floor(Math.random() * domains.length)];
     return `${username}@${domain}`;
   }
@@ -27,7 +27,7 @@ class Simulator {
   generateRandomPassword() {
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%';
     let password = '';
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 12; i++) {
       password += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return password;
@@ -35,10 +35,10 @@ class Simulator {
 
   // 生成随机商品名称
   generateRandomProductName() {
-    const categories = ['电子', '服装', '家居', '图书', '运动', '美妆', '食品', '玩具'];
-    const types = ['智能手机', 'T恤', '沙发', '小说', '跑鞋', '口红', '巧克力', '积木'];
-    const brands = ['品牌A', '品牌B', '品牌C', '品牌D'];
-    const adjectives = ['豪华', '经典', '新款', '限量版', '专业', '便携', '智能', '时尚'];
+    const categories = ['电子', '服装', '家居', '图书', '运动', '美妆', '食品', '玩具', '数码', '办公'];
+    const types = ['智能手机', 'T恤', '沙发', '小说', '跑鞋', '口红', '巧克力', '积木', '笔记本电脑', '办公椅'];
+    const brands = ['品牌A', '品牌B', '品牌C', '品牌D', '优质', '精品', '豪华', '专业'];
+    const adjectives = ['豪华', '经典', '新款', '限量版', '专业', '便携', '智能', '时尚', '高性能', '多功能'];
     
     const category = categories[Math.floor(Math.random() * categories.length)];
     const type = types[Math.floor(Math.random() * types.length)];
@@ -51,20 +51,20 @@ class Simulator {
   // 生成随机商品描述
   generateRandomProductDescription(name) {
     const descriptions = [
-      `高质量的${name}，为您带来卓越的使用体验。`,
-      `精心设计的${name}，满足您的日常需求。`,
-      `创新技术打造的${name}，性能出众。`,
-      `时尚美观的${name}，提升您的生活品质。`,
-      `实用性强的${name}，是您不可或缺的选择。`
+      `高质量的${name}，为您带来卓越的使用体验。精心设计，品质保证。`,
+      `精心设计的${name}，满足您的日常需求。创新技术，值得信赖。`,
+      `创新技术打造的${name}，性能出众。时尚美观，提升您的生活品质。`,
+      `实用性强的${name}，是您不可或缺的选择。质量可靠，售后服务完善。`,
+      `${name}，结合了最新的科技与人性化设计，为您提供完美的使用体验。`
     ];
     return descriptions[Math.floor(Math.random() * descriptions.length)];
   }
 
   // 生成随机地址
   generateRandomAddress() {
-    const streets = ['中山路', '解放路', '人民路', '建设路', '和平路'];
-    const cities = ['北京', '上海', '广州', '深圳', '杭州', '成都', '武汉', '西安'];
-    const states = ['北京市', '上海市', '广东省', '浙江省', '四川省', '湖北省', '陕西省'];
+    const streets = ['中山路', '解放路', '人民路', '建设路', '和平路', '长安街', '南京路', '淮海路'];
+    const cities = ['北京', '上海', '广州', '深圳', '杭州', '成都', '武汉', '西安', '南京', '重庆'];
+    const states = ['北京市', '上海市', '广东省', '浙江省', '四川省', '湖北省', '陕西省', '江苏省', '重庆市'];
     
     return {
       street: `${Math.floor(Math.random() * 1000)}号${streets[Math.floor(Math.random() * streets.length)]}`,
@@ -78,7 +78,7 @@ class Simulator {
   // 生成随机个人信息
   generateRandomProfile() {
     const genders = ['male', 'female'];
-    const occupations = ['工程师', '教师', '医生', '设计师', '销售', '学生', '自由职业者', '其他'];
+    const occupations = ['工程师', '教师', '医生', '设计师', '销售', '学生', '自由职业者', '其他', '程序员', '经理'];
     
     // 生成随机出生日期 (18-65岁之间)
     const today = new Date();
@@ -98,7 +98,7 @@ class Simulator {
   }
 
   // 创建随机用户
-  async createRandomUser() {
+  async createRandomUser(role = 'user') {
     try {
       const username = this.generateRandomUsername();
       const email = this.generateRandomEmail(username);
@@ -115,11 +115,12 @@ class Simulator {
         email,
         password,
         profile,
-        addresses
+        addresses,
+        role
       });
       
       await user.save();
-      console.log(`创建用户: ${username}`);
+      console.log(`创建${role === 'seller' ? '卖家' : '用户'}: ${username}`);
       return user;
     } catch (error) {
       console.error('创建随机用户失败:', error);
@@ -132,10 +133,10 @@ class Simulator {
     try {
       const name = this.generateRandomProductName();
       const description = this.generateRandomProductDescription(name);
-      const categories = ['电子', '服装', '家居', '图书', '运动', '美妆', '食品', '玩具'];
+      const categories = ['电子', '服装', '家居', '图书', '运动', '美妆', '食品', '玩具', '数码', '办公'];
       const category = categories[Math.floor(Math.random() * categories.length)];
-      const price = parseFloat((Math.random() * 1000 + 10).toFixed(2)); // 10-1010元
-      const quantity = Math.floor(Math.random() * 100) + 1; // 1-100件库存
+      const price = parseFloat((Math.random() * 2000 + 10).toFixed(2)); // 10-2010元
+      const quantity = Math.floor(Math.random() * 200) + 1; // 1-200件库存
       
       const product = new Product({
         name,
@@ -185,7 +186,7 @@ class Simulator {
       }
       
       // 添加商品到购物车
-      const quantity = Math.floor(Math.random() * 3) + 1; // 1-3件
+      const quantity = Math.floor(Math.random() * 5) + 1; // 1-5件
       cart.items.push({
         product: product._id,
         quantity
@@ -217,7 +218,7 @@ class Simulator {
       let totalAmount = 0;
       
       for (const product of products) {
-        const quantity = Math.floor(Math.random() * 3) + 1; // 1-3件
+        const quantity = Math.floor(Math.random() * 5) + 1; // 1-5件
         orderItems.push({
           product: product._id,
           quantity,
@@ -267,34 +268,81 @@ class Simulator {
     }
   }
 
+  // 模拟用户取消订单
+  async simulateUserCancelOrder(order) {
+    try {
+      // 更新订单状态为已取消
+      order.status = 'cancelled';
+      await order.save();
+      
+      // 恢复商品库存
+      for (const item of order.items) {
+        await Product.findByIdAndUpdate(item.product, {
+          $inc: { quantity: item.quantity }
+        });
+      }
+      
+      console.log(`用户取消订单: ${order._id}`);
+      return true;
+    } catch (error) {
+      console.error('模拟用户取消订单失败:', error);
+      return false;
+    }
+  }
+
+  // 模拟用户评价商品
+  async simulateUserReview(user, product, rating) {
+    try {
+      // 在实际应用中，这里会创建评价记录
+      console.log(`用户 ${user.username} 给商品 ${product.name} 评分为 ${rating} 星`);
+      return true;
+    } catch (error) {
+      console.error('模拟用户评价失败:', error);
+      return false;
+    }
+  }
+
   // 运行完整模拟
   async runSimulation(options = {}) {
     try {
       const {
-        userCount = 5,
-        productCount = 10,
-        viewProbability = 0.7,
-        cartProbability = 0.3,
-        orderProbability = 0.2,
+        userCount = 10,
+        sellerCount = 2,
+        productCount = 20,
+        viewProbability = 0.8,
+        cartProbability = 0.4,
+        orderProbability = 0.3,
+        cancelProbability = 0.1,
         maxProductsPerOrder = 5
       } = options;
       
       console.log('开始模拟用户行为...');
       
-      // 创建随机用户
-      console.log(`创建 ${userCount} 个随机用户...`);
+      // 创建随机用户（包括卖家）
+      console.log(`创建 ${userCount} 个随机用户和 ${sellerCount} 个卖家...`);
       const users = [];
+      const sellers = [];
+      
+      // 创建卖家
+      for (let i = 0; i < sellerCount; i++) {
+        const seller = await this.createRandomUser('seller');
+        if (seller) {
+          sellers.push(seller);
+        }
+      }
+      
+      // 创建普通用户
       for (let i = 0; i < userCount; i++) {
-        const user = await this.createRandomUser();
+        const user = await this.createRandomUser('user');
         if (user) {
           users.push(user);
         }
       }
       
-      // 选择一个用户作为卖家
-      const seller = users[0] || await User.findOne();
-      if (!seller) {
-        console.log('没有可用的用户作为卖家');
+      const allUsers = [...users, ...sellers];
+      
+      if (allUsers.length === 0) {
+        console.log('没有创建任何用户');
         return;
       }
       
@@ -302,6 +350,8 @@ class Simulator {
       console.log(`创建 ${productCount} 个随机商品...`);
       const products = [];
       for (let i = 0; i < productCount; i++) {
+        // 随机选择一个卖家
+        const seller = sellers[Math.floor(Math.random() * sellers.length)] || allUsers[0];
         const product = await this.createRandomProduct(seller);
         if (product) {
           products.push(product);
@@ -315,9 +365,9 @@ class Simulator {
       
       // 模拟用户行为
       console.log('模拟用户行为...');
-      for (const user of users) {
+      for (const user of allUsers) {
         // 随机选择要交互的商品
-        const productsToInteract = products.filter(() => Math.random() < 0.5);
+        const productsToInteract = products.filter(() => Math.random() < 0.6);
         
         for (const product of productsToInteract) {
           // 模拟浏览
@@ -339,7 +389,23 @@ class Simulator {
             .slice(0, Math.floor(Math.random() * maxProductsPerOrder) + 1);
           
           if (orderProducts.length > 0) {
-            await this.simulateUserOrder(user, orderProducts);
+            const order = await this.simulateUserOrder(user, orderProducts);
+            
+            // 模拟订单取消
+            if (order && Math.random() < cancelProbability) {
+              await this.simulateUserCancelOrder(order);
+            }
+            
+            // 模拟商品评价
+            if (order && order.status !== 'cancelled') {
+              for (const item of order.items) {
+                const product = products.find(p => p._id.toString() === item.product.toString());
+                if (product) {
+                  const rating = Math.floor(Math.random() * 5) + 1; // 1-5星
+                  await this.simulateUserReview(user, product, rating);
+                }
+              }
+            }
           }
         }
       }

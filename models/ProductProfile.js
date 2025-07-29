@@ -156,11 +156,19 @@ const productProfileSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+}, {
+  timestamps: true
 });
 
 // 更新时间戳
 productProfileSchema.pre('save', function(next) {
-  this.lastUpdated = Date.now();
+  this.lastUpdated = new Date();
+  next();
+});
+
+// 在查找时填充产品信息的中间件
+productProfileSchema.pre(/^find/, function(next) {
+  this.populate('product', 'name price category');
   next();
 });
 

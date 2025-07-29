@@ -1717,13 +1717,14 @@
                     const profiles = await response.json();
                     displayUserProfiles(profiles);
                 } else {
+                    const error = await response.json();
                     document.getElementById('user-profiles-table-body').innerHTML = 
-                        '<tr><td colspan="7" class="no-data">加载用户画像失败</td></tr>';
+                        `<tr><td colspan="7" class="no-data">加载用户画像失败: ${error.message}</td></tr>`;
                 }
             } catch (error) {
                 console.error('加载用户画像失败:', error);
                 document.getElementById('user-profiles-table-body').innerHTML = 
-                    '<tr><td colspan="7" class="no-data">加载用户画像失败</td></tr>';
+                    `<tr><td colspan="7" class="no-data">加载用户画像失败: ${error.message}</td></tr>`;
             }
         }
 
@@ -1738,14 +1739,14 @@
             
             tbody.innerHTML = profiles.map(profile => `
                 <tr>
-                    <td>${profile.user.username}</td>
+                    <td>${profile.user?.username || '未知用户'}</td>
                     <td>${profile.valueScore || 0}/100</td>
                     <td><span class="status-badge status-${profile.lifecycleStage || 'new'}">${getLifecycleStageText(profile.lifecycleStage || 'new')}</span></td>
                     <td>¥${(profile.behavior?.totalSpent || 0).toFixed(2)}</td>
                     <td>${profile.behavior?.purchaseFrequency || 0}</td>
                     <td>${(profile.behavior?.preferredCategories || []).join(', ') || '无'}</td>
                     <td>
-                        <button class="btn btn-info btn-sm" onclick="viewUserProfile('${profile.user._id}')"><i class="fas fa-chart-pie"></i> 详情</button>
+                        <button class="btn btn-info btn-sm" onclick="viewUserProfile('${profile.user?._id || profile._id}')"><i class="fas fa-chart-pie"></i> 详情</button>
                     </td>
                 </tr>
             `).join('');
@@ -1771,17 +1772,18 @@
                 if (response.ok) {
                     const profiles = await response.json();
                     const filteredProfiles = profiles.filter(profile => 
-                        profile.user.username.toLowerCase().includes(searchTerm)
+                        profile.user?.username?.toLowerCase().includes(searchTerm)
                     );
                     displayUserProfiles(filteredProfiles);
                 } else {
+                    const error = await response.json();
                     document.getElementById('user-profiles-table-body').innerHTML = 
-                        '<tr><td colspan="7" class="no-data">搜索失败</td></tr>';
+                        `<tr><td colspan="7" class="no-data">搜索失败: ${error.message}</td></tr>`;
                 }
             } catch (error) {
                 console.error('搜索用户画像失败:', error);
                 document.getElementById('user-profiles-table-body').innerHTML = 
-                    '<tr><td colspan="7" class="no-data">搜索失败</td></tr>';
+                    `<tr><td colspan="7" class="no-data">搜索失败: ${error.message}</td></tr>`;
             }
         }
 
@@ -1800,11 +1802,12 @@
                     const profile = await response.json();
                     showUserProfileDetails(profile);
                 } else {
-                    showNotification('加载用户画像详情失败', 'error');
+                    const error = await response.json();
+                    showNotification(`加载用户画像详情失败: ${error.message}`, 'error');
                 }
             } catch (error) {
                 console.error('加载用户画像详情失败:', error);
-                showNotification('加载用户画像详情失败', 'error');
+                showNotification(`加载用户画像详情失败: ${error.message}`, 'error');
             }
         }
 
@@ -2024,13 +2027,14 @@
                     const profiles = await response.json();
                     displayProductProfiles(profiles);
                 } else {
+                    const error = await response.json();
                     document.getElementById('product-profiles-table-body').innerHTML = 
-                        '<tr><td colspan="7" class="no-data">加载商品画像失败</td></tr>';
+                        `<tr><td colspan="7" class="no-data">加载商品画像失败: ${error.message}</td></tr>`;
                 }
             } catch (error) {
                 console.error('加载商品画像失败:', error);
                 document.getElementById('product-profiles-table-body').innerHTML = 
-                    '<tr><td colspan="7" class="no-data">加载商品画像失败</td></tr>';
+                    `<tr><td colspan="7" class="no-data">加载商品画像失败: ${error.message}</td></tr>`;
             }
         }
 
@@ -2045,14 +2049,14 @@
             
             tbody.innerHTML = profiles.map(profile => `
                 <tr>
-                    <td>${profile.product.name}</td>
+                    <td>${profile.product?.name || '未知商品'}</td>
                     <td>${profile.popularityScore || 0}/100</td>
                     <td><span class="status-badge status-${profile.lifecycle?.stage || 'introduction'}">${getProductLifecycleStageText(profile.lifecycle?.stage || 'introduction')}</span></td>
                     <td>${profile.salesMetrics?.totalSold || 0}</td>
                     <td>${profile.salesMetrics?.avgMonthlySales?.toFixed(2) || 0}</td>
                     <td>${(profile.userBehavior?.conversionRate * 100 || 0).toFixed(2)}%</td>
                     <td>
-                        <button class="btn btn-info btn-sm" onclick="viewProductProfile('${profile.product._id}')"><i class="fas fa-chart-bar"></i> 详情</button>
+                        <button class="btn btn-info btn-sm" onclick="viewProductProfile('${profile.product?._id || profile._id}')"><i class="fas fa-chart-bar"></i> 详情</button>
                     </td>
                 </tr>
             `).join('');
@@ -2089,18 +2093,19 @@
                 if (response.ok) {
                     const profiles = await response.json();
                     const filteredProfiles = profiles.filter(profile => 
-                        profile.product.name.toLowerCase().includes(searchTerm) ||
-                        profile.product.category.toLowerCase().includes(searchTerm)
+                        profile.product?.name?.toLowerCase().includes(searchTerm) ||
+                        profile.product?.category?.toLowerCase().includes(searchTerm)
                     );
                     displayProductProfiles(filteredProfiles);
                 } else {
+                    const error = await response.json();
                     document.getElementById('product-profiles-table-body').innerHTML = 
-                        '<tr><td colspan="7" class="no-data">搜索失败</td></tr>';
+                        `<tr><td colspan="7" class="no-data">搜索失败: ${error.message}</td></tr>`;
                 }
             } catch (error) {
                 console.error('搜索商品画像失败:', error);
                 document.getElementById('product-profiles-table-body').innerHTML = 
-                    '<tr><td colspan="7" class="no-data">搜索失败</td></tr>';
+                    `<tr><td colspan="7" class="no-data">搜索失败: ${error.message}</td></tr>`;
             }
         }
 
@@ -2119,11 +2124,12 @@
                     const profile = await response.json();
                     showProductProfileDetails(profile);
                 } else {
-                    showNotification('加载商品画像详情失败', 'error');
+                    const error = await response.json();
+                    showNotification(`加载商品画像详情失败: ${error.message}`, 'error');
                 }
             } catch (error) {
                 console.error('加载商品画像详情失败:', error);
-                showNotification('加载商品画像详情失败', 'error');
+                showNotification(`加载商品画像详情失败: ${error.message}`, 'error');
             }
         }
 
@@ -2173,7 +2179,6 @@
                             <span class="profile-value">${profile.salesMetrics?.salesTrend || '未知'}</span>
                         </div>
                     </div>
-                    
                     <div class="profile-card">
                         <h4><i class="fas fa-users"></i> 用户行为</h4>
                         <div class="profile-item">

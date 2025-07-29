@@ -42,14 +42,20 @@ const userProfileSchema = new mongoose.Schema({
       street: String,
       city: String,
       state: String,
-      country: String,
+      country: {
+        type: String,
+        default: '中国'
+      },
       zipCode: String
     },
     currentAddress: {
       street: String,
       city: String,
       state: String,
-      country: String,
+      country: {
+        type: String,
+        default: '中国'
+      },
       zipCode: String
     },
     frequentlyVisitedLocations: [{
@@ -58,7 +64,10 @@ const userProfileSchema = new mongoose.Schema({
         street: String,
         city: String,
         state: String,
-        country: String,
+        country: {
+          type: String,
+          default: '中国'
+        },
         zipCode: String
       },
       visitFrequency: Number
@@ -221,5 +230,11 @@ userProfileSchema.index({ 'demographics.ageGroup': 1 });
 userProfileSchema.index({ 'demographics.gender': 1 });
 userProfileSchema.index({ 'behavior.totalSpent': -1 });
 userProfileSchema.index({ valueScore: -1 });
+
+// 在保存前更新最后更新时间
+userProfileSchema.pre('save', function(next) {
+  this.lastUpdated = new Date();
+  next();
+});
 
 module.exports = mongoose.model('UserProfile', userProfileSchema);

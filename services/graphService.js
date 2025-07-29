@@ -275,6 +275,17 @@ class GraphService {
         .slice(0, limit)
         .map(edge => edge.target);
       
+      // 6. 如果推荐商品不足，补充热门商品
+      if (recommendedProducts.length < limit) {
+        const popularProducts = await ProductNode.find({
+          _id: { $nin: purchasedProductIds }
+        })
+        .sort({ 'properties.popularityScore': -1 })
+        .limit(limit - recommendedProducts.length);
+        
+        recommendedProducts.push(...popularProducts);
+      }
+      
       return recommendedProducts;
     } catch (error) {
       console.error('获取推荐商品失败:', error);
@@ -314,20 +325,30 @@ class GraphService {
         model: 'ProductNode'
       });
       
-      // 5. 过滤掉当前商品，并统计其他商品的出现次数
-      const productCount = {};
+      // 5. 过滤掉当前商品，并统计其他商品的出现次数和总权重
+      const productStats = {};
       otherPurchaseEdges.forEach(edge => {
         if (edge.target.product.toString() !== productId.toString()) {
-          const productId = edge.target.product.toString();
-          productCount[productId] = (productCount[productId] || 0) + 1;
+          const targetProductId = edge.target.product.toString();
+          if (!productStats[targetProductId]) {
+            productStats[targetProductId] = {
+              count: 0,
+              totalWeight: 0
+            };
+          }
+          productStats[targetProductId].count += 1;
+          productStats[targetProductId].totalWeight += edge.weight;
         }
       });
       
-      // 6. 按出现次数排序并返回前N个商品
-      const sortedProducts = Object.entries(productCount)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, limit)
-        .map(([productId, count]) => ({ productId, count }));
+      // 6. 按综合得分排序（考虑出现次数和权重）
+      const sortedProducts = Object.entries(productStats)
+        .map(([productId, stats]) => ({
+          productId,
+          score: stats.count * 0.7 + stats.totalWeight * 0.3 // 综合得分
+        }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, limit);
       
       // 7. 获取商品详细信息
       const productIds = sortedProducts.map(p => p.productId);
@@ -407,6 +428,7 @@ class GraphService {
       const purchaseRelationshipCount = await RelationshipEdge.countDocuments({ relationshipType: 'purchased' });
       const viewRelationshipCount = await RelationshipEdge.countDocuments({ relationshipType: 'viewed' });
       const cartRelationshipCount = await RelationshipEdge.countDocuments({ relationshipType: 'added_to_cart' });
+      const similarRelationshipCount = await RelationshipEdge.countDocuments({ relationshipType: 'similar_to' });
       
       await GraphStat.findOneAndUpdate(
         { statType: 'user_count' },
@@ -435,6 +457,36 @@ class GraphService {
       await GraphStat.findOneAndUpdate(
         { statType: 'cart_relationship_count' },
         { value: cartRelationshipCount },
+        { upsert: true }
+      );
+      
+      await GraphStat.findOneAndUpdate(
+        { statType: 'similar_relationship_count' },
+        { value: similarRelationshipCount },
+        { upsert: true }
+      );
+      
+      // 计算平均用户价值评分
+      const userNodes = await UserNode.find({}, { 'properties.valueScore': 1 });
+      const avgValueScore = userNodes.length > 0 
+        ? userNodes.reduce((sum, node) => sum + (node.properties.valueScore || 0), 0) / userNodes.length
+        : 0;
+      
+      await GraphStat.findOneAndUpdate(
+        { statType: 'avg_user_value_score' },
+        { value: Math.round(avgValueScore) },
+        { upsert: true }
+      );
+      
+      // 计算平均商品受欢迎度评分
+      const productNodes = await ProductNode.find({}, { 'properties.popularityScore': 1 });
+      const avgPopularityScore = productNodes.length > 0
+        ? productNodes.reduce((sum, node) => sum + (node.properties.popularityScore || 0), 0) / productNodes.length
+        : 0;
+      
+      await GraphStat.findOneAndUpdate(
+        { statType: 'avg_product_popularity_score' },
+        { value: Math.round(avgPopularityScore) },
         { upsert: true }
       );
     } catch (error) {
@@ -468,8 +520,8 @@ class GraphService {
       // 获取边数据
       const edges = await RelationshipEdge.find()
         .populate([
-          { path: 'source', select: 'username name nodeType' },
-          { path: 'target', select: 'username name nodeType' }
+          { path: 'source', select: 'username name nodeType properties' },
+          { path: 'target', select: 'username name nodeType properties' }
         ])
         .limit(limit);
       

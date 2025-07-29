@@ -129,6 +129,7 @@ router.get('/user-profiles', auth, adminAuth, async (req, res) => {
       .populate('user', 'username email');
     res.json(userProfiles);
   } catch (err) {
+    console.error('获取用户画像失败:', err);
     res.status(500).json({ message: '服务器错误', error: err.message });
   }
 });
@@ -136,15 +137,40 @@ router.get('/user-profiles', auth, adminAuth, async (req, res) => {
 // 获取特定用户画像（管理员）
 router.get('/user-profiles/:userId', auth, adminAuth, async (req, res) => {
   try {
+    if (!req.params.userId) {
+      return res.status(400).json({ message: '用户ID不能为空' });
+    }
+    
     const userProfile = await UserProfile.findOne({ user: req.params.userId })
       .populate('user', 'username email');
     
     if (!userProfile) {
-      return res.status(404).json({ message: '用户画像未找到' });
+      // 如果没有找到画像，返回一个空的画像对象
+      const user = await User.findById(req.params.userId).select('username email');
+      if (!user) {
+        return res.status(404).json({ message: '用户未找到' });
+      }
+      
+      return res.json({
+        user: {
+          _id: user._id,
+          username: user.username,
+          email: user.email
+        },
+        valueScore: 0,
+        lifecycleStage: 'new',
+        behavior: {
+          totalSpent: 0,
+          purchaseFrequency: 0,
+          avgOrderValue: 0,
+          preferredCategories: []
+        }
+      });
     }
     
     res.json(userProfile);
   } catch (err) {
+    console.error('获取用户画像详情失败:', err);
     res.status(500).json({ message: '服务器错误', error: err.message });
   }
 });
@@ -156,6 +182,7 @@ router.get('/product-profiles', auth, adminAuth, async (req, res) => {
       .populate('product', 'name price category');
     res.json(productProfiles);
   } catch (err) {
+    console.error('获取商品画像失败:', err);
     res.status(500).json({ message: '服务器错误', error: err.message });
   }
 });
@@ -163,15 +190,44 @@ router.get('/product-profiles', auth, adminAuth, async (req, res) => {
 // 获取特定商品画像（管理员）
 router.get('/product-profiles/:productId', auth, adminAuth, async (req, res) => {
   try {
+    if (!req.params.productId) {
+      return res.status(400).json({ message: '商品ID不能为空' });
+    }
+    
     const productProfile = await ProductProfile.findOne({ product: req.params.productId })
       .populate('product', 'name price category');
     
     if (!productProfile) {
-      return res.status(404).json({ message: '商品画像未找到' });
+      // 如果没有找到画像，返回一个空的画像对象
+      const product = await Product.findById(req.params.productId).select('name price category');
+      if (!product) {
+        return res.status(404).json({ message: '商品未找到' });
+      }
+      
+      return res.json({
+        product: {
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          category: product.category
+        },
+        popularityScore: 0,
+        lifecycle: {
+          stage: 'introduction'
+        },
+        salesMetrics: {
+          totalSold: 0,
+          avgMonthlySales: 0
+        },
+        userBehavior: {
+          conversionRate: 0
+        }
+      });
     }
     
     res.json(productProfile);
   } catch (err) {
+    console.error('获取商品画像详情失败:', err);
     res.status(500).json({ message: '服务器错误', error: err.message });
   }
 });
