@@ -1,4 +1,6 @@
 const Product = require('../models/Product');
+const User = require('../models/User');
+const graphService = require('../services/graphService');
 
 // 获取所有商品
 const getProducts = async (req, res) => {
@@ -10,7 +12,7 @@ const getProducts = async (req, res) => {
   }
 };
 
-// 根据ID获取单个商品
+// 获取单个商品
 const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate('seller', 'username');
@@ -19,13 +21,25 @@ const getProductById = async (req, res) => {
       return res.status(404).json({ message: '商品未找到' });
     }
     
+    // 如果用户已登录，更新图谱中的浏览关系
+    if (req.user) {
+      try {
+        const userNode = await graphService.upsertUserNode(await User.findById(req.user._id));
+        const productNode = await graphService.upsertProductNode(product);
+        await graphService.upsertViewRelationship(userNode, productNode);
+      } catch (graphError) {
+        console.error('更新图谱数据失败:', graphError);
+        // 不中断主流程，仅记录错误
+      }
+    }
+    
     res.json(product);
   } catch (err) {
     res.status(500).json({ message: '服务器错误', error: err.message });
   }
 };
 
-// 创建新商品
+// 创建商品
 const createProduct = async (req, res) => {
   try {
     const { name, description, price, category, quantity, imageUrl } = req.body;
@@ -42,6 +56,14 @@ const createProduct = async (req, res) => {
     
     const savedProduct = await product.save();
     await savedProduct.populate('seller', 'username');
+    
+    // 更新图谱中的商品节点
+    try {
+      await graphService.upsertProductNode(savedProduct);
+    } catch (graphError) {
+      console.error('更新图谱数据失败:', graphError);
+      // 不中断主流程，仅记录错误
+    }
     
     res.status(201).json(savedProduct);
   } catch (err) {
@@ -60,9 +82,9 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ message: '商品未找到' });
     }
     
-    // 检查是否是商品所有者或管理员
+    // 检查是否是卖家或管理员
     if (product.seller.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-      return res.status(403).json({ message: '无权限修改此商品' });
+      return res.status(403).json({ message: '无权限更新此商品' });
     }
     
     product.name = name || product.name;
@@ -74,6 +96,14 @@ const updateProduct = async (req, res) => {
     
     const updatedProduct = await product.save();
     await updatedProduct.populate('seller', 'username');
+    
+    // 更新图谱中的商品节点
+    try {
+      await graphService.upsertProductNode(updatedProduct);
+    } catch (graphError) {
+      console.error('更新图谱数据失败:', graphError);
+      // 不中断主流程，仅记录错误
+    }
     
     res.json(updatedProduct);
   } catch (err) {
@@ -90,13 +120,12 @@ const deleteProduct = async (req, res) => {
       return res.status(404).json({ message: '商品未找到' });
     }
     
-    // 检查是否是商品所有者或管理员
+    // 检查是否是卖家或管理员
     if (product.seller.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
       return res.status(403).json({ message: '无权限删除此商品' });
     }
     
-    await Product.findByIdAndDelete(req.params.id);
-    
+    await product.remove();
     res.json({ message: '商品删除成功' });
   } catch (err) {
     res.status(500).json({ message: '服务器错误', error: err.message });

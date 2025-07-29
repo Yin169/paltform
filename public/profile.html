@@ -515,6 +515,24 @@
                         <div class="user-status status-${profile.lifecycleStage || 'new'}">
                             ${getLifecycleStageText(profile.lifecycleStage || 'new')}
                         </div>
+                        
+                        ${user.profile && user.profile.gender ? `
+                        <div class="user-detail">
+                            <i class="fas fa-venus-mars"></i> 
+                            ${getGenderText(user.profile.gender)}
+                        </div>` : ''}
+                        
+                        ${user.profile && user.profile.birthDate ? `
+                        <div class="user-detail">
+                            <i class="fas fa-birthday-cake"></i> 
+                            ${calculateAge(new Date(user.profile.birthDate))}岁
+                        </div>` : ''}
+                        
+                        ${user.addresses && user.addresses.length > 0 ? `
+                        <div class="user-detail">
+                            <i class="fas fa-map-marker-alt"></i> 
+                            ${user.addresses[0].city || ''} ${user.addresses[0].state || ''}
+                        </div>` : ''}
                     </div>
                     
                     <div>
@@ -555,8 +573,81 @@
                                     <div class="metric-label">价格敏感度</div>
                                     <div class="metric-value">${getPriceSensitivityText(profile.preferences?.priceSensitivity || 'medium')}</div>
                                 </div>
+                                
+                                ${profile.purchasePreferences?.favoriteCategories?.length > 0 ? `
+                                <div class="metric-card">
+                                    <div class="metric-label">最喜欢类别</div>
+                                    <div class="preference-list">
+                                        ${profile.purchasePreferences.favoriteCategories.map(cat => 
+                                            `<span class="preference-tag">${cat.category}</span>`
+                                        ).join('')}
+                                    </div>
+                                </div>
+                                ` : ''}
                             </div>
                         </div>
+                        
+                        ${profile.demographics ? `
+                        <div class="profile-section">
+                            <h3 class="section-title"><i class="fas fa-user-alt"></i> 个人信息</h3>
+                            <div class="section-content">
+                                ${profile.demographics.gender && profile.demographics.gender !== 'unknown' ? `
+                                <div class="metric-card">
+                                    <div class="metric-label">性别</div>
+                                    <div class="metric-value">${getGenderText(profile.demographics.gender)}</div>
+                                </div>
+                                ` : ''}
+                                
+                                ${profile.demographics.age ? `
+                                <div class="metric-card">
+                                    <div class="metric-label">年龄</div>
+                                    <div class="metric-value">${profile.demographics.age}岁</div>
+                                </div>
+                                ` : ''}
+                                
+                                ${profile.demographics.ageGroup && profile.demographics.ageGroup !== 'unknown' ? `
+                                <div class="metric-card">
+                                    <div class="metric-label">年龄段</div>
+                                    <div class="metric-value">${profile.demographics.ageGroup}</div>
+                                </div>
+                                ` : ''}
+                                
+                                ${profile.demographics.occupation ? `
+                                <div class="metric-card">
+                                    <div class="metric-label">职业</div>
+                                    <div class="metric-value">${profile.demographics.occupation}</div>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                        ` : ''}
+                        
+                        ${profile.location ? `
+                        <div class="profile-section">
+                            <h3 class="section-title"><i class="fas fa-map-marked-alt"></i> 位置信息</h3>
+                            <div class="section-content">
+                                ${profile.location.homeAddress ? `
+                                <div class="metric-card">
+                                    <div class="metric-label">常居地</div>
+                                    <div class="metric-value">
+                                        ${profile.location.homeAddress.city || ''} 
+                                        ${profile.location.homeAddress.state || ''}
+                                    </div>
+                                </div>
+                                ` : ''}
+                                
+                                ${profile.location.currentAddress ? `
+                                <div class="metric-card">
+                                    <div class="metric-label">当前位置</div>
+                                    <div class="metric-value">
+                                        ${profile.location.currentAddress.city || ''} 
+                                        ${profile.location.currentAddress.state || ''}
+                                    </div>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                        ` : ''}
                     </div>
                 </div>
                 
@@ -577,6 +668,24 @@
                     </div>
                 </div>
             `;
+        }
+
+        // 获取性别文本
+        function getGenderText(gender) {
+            const genderMap = {
+                'male': '男',
+                'female': '女',
+                'other': '其他',
+                'unknown': '未知'
+            };
+            return genderMap[gender] || gender;
+        }
+
+        // 计算年龄
+        function calculateAge(birthDate) {
+            const today = new Date();
+            const age = today.getFullYear() - birthDate.getFullYear();
+            return age;
         }
 
         // 获取生命周期阶段文本

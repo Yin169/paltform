@@ -1,51 +1,136 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
-const userSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    trim: true,
+    minlength: 3,
+    maxlength: 30
   },
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    trim: true,
+    lowercase: true,
+    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, '请输入有效的邮箱地址']
   },
   password: {
     type: String,
-    required: true
+    required: true,
+    minlength: 6
   },
   role: {
     type: String,
     enum: ['user', 'admin'],
     default: 'user'
   },
-  shippingAddress: {
+  
+  // 个人信息
+  profile: {
+    firstName: {
+      type: String,
+      trim: true
+    },
+    lastName: {
+      type: String,
+      trim: true
+    },
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'other']
+    },
+    birthDate: {
+      type: Date
+    },
+    phoneNumber: {
+      type: String,
+      trim: true
+    }
+  },
+  
+  // 地址信息
+  addresses: [{
+    type: {
+      type: String,
+      enum: ['home', 'work', 'billing', 'shipping'],
+      default: 'home'
+    },
+    isDefault: {
+      type: Boolean,
+      default: false
+    },
     street: String,
     city: String,
     state: String,
+    country: {
+      type: String,
+      default: '中国'
+    },
     zipCode: String,
-    country: String
+    recipientName: String,
+    recipientPhone: String
+  }],
+  
+  // 会员信息
+  membership: {
+    tier: {
+      type: String,
+      enum: ['bronze', 'silver', 'gold', 'platinum'],
+      default: 'bronze'
+    },
+    points: {
+      type: Number,
+      default: 0
+    },
+    joinDate: {
+      type: Date,
+      default: Date.now
+    }
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
+  
+  isActive: {
+    type: Boolean,
+    default: true
   }
+}, {
+  timestamps: true
 });
 
-userSchema.pre('save', async function(next) {
+// 密码加密中间件
+UserSchema.pre('save', async function(next) {
   if (!this.isModified('password')) {
     return next();
   }
   
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
-userSchema.methods.comparePassword = async function(candidatePassword) {
+// 密码比较方法
+UserSchema.methods.comparePassword = async function(candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+// 获取全名
+UserSchema.virtual('fullName').get(function() {
+  if (this.profile.firstName && this.profile.lastName) {
+    return `${this.profile.firstName} ${this.profile.lastName}`;
+  }
+  return this.username;
+});
+
+// 确保虚拟字段被序列化
+UserSchema.set('toJSON', {
+  virtuals: true
+});
+
+module.exports = mongoose.model('User', UserSchema);

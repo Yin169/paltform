@@ -10,6 +10,8 @@ const orderRoutes = require('../routes/orderRoutes');
 const cartRoutes = require('../routes/cartRoutes');
 const profileRoutes = require('../routes/profileRoutes');
 const adminRoutes = require('../routes/adminRoutes');
+const graphRoutes = require('../routes/graphRoutes');
+const simulationRoutes = require('../routes/simulationRoutes');
 
 dotenv.config();
 
@@ -28,6 +30,8 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/graph', graphRoutes);
+app.use('/api/simulation', simulationRoutes);
 
 // 页面路由
 app.get('/', (req, res) => {
@@ -62,15 +66,40 @@ app.get('/profile', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/profile.html'));
 });
 
+app.get('/graph', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/graph.html'));
+});
+
+const PORT = process.env.PORT || 3000;
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => console.log(err));
+.then(() => console.log('MongoDB连接成功'))
+.catch(err => console.log('MongoDB连接失败:', err));
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+// 启动服务器
+const server = app.listen(PORT, () => {
+  console.log(`服务器运行在端口 ${PORT}`);
 });
+
+// 处理端口被占用的情况
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.log(`端口 ${PORT} 已被占用，尝试使用端口 ${PORT + 1}`);
+    setTimeout(() => {
+      server.close();
+      const newPort = parseInt(PORT) + 1;
+      process.env.PORT = newPort;
+      app.listen(newPort, () => {
+        console.log(`服务器运行在端口 ${newPort}`);
+      });
+    }, 1000);
+  } else {
+    console.error('服务器启动错误:', err);
+  }
+});
+
+module.exports = app;

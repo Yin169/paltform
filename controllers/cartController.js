@@ -1,6 +1,7 @@
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
 const { updateUserProfile } = require('./profileController');
+const graphService = require('../services/graphService');
 
 // 获取用户购物车
 const getCart = async (req, res) => {
@@ -85,6 +86,16 @@ const addToCart = async (req, res) => {
     
     // 更新用户画像
     await updateUserProfile(req.user._id);
+    
+    // 更新图谱数据
+    try {
+      const userNode = await graphService.upsertUserNode(req.user);
+      const productNode = await graphService.upsertProductNode(product);
+      await graphService.upsertCartRelationship(userNode, productNode);
+    } catch (graphError) {
+      console.error('更新图谱数据失败:', graphError);
+      // 不中断主流程，仅记录错误
+    }
     
     res.json(cart);
   } catch (err) {

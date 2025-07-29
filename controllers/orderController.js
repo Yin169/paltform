@@ -1,6 +1,7 @@
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 const { updateUserProfile, updateProductProfile } = require('./profileController');
+const graphService = require('../services/graphService');
 
 // 创建订单
 const createOrder = async (req, res) => {
@@ -55,6 +56,25 @@ const createOrder = async (req, res) => {
     await updateUserProfile(req.user._id);
     for (const item of orderItems) {
       await updateProductProfile(item.product);
+    }
+    
+    // 更新图谱数据
+    try {
+      // 获取或创建用户节点
+      const user = await savedOrder.populate('user');
+      const userNode = await graphService.upsertUserNode(user.user);
+      
+      // 为每个订单项创建关系
+      for (const item of savedOrder.items) {
+        const product = await Product.findById(item.product);
+        if (product) {
+          const productNode = await graphService.upsertProductNode(product);
+          await graphService.upsertPurchaseRelationship(userNode, productNode, item);
+        }
+      }
+    } catch (graphError) {
+      console.error('更新图谱数据失败:', graphError);
+      // 不中断主流程，仅记录错误
     }
     
     res.status(201).json(savedOrder);

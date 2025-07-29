@@ -538,6 +538,8 @@
                 <div class="tab" onclick="switchTab('users')">用户管理</div>
                 <div class="tab" onclick="switchTab('user-profiles')">用户画像</div>
                 <div class="tab" onclick="switchTab('product-profiles')">商品画像</div>
+                <div class="tab" onclick="switchTab('graph')">图谱可视化</div>
+                <div class="tab" onclick="switchTab('simulation')">模拟系统</div>
                 <div class="tab" onclick="switchTab('add-product')">添加商品</div>
             </div>
 
@@ -707,6 +709,71 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <!-- 图谱可视化 -->
+            <div id="graph" class="tab-content">
+                <h2><i class="fas fa-project-diagram"></i> 图谱可视化</h2>
+                <div style="background: #f8f9fc; border-radius: 10px; padding: 30px; text-align: center;">
+                    <i class="fas fa-project-diagram" style="font-size: 4rem; color: var(--primary-color); margin-bottom: 20px;"></i>
+                    <h3>用户-商品图谱分析</h3>
+                    <p style="margin-bottom: 20px; color: var(--gray-color);">
+                        通过图谱可视化分析用户与商品之间的复杂关系，包括购买、浏览、加购等行为关系。
+                    </p>
+                    <a href="/graph" target="_blank" class="btn btn-primary" style="padding: 12px 30px;">
+                        <i class="fas fa-external-link-alt"></i> 打开图谱可视化面板
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 模拟系统 -->
+            <div id="simulation" class="tab-content">
+                <h2><i class="fas fa-robot"></i> 模拟系统</h2>
+                <div class="profile-section">
+                    <h3 class="section-title"><i class="fas fa-cogs"></i> 运行模拟</h3>
+                    <div class="form-group">
+                        <label for="user-count">用户数量:</label>
+                        <input type="number" id="user-count" value="5" min="1" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="product-count">商品数量:</label>
+                        <input type="number" id="product-count" value="10" min="1" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="view-probability">浏览概率 (0-1):</label>
+                        <input type="number" id="view-probability" value="0.7" min="0" max="1" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="cart-probability">加购概率 (0-1):</label>
+                        <input type="number" id="cart-probability" value="0.3" min="0" max="1" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="order-probability">下单概率 (0-1):</label>
+                        <input type="number" id="order-probability" value="0.2" min="0" max="1" step="0.1">
+                    </div>
+                    <button class="btn btn-primary" onclick="runSimulation()">
+                        <i class="fas fa-play"></i> 开始模拟
+                    </button>
+                </div>
+                
+                <div class="profile-section">
+                    <h3 class="section-title"><i class="fas fa-users"></i> 创建随机用户</h3>
+                    <button class="btn btn-secondary" onclick="createRandomUser()">
+                        <i class="fas fa-user-plus"></i> 创建随机用户
+                    </button>
+                </div>
+                
+                <div class="profile-section">
+                    <h3 class="section-title"><i class="fas fa-box"></i> 创建随机商品</h3>
+                    <button class="btn btn-secondary" onclick="createRandomProduct()">
+                        <i class="fas fa-plus-circle"></i> 创建随机商品
+                    </button>
+                </div>
+                
+                <div id="simulation-results" class="profile-section" style="display: none;">
+                    <h3 class="section-title"><i class="fas fa-chart-line"></i> 模拟结果</h3>
+                    <div id="simulation-output"></div>
+                </div>
             </div>
 
             <!-- 添加商品 -->
@@ -1569,63 +1636,178 @@
             const modal = document.getElementById('user-profile-modal');
             const details = document.getElementById('user-profile-details');
             
-            details.innerHTML = `
-                <div class="profile-details">
-                    <div class="profile-card">
-                        <h4><i class="fas fa-user"></i> 基本信息</h4>
-                        <div class="profile-item">
-                            <span class="profile-label">用户名:</span>
-                            <span class="profile-value">${profile.user.username}</span>
+            // 获取用户详细信息
+            fetch(`/api/admin/users/${profile.user._id}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+            .then(response => response.json())
+            .then(user => {
+                details.innerHTML = `
+                    <div class="profile-details">
+                        <div class="profile-card">
+                            <h4><i class="fas fa-user"></i> 基本信息</h4>
+                            <div class="profile-item">
+                                <span class="profile-label">用户名:</span>
+                                <span class="profile-value">${profile.user.username}</span>
+                            </div>
+                            <div class="profile-item">
+                                <span class="profile-label">邮箱:</span>
+                                <span class="profile-value">${profile.user.email}</span>
+                            </div>
+                            <div class="profile-item">
+                                <span class="profile-label">价值评分:</span>
+                                <span class="profile-value">${profile.valueScore || 0}/100</span>
+                            </div>
+                            <div class="profile-item">
+                                <span class="profile-label">生命周期阶段:</span>
+                                <span class="profile-value"><span class="status-badge status-${profile.lifecycleStage || 'new'}">${getLifecycleStageText(profile.lifecycleStage || 'new')}</span></span>
+                            </div>
                         </div>
-                        <div class="profile-item">
-                            <span class="profile-label">邮箱:</span>
-                            <span class="profile-value">${profile.user.email}</span>
+                        
+                        <div class="profile-card">
+                            <h4><i class="fas fa-chart-line"></i> 消费行为</h4>
+                            <div class="profile-item">
+                                <span class="profile-label">总消费金额:</span>
+                                <span class="profile-value">¥${(profile.behavior?.totalSpent || 0).toFixed(2)}</span>
+                            </div>
+                            <div class="profile-item">
+                                <span class="profile-label">购买次数:</span>
+                                <span class="profile-value">${profile.behavior?.purchaseFrequency || 0}</span>
+                            </div>
+                            <div class="profile-item">
+                                <span class="profile-label">平均订单价值:</span>
+                                <span class="profile-value">¥${(profile.behavior?.avgOrderValue || 0).toFixed(2)}</span>
+                            </div>
+                            <div class="profile-item">
+                                <span class="profile-label">购物车放弃率:</span>
+                                <span class="profile-value">${profile.behavior?.cartAbandonmentRate ? (profile.behavior.cartAbandonmentRate * 100).toFixed(0) : 0}%</span>
+                            </div>
                         </div>
-                        <div class="profile-item">
-                            <span class="profile-label">价值评分:</span>
-                            <span class="profile-value">${profile.valueScore || 0}/100</span>
+                        
+                        <div class="profile-card">
+                            <h4><i class="fas fa-heart"></i> 偏好分析</h4>
+                            <div class="profile-item">
+                                <span class="profile-label">偏好类别:</span>
+                                <span class="profile-value">${(profile.behavior?.preferredCategories || []).join(', ') || '暂无数据'}</span>
+                            </div>
+                            <div class="profile-item">
+                                <span class="profile-label">价格敏感度:</span>
+                                <span class="profile-value">${getPriceSensitivityText(profile.preferences?.priceSensitivity || 'medium')}</span>
+                            </div>
+                            
+                            ${profile.purchasePreferences?.favoriteCategories?.length > 0 ? `
+                            <div class="profile-item">
+                                <span class="profile-label">最喜欢类别:</span>
+                                <span class="profile-value">${profile.purchasePreferences.favoriteCategories.map(cat => cat.category).join(', ')}</span>
+                            </div>
+                            ` : ''}
                         </div>
-                        <div class="profile-item">
-                            <span class="profile-label">生命周期阶段:</span>
-                            <span class="profile-value"><span class="status-badge status-${profile.lifecycleStage || 'new'}">${getLifecycleStageText(profile.lifecycleStage || 'new')}</span></span>
+                        
+                        ${profile.demographics ? `
+                        <div class="profile-card">
+                            <h4><i class="fas fa-user-alt"></i> 人口统计学信息</h4>
+                            ${profile.demographics.gender && profile.demographics.gender !== 'unknown' ? `
+                            <div class="profile-item">
+                                <span class="profile-label">性别:</span>
+                                <span class="profile-value">${getGenderText(profile.demographics.gender)}</span>
+                            </div>
+                            ` : ''}
+                            
+                            ${profile.demographics.age ? `
+                            <div class="profile-item">
+                                <span class="profile-label">年龄:</span>
+                                <span class="profile-value">${profile.demographics.age}岁</span>
+                            </div>
+                            ` : ''}
+                            
+                            ${profile.demographics.ageGroup && profile.demographics.ageGroup !== 'unknown' ? `
+                            <div class="profile-item">
+                                <span class="profile-label">年龄段:</span>
+                                <span class="profile-value">${profile.demographics.ageGroup}</span>
+                            </div>
+                            ` : ''}
+                            
+                            ${profile.demographics.occupation ? `
+                            <div class="profile-item">
+                                <span class="profile-label">职业:</span>
+                                <span class="profile-value">${profile.demographics.occupation}</span>
+                            </div>
+                            ` : ''}
                         </div>
+                        ` : ''}
+                        
+                        ${profile.location ? `
+                        <div class="profile-card">
+                            <h4><i class="fas fa-map-marked-alt"></i> 位置信息</h4>
+                            ${profile.location.homeAddress ? `
+                            <div class="profile-item">
+                                <span class="profile-label">常居地:</span>
+                                <span class="profile-value">
+                                    ${profile.location.homeAddress.city || ''} 
+                                    ${profile.location.homeAddress.state || ''}
+                                </span>
+                            </div>
+                            ` : ''}
+                            
+                            ${profile.location.currentAddress ? `
+                            <div class="profile-item">
+                                <span class="profile-label">当前位置:</span>
+                                <span class="profile-value">
+                                    ${profile.location.currentAddress.city || ''} 
+                                    ${profile.location.currentAddress.state || ''}
+                                </span>
+                            </div>
+                            ` : ''}
+                        </div>
+                        ` : ''}
+                        
+                        ${user.addresses && user.addresses.length > 0 ? `
+                        <div class="profile-card">
+                            <h4><i class="fas fa-address-book"></i> 地址信息</h4>
+                            ${user.addresses.map((addr, index) => `
+                            <div class="profile-item">
+                                <span class="profile-label">${getAddressTypeText(addr.type)}${addr.isDefault ? ' (默认)' : ''}:</span>
+                                <span class="profile-value">
+                                    ${addr.street || ''}, ${addr.city || ''}, ${addr.state || ''} ${addr.zipCode || ''}
+                                </span>
+                            </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
                     </div>
-                    
-                    <div class="profile-card">
-                        <h4><i class="fas fa-shopping-cart"></i> 消费行为</h4>
-                        <div class="profile-item">
-                            <span class="profile-label">总消费金额:</span>
-                            <span class="profile-value">¥${(profile.behavior?.totalSpent || 0).toFixed(2)}</span>
-                        </div>
-                        <div class="profile-item">
-                            <span class="profile-label">购买次数:</span>
-                            <span class="profile-value">${profile.behavior?.purchaseFrequency || 0}</span>
-                        </div>
-                        <div class="profile-item">
-                            <span class="profile-label">平均订单价值:</span>
-                            <span class="profile-value">¥${(profile.behavior?.avgOrderValue || 0).toFixed(2)}</span>
-                        </div>
-                        <div class="profile-item">
-                            <span class="profile-label">购物车放弃率:</span>
-                            <span class="profile-value">${profile.behavior?.cartAbandonmentRate ? (profile.behavior.cartAbandonmentRate * 100).toFixed(0) : 0}%</span>
-                        </div>
-                    </div>
-                    
-                    <div class="profile-card">
-                        <h4><i class="fas fa-heart"></i> 偏好分析</h4>
-                        <div class="profile-item">
-                            <span class="profile-label">偏好类别:</span>
-                            <span class="profile-value">${(profile.behavior?.preferredCategories || []).join(', ') || '暂无数据'}</span>
-                        </div>
-                        <div class="profile-item">
-                            <span class="profile-label">价格敏感度:</span>
-                            <span class="profile-value">${getPriceSensitivityText(profile.preferences?.priceSensitivity || 'medium')}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            modal.style.display = 'block';
+                `;
+                
+                modal.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('获取用户详细信息失败:', error);
+                details.innerHTML = '<p>获取用户详细信息失败</p>';
+                modal.style.display = 'block';
+            });
+        }
+
+        // 获取地址类型文本
+        function getAddressTypeText(type) {
+            const typeMap = {
+                'home': '家庭地址',
+                'work': '工作地址',
+                'billing': '账单地址',
+                'shipping': '配送地址'
+            };
+            return typeMap[type] || type;
+        }
+
+        // 获取性别文本
+        function getGenderText(gender) {
+            const genderMap = {
+                'male': '男',
+                'female': '女',
+                'other': '其他',
+                'unknown': '未知'
+            };
+            return genderMap[gender] || gender;
         }
 
         // 获取生命周期阶段文本
@@ -1838,6 +2020,107 @@
             `;
             
             modal.style.display = 'block';
+        }
+        
+        // 运行模拟
+        async function runSimulation() {
+            const token = localStorage.getItem('token');
+            
+            const options = {
+                userCount: parseInt(document.getElementById('user-count').value),
+                productCount: parseInt(document.getElementById('product-count').value),
+                viewProbability: parseFloat(document.getElementById('view-probability').value),
+                cartProbability: parseFloat(document.getElementById('cart-probability').value),
+                orderProbability: parseFloat(document.getElementById('order-probability').value)
+            };
+            
+            try {
+                const response = await fetch('/api/simulation/run', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(options)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showSimulationResults(`模拟已启动: ${JSON.stringify(result.options)}`);
+                } else {
+                    const error = await response.json();
+                    showSimulationResults(`模拟启动失败: ${error.message}`, true);
+                }
+            } catch (error) {
+                console.error('运行模拟失败:', error);
+                showSimulationResults(`运行模拟失败: ${error.message}`, true);
+            }
+        }
+        
+        // 创建随机用户
+        async function createRandomUser() {
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch('/api/simulation/users', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const user = await response.json();
+                    showSimulationResults(`成功创建用户: ${user.username}`);
+                } else {
+                    const error = await response.json();
+                    showSimulationResults(`创建用户失败: ${error.message}`, true);
+                }
+            } catch (error) {
+                console.error('创建随机用户失败:', error);
+                showSimulationResults(`创建随机用户失败: ${error.message}`, true);
+            }
+        }
+        
+        // 创建随机商品
+        async function createRandomProduct() {
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch('/api/simulation/products', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const product = await response.json();
+                    showSimulationResults(`成功创建商品: ${product.name} (¥${product.price})`);
+                } else {
+                    const error = await response.json();
+                    showSimulationResults(`创建商品失败: ${error.message}`, true);
+                }
+            } catch (error) {
+                console.error('创建随机商品失败:', error);
+                showSimulationResults(`创建随机商品失败: ${error.message}`, true);
+            }
+        }
+        
+        // 显示模拟结果
+        function showSimulationResults(message, isError = false) {
+            const resultsDiv = document.getElementById('simulation-results');
+            const outputDiv = document.getElementById('simulation-output');
+            
+            resultsDiv.style.display = 'block';
+            outputDiv.innerHTML += `
+                <div style="padding: 10px; margin: 10px 0; border-radius: 5px; background-color: ${isError ? '#f8d7da' : '#d4edda'}; color: ${isError ? '#721c24' : '#155724'};">
+                    ${message}
+                </div>
+            `;
+            
+            // 滚动到底部
+            outputDiv.scrollTop = outputDiv.scrollHeight;
         }
     </script>
 </body>
