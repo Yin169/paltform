@@ -201,9 +201,31 @@
             gap: 10px;
         }
         
-        .product-meta i {
+        .store-link {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        
+        .store-link:hover {
+            background: var(--secondary-color);
+        }
+        
+        .all-stores-link {
+            display: inline-block;
+            margin-top: 10px;
             color: var(--primary-color);
-            width: 20px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .all-stores-link:hover {
+            text-decoration: underline;
         }
         
         /* Quantity Control */
@@ -532,9 +554,17 @@
                             <p>${product.description}</p>
                         </div>
                         <div class="product-meta">
-                            <p><i class="fas fa-tag"></i> <strong>分类:</strong> ${product.category}</p>
-                            <p><i class="fas fa-archive"></i> <strong>库存:</strong> ${product.quantity} 件</p>
-                            ${product.seller ? `<p><i class="fas fa-user"></i> <strong>卖家:</strong> <a href="/shop?seller=${product.seller._id}" target="_blank">${product.seller.username}</a></p>` : ''}
+                            <p><i class="fas fa-tag"></i> 分类: <strong>${product.category}</strong></p>
+                            <p><i class="fas fa-cube"></i> 库存: <strong>${product.quantity}</strong></p>
+                            <p><i class="fas fa-user"></i> 卖家: <strong>${product.seller?.username || '未知卖家'}</strong></p>
+                            ${product.seller ? `
+                            <a href="/store.html?sellerId=${product.seller._id}" class="store-link">
+                                <i class="fas fa-store"></i> 访问店铺
+                            </a>
+                            ` : ''}
+                            <a href="/stores.html" class="all-stores-link">
+                                <i class="fas fa-store-alt"></i> 查看所有商铺
+                            </a>
                         </div>
                         <div class="quantity-control">
                             <span class="quantity-label">数量:</span>

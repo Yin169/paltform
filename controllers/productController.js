@@ -5,7 +5,10 @@ const graphService = require('../services/graphService');
 // 获取所有商品
 const getProducts = async (req, res) => {
   try {
-    const products = await Product.find().populate('seller', 'username');
+    // 如果提供了卖家ID，则只返回该卖家的商品
+    const filter = req.query.seller ? { seller: req.query.seller } : {};
+    
+    const products = await Product.find(filter).populate('seller', 'username _id');
     res.json(products);
   } catch (err) {
     res.status(500).json({ message: '服务器错误', error: err.message });
@@ -15,7 +18,7 @@ const getProducts = async (req, res) => {
 // 获取单个商品
 const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id).populate('seller', 'username');
+    const product = await Product.findById(req.params.id).populate('seller', 'username _id');
     
     if (!product) {
       return res.status(404).json({ message: '商品未找到' });

@@ -209,6 +209,102 @@
             color: #d81b60;
         }
         
+        /* Stores Section */
+        .stores {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .store-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .store-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .store-banner {
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            position: relative;
+        }
+        
+        .store-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: -40px auto 15px;
+            box-shadow: var(--shadow);
+        }
+        
+        .store-avatar i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+        
+        .store-info {
+            padding: 0 20px 20px;
+        }
+        
+        .store-info h3 {
+            color: var(--secondary-color);
+            margin: 0 0 10px;
+            font-size: 1.3rem;
+        }
+        
+        .store-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+        
+        .store-link {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 20px;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .store-link:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
         /* Footer */
         footer {
             background: var(--dark-color);
@@ -253,9 +349,11 @@
                 <nav class="nav">
                     <a href="/products">商品</a>
                     <a href="/cart">购物车</a>
+                    <a href="/stores">商铺</a>
                     <a href="/login">登录</a>
                     <a href="/register">注册</a>
                     <a href="/seller-register">卖家注册</a>
+                    <a href="#" id="seller-store-link" style="display: none;">我的商铺</a>
                 </nav>
                 <div class="user-info">
                     <div id="user-actions">
@@ -342,6 +440,14 @@
             </div>
         </div>
 
+        <!-- 商铺展示区域 -->
+        <h2 class="section-title">热门商铺</h2>
+        <div class="stores" id="stores-container">
+            <div class="loading">
+                <p><i class="fas fa-spinner fa-spin"></i> 正在加载商铺信息...</p>
+            </div>
+        </div>
+
         <section class="cta">
             <h2>成为我们的卖家</h2>
             <p>加入我们庞大的卖家社区，将您的商品展示给数百万潜在客户</p>
@@ -354,19 +460,30 @@
     </div>
 
     <script>
-        // 检查用户是否已登录
+        // 页面加载时检查用户状态
         document.addEventListener('DOMContentLoaded', function() {
             const user = localStorage.getItem('user');
             const userActions = document.getElementById('user-actions');
             const cartCount = document.getElementById('cart-count');
+            const sellerStoreLink = document.getElementById('seller-store-link');
             
             if (user) {
                 const userData = JSON.parse(user);
-                userActions.innerHTML = `
+                let userHtml = `
                     <span>欢迎, ${userData.username}</span>
                     <a href="/profile">个人中心</a>
-                    <a href="#" id="logout">退出</a>
                 `;
+                
+                // 如果是卖家，添加商铺链接
+                if (userData.role === 'seller') {
+                    const storeLink = userData._id ? `/store.html?sellerId=${userData._id}` : '#';
+                    userHtml += `<a href="${storeLink}" ${!userData._id ? 'style="display: none;"' : ''}>我的商铺</a>`;
+                    sellerStoreLink.href = storeLink;
+                    sellerStoreLink.style.display = userData._id ? 'inline-block' : 'none';
+                }
+                
+                userHtml += '<a href="#" id="logout">退出</a>';
+                userActions.innerHTML = userHtml;
                 
                 // 添加退出登录功能
                 document.getElementById('logout').addEventListener('click', function(e) {
@@ -379,6 +496,9 @@
 
             // 获取购物车数量
             updateCartCount();
+            
+            // 加载商铺信息
+            loadStores();
         });
 
         async function updateCartCount() {
@@ -411,6 +531,65 @@
             } catch (error) {
                 console.error('获取购物车信息失败:', error);
                 cartCount.style.display = 'none';
+            }
+        }
+        
+        // 加载商铺信息
+        async function loadStores() {
+            const storesContainer = document.getElementById('stores-container');
+            
+            try {
+                // 获取所有卖家用户
+                const response = await fetch('/api/users/sellers/public');
+                if (!response.ok) {
+                    throw new Error('无法获取商铺信息');
+                }
+                
+                const sellers = await response.json();
+                
+                if (sellers.length === 0) {
+                    storesContainer.innerHTML = `
+                        <div class="no-data">
+                            <p>暂无商铺信息</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // 显示前4个商铺
+                const displayedSellers = sellers.slice(0, 4);
+                
+                storesContainer.innerHTML = displayedSellers.map(seller => `
+                    <div class="store-card">
+                        <div class="store-banner"></div>
+                        <div class="store-avatar">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <div class="store-info">
+                            <h3>${seller.username}</h3>
+                            <p>${seller.profile?.description || '这个卖家很懒，没有添加店铺描述'}</p>
+                            <div class="store-stats">
+                                <div class="stat">
+                                    <div class="stat-value">${seller.profile?.productCount || 0}</div>
+                                    <div class="stat-label">商品</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">${seller.profile?.rating || 'N/A'}</div>
+                                    <div class="stat-label">评分</div>
+                                </div>
+                            </div>
+                            ${seller._id ? `<a href="/store.html?sellerId=${seller._id}" class="store-link">进入店铺</a>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('加载商铺信息失败:', error);
+                storesContainer.innerHTML = `
+                    <div class="error-message">
+                        <p>加载商铺信息失败: ${error.message}</p>
+                        <button class="btn" onclick="loadStores()" style="margin-top: 15px;">重新加载</button>
+                    </div>
+                `;
             }
         }
     </script>

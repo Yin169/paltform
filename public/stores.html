@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商铺列表 - 电商交易平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles/main.css">
+    <style>
+        .page-header {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+        
+        .stores-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .store-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .store-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .store-banner {
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            position: relative;
+        }
+        
+        .store-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: -40px auto 15px;
+            box-shadow: var(--shadow);
+        }
+        
+        .store-avatar i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+        
+        .store-info {
+            padding: 0 20px 20px;
+        }
+        
+        .store-info h3 {
+            color: var(--secondary-color);
+            margin: 0 0 10px;
+            font-size: 1.3rem;
+        }
+        
+        .store-description {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            min-height: 60px;
+        }
+        
+        .store-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+        
+        .store-link {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 20px;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .store-link:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .search-bar {
+            max-width: 500px;
+            margin: 0 auto 30px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e1e5f2;
+            border-radius: 30px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary-color);
+        }
+        
+        .search-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+        
+        .search-btn:hover {
+            background: var(--secondary-color);
+        }
+        
+        .no-stores {
+            text-align: center;
+            padding: 50px;
+            grid-column: 1 / -1;
+        }
+        
+        .no-stores i {
+            font-size: 3rem;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+        
+        .no-stores h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    电商交易平台
+                </div>
+                <nav class="nav">
+                    <a href="/">首页</a>
+                    <a href="/products">商品</a>
+                    <a href="/cart">购物车</a>
+                    <a href="/login">登录</a>
+                    <a href="/register">注册</a>
+                </nav>
+                <div class="user-info">
+                    <div id="user-actions">
+                        <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
+                        <a href="/register"><i class="fas fa-user-plus"></i> 注册</a>
+                    </div>
+                    <a href="/cart" class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-count">0</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-header">
+            <h1 class="page-title">平台商铺</h1>
+            <p>发现并关注您喜欢的店铺</p>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" class="search-input" id="search-input" placeholder="搜索商铺...">
+            <button class="search-btn" onclick="searchStores()">
+                <i class="fas fa-search"></i> 搜索
+            </button>
+        </div>
+
+        <div class="stores-container" id="stores-container">
+            <div class="loading">
+                <p><i class="fas fa-spinner fa-spin"></i> 正在加载商铺信息...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载时获取商铺列表
+        document.addEventListener('DOMContentLoaded', function() {
+            checkUserStatus();
+            updateCartCount();
+            loadStores();
+        });
+
+        // 检查用户登录状态
+        async function checkUserStatus() {
+            const token = localStorage.getItem('token');
+            const userActions = document.getElementById('user-actions');
+            const cartCount = document.getElementById('cart-count');
+            
+            if (token) {
+                try {
+                    const response = await fetch('/api/users/profile', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const user = await response.json();
+                        let userLinks = `
+                            <span><i class="fas fa-user"></i> ${user.username}</span>
+                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
+                        `;
+                        
+                        // 根据用户角色添加相应链接
+                        if (user.role === 'admin') {
+                            userLinks += '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>';
+                        }
+                        
+                        if (user.role === 'seller' || user.role === 'admin') {
+                            userLinks += '<a href="/seller"><i class="fas fa-store"></i> 卖家中心</a>';
+                        }
+                        
+                        userLinks += `
+                            <a href="/orders"><i class="fas fa-list"></i> 我的订单</a>
+                        `;
+                        
+                        userActions.innerHTML = userLinks;
+                    } else {
+                        // Token无效，清除本地存储
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        userActions.innerHTML = `
+                            <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
+                            <a href="/register"><i class="fas fa-user-plus"></i> 注册</a>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('检查用户状态失败:', error);
+                    // 发生错误时，清除本地存储
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    userActions.innerHTML = `
+                        <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
+                        <a href="/register"><i class="fas fa-user-plus"></i> 注册</a>
+                    `;
+                }
+            }
+        }
+
+        // 用户退出
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.reload();
+        }
+
+        // 更新购物车数量
+        async function updateCartCount() {
+            const token = localStorage.getItem('token');
+            const cartCountElement = document.getElementById('cart-count');
+            
+            if (!token) {
+                cartCountElement.style.display = 'none';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/cart', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const cart = await response.json();
+                    const totalItems = cart.items ? cart.items.reduce((total, item) => total + item.quantity, 0) : 0;
+                    cartCountElement.textContent = totalItems;
+                    cartCountElement.style.display = totalItems > 0 ? 'flex' : 'none';
+                }
+            } catch (error) {
+                console.error('获取购物车信息失败:', error);
+            }
+        }
+        
+        // 加载商铺信息
+        async function loadStores() {
+            const storesContainer = document.getElementById('stores-container');
+            
+            try {
+                // 获取所有卖家用户
+                const response = await fetch('/api/users/sellers/public');
+                if (!response.ok) {
+                    throw new Error('无法获取商铺信息');
+                }
+                
+                const sellers = await response.json();
+                
+                if (sellers.length === 0) {
+                    storesContainer.innerHTML = `
+                        <div class="no-stores">
+                            <i class="fas fa-store-slash"></i>
+                            <h3>暂无商铺</h3>
+                            <p>当前平台上还没有商铺</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                displayStores(sellers);
+            } catch (error) {
+                console.error('加载商铺信息失败:', error);
+                storesContainer.innerHTML = `
+                    <div class="no-stores">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>加载失败</h3>
+                        <p>加载商铺信息失败: ${error.message}</p>
+                        <button class="btn" onclick="loadStores()" style="margin-top: 15px;">重新加载</button>
+                    </div>
+                `;
+            }
+        }
+        
+        // 显示商铺列表
+        function displayStores(sellers) {
+            const storesContainer = document.getElementById('stores-container');
+            
+            storesContainer.innerHTML = sellers.map(seller => `
+                <div class="store-card">
+                    <div class="store-banner"></div>
+                    <div class="store-avatar">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <div class="store-info">
+                        <h3>${seller.username}</h3>
+                        <p class="store-description">${seller.profile?.description || '这个卖家很懒，没有添加店铺描述'}</p>
+                        <div class="store-stats">
+                            <div class="stat">
+                                <div class="stat-value">${seller.profile?.productCount || 0}</div>
+                                <div class="stat-label">商品</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${seller.profile?.rating || 'N/A'}</div>
+                                <div class="stat-label">评分</div>
+                            </div>
+                        </div>
+                        <a href="/store.html?sellerId=${seller._id}" class="store-link">进入店铺</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 搜索商铺
+        async function searchStores() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const storesContainer = document.getElementById('stores-container');
+            
+            if (!searchTerm) {
+                loadStores();
+                return;
+            }
+            
+            try {
+                // 获取所有卖家用户
+                const response = await fetch('/api/users/sellers/public');
+                if (!response.ok) {
+                    throw new Error('无法获取商铺信息');
+                }
+                
+                const sellers = await response.json();
+                
+                // 过滤商铺
+                const filteredSellers = sellers.filter(seller => 
+                    seller.username.toLowerCase().includes(searchTerm) ||
+                    (seller.profile?.description && seller.profile.description.toLowerCase().includes(searchTerm))
+                );
+                
+                if (filteredSellers.length === 0) {
+                    storesContainer.innerHTML = `
+                        <div class="no-stores">
+                            <i class="fas fa-search"></i>
+                            <h3>未找到匹配的商铺</h3>
+                            <p>没有找到与"${searchTerm}"相关的商铺</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                displayStores(filteredSellers);
+            } catch (error) {
+                console.error('搜索商铺失败:', error);
+                storesContainer.innerHTML = `
+                    <div class="no-stores">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>搜索失败</h3>
+                        <p>搜索商铺失败: ${error.message}</p>
+                        <button class="btn" onclick="loadStores()" style="margin-top: 15px;">返回全部商铺</button>
+                    </div>
+                `;
+            }
+        }
+        
+        // 回车搜索
+        document.getElementById('search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchStores();
+            }
+        });
+    </script>
+</body>
+</html>

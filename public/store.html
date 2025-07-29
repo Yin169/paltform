@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商铺页面 - 电商交易平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles/main.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --dark-color: #2b2d42;
+            --light-color: #f8f9fa;
+            --gray-color: #8d99ae;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f6f8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: var(--dark-color);
+            margin-left: 25px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav a:hover {
+            color: var(--primary-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s;
+        }
+
+        .user-info a:hover {
+            color: var(--primary-color);
+        }
+
+        .cart-icon {
+            position: relative;
+            font-size: 1.3rem;
+        }
+
+        #cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--danger-color);
+            color: white;
+            font-size: 0.7rem;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        /* Store Header */
+        .store-header {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .store-name {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        .store-description {
+            font-size: 1.1rem;
+            color: var(--gray-color);
+            max-width: 800px;
+            margin: 0 auto 25px;
+            line-height: 1.8;
+        }
+
+        .store-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--gray-color);
+            margin-top: 5px;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            text-align: center;
+            margin: 40px 0 30px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--accent-color);
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+
+        /* Products Grid */
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .product-image {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+
+        .product-description {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 15px 0;
+        }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+            color: var(--gray-color);
+        }
+
+        .product-category, .product-stock {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s ease;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn.add-to-cart {
+            background: var(--success-color);
+        }
+
+        .btn.add-to-cart:hover {
+            background: #3d8b40;
+        }
+
+        /* No Products */
+        .no-products {
+            text-align: center;
+            padding: 50px;
+            grid-column: 1 / -1;
+        }
+
+        .no-products i {
+            font-size: 3rem;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .no-products h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        /* Error Message */
+        .error-message {
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            margin: 30px 0;
+        }
+
+        .error-message h2 {
+            color: var(--danger-color);
+            margin-bottom: 20px;
+        }
+
+        .error-message p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: var(--gray-color);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 50px;
+        }
+
+        .loading i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav {
+                order: 3;
+            }
+
+            .nav a {
+                margin: 0 10px;
+            }
+
+            .store-name {
+                font-size: 2rem;
+            }
+
+            .store-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .products {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    电商交易平台
+                </div>
+                <nav class="nav">
+                    <a href="/">首页</a>
+                    <a href="/products">商品</a>
+                    <a href="/cart">购物车</a>
+                    <a href="/login">登录</a>
+                    <a href="/register">注册</a>
+                </nav>
+                <div class="user-info">
+                    <div id="user-actions">
+                        <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
+                        <a href="/register"><i class="fas fa-user-plus"></i> 注册</a>
+                    </div>
+                    <a href="/cart" class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-count">0</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div id="store-content">
+            <div class="loading">
+                <p><i class="fas fa-spinner fa-spin"></i> 正在加载商铺信息...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 从URL参数获取卖家ID
+        const urlParams = new URLSearchParams(window.location.search);
+        const sellerId = urlParams.get('sellerId');
+        
+        if (!sellerId) {
+            document.getElementById('store-content').innerHTML = `
+                <div class="error-message">
+                    <h2><i class="fas fa-exclamation-triangle"></i> 错误</h2>
+                    <p>未指定卖家信息</p>
+                    <a href="/" class="btn" style="display: inline-block; margin-top: 20px;">返回首页</a>
+                </div>
+            `;
+        } else {
+            // 获取卖家商铺信息
+            fetchStoreData(sellerId);
+        }
+        
+        async function fetchStoreData(sellerId) {
+            try {
+                // 显示加载状态
+                document.getElementById('store-content').innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>正在加载商铺信息...</p>
+                    </div>
+                `;
+                
+                // 获取卖家信息
+                const sellerResponse = await fetch(`/api/users/${sellerId}`);
+                if (!sellerResponse.ok) {
+                    const errorData = await sellerResponse.json().catch(() => ({}));
+                    throw new Error(errorData.message || `无法获取卖家信息 (${sellerResponse.status})`);
+                }
+                const seller = await sellerResponse.json();
+                
+                // 获取卖家商品
+                const productsResponse = await fetch(`/api/products?seller=${sellerId}`);
+                if (!productsResponse.ok) {
+                    const errorData = await productsResponse.json().catch(() => ({}));
+                    throw new Error(errorData.message || `无法获取商品信息 (${productsResponse.status})`);
+                }
+                const products = await productsResponse.json();
+                
+                // 渲染商铺页面
+                renderStore(seller, products);
+                
+                // 更新购物车计数
+                updateCartCount();
+            } catch (error) {
+                console.error('Error fetching store data:', error);
+                document.getElementById('store-content').innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle fa-3x"></i>
+                        <h2>加载失败</h2>
+                        <p>无法加载商铺信息: ${error.message}</p>
+                        <p>卖家ID: ${sellerId}</p>
+                        <div style="margin-top: 20px;">
+                            <a href="/" class="btn" style="display: inline-block; margin-right: 10px;">
+                                <i class="fas fa-home"></i> 返回首页
+                            </a>
+                            <button class="btn" onclick="fetchStoreData('${sellerId}')" style="background: var(--secondary-color);">
+                                <i class="fas fa-redo"></i> 重新加载
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function renderStore(seller, products) {
+            const storeContent = document.getElementById('store-content');
+            
+            // 检查seller对象是否存在
+            if (!seller) {
+                storeContent.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle fa-3x"></i>
+                        <h2>卖家信息不存在</h2>
+                        <p>抱歉，无法找到该卖家的信息。</p>
+                        <a href="/" class="btn" style="display: inline-block; margin-top: 20px;">
+                            <i class="fas fa-home"></i> 返回首页
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 检查用户是否为卖家
+            if (seller.role !== 'seller') {
+                storeContent.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle fa-3x"></i>
+                        <h2>用户角色错误</h2>
+                        <p>该用户不是卖家，无法展示商铺。</p>
+                        <a href="/" class="btn" style="display: inline-block; margin-top: 20px;">
+                            <i class="fas fa-home"></i> 返回首页
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 构建商铺页面HTML
+            const storeHtml = `
+                <div class="store-header">
+                    <h1 class="store-name">${seller.username || '未知卖家'} 的店铺</h1>
+                    ${(seller.profile && seller.profile.description) ? 
+                        `<p class="store-description">${seller.profile.description}</p>` : 
+                        '<p class="store-description">这个卖家很懒，没有添加店铺描述</p>'}
+                    
+                    <div class="store-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">${Array.isArray(products) ? products.length : 0}</div>
+                            <div class="stat-label">商品数量</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${(seller.profile && seller.profile.rating) ? 
+                                `${seller.profile.rating}` : '暂无'}</div>
+                            <div class="stat-label">评分</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${seller.createdAt ? 
+                                new Date(seller.createdAt).toLocaleDateString() : '未知'}</div>
+                            <div class="stat-label">入驻时间</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2 class="section-title">店铺商品</h2>
+                <div class="products">
+                    ${Array.isArray(products) && products.length > 0 ? products.map(product => `
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="${product.imageUrl || 'https://via.placeholder.com/300x200?text=商品图片'}" 
+                                     alt="${product.name || '商品'}">
+                            </div>
+                            <div class="product-info">
+                                <h3>${product.name || '未命名商品'}</h3>
+                                <p class="product-description">${product.description || '暂无商品描述'}</p>
+                                <div class="product-meta">
+                                    <div class="product-category">
+                                        <i class="fas fa-tag"></i> ${product.category || '未分类'}
+                                    </div>
+                                    <div class="product-stock">
+                                        <i class="fas fa-cube"></i> 库存: ${product.quantity || 0}
+                                    </div>
+                                </div>
+                                <div class="product-price">¥${product.price ? product.price.toFixed(2) : '0.00'}</div>
+                                <div class="actions">
+                                    <button class="btn add-to-cart" onclick="addToCart('${product._id || ''}')">
+                                        <i class="fas fa-shopping-cart"></i> 加入购物车
+                                    </button>
+                                    <a href="/product?id=${product._id || ''}" class="btn view-details">
+                                        <i class="fas fa-eye"></i> 查看详情
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('') : `
+                        <div class="no-products">
+                            <i class="fas fa-box-open fa-3x"></i>
+                            <h3>暂无商品</h3>
+                            <p>该店铺暂时没有上架商品</p>
+                        </div>
+                    `}
+                </div>
+            `;
+            
+            storeContent.innerHTML = storeHtml;
+        }
+        
+        // 检查用户是否已登录
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = localStorage.getItem('user');
+            const userActions = document.getElementById('user-actions');
+            
+            if (user) {
+                const userData = JSON.parse(user);
+                let userHtml = `
+                    <span><i class="fas fa-user"></i> ${userData.username}</span>
+                    <a href="#" id="logout">退出</a>
+                `;
+                
+                // 根据用户角色添加相应链接
+                if (userData.role === 'admin') {
+                    userHtml = `<span><i class="fas fa-user"></i> ${userData.username}</span>
+                                <a href="/admin">管理后台</a>
+                                <a href="#" id="logout">退出</a>`;
+                } else if (userData.role === 'seller') {
+                    userHtml = `<span><i class="fas fa-user"></i> ${userData.username}</span>
+                                <a href="/seller">卖家中心</a>
+                                <a href="/store.html?sellerId=${userData._id}">我的商铺</a>
+                                <a href="#" id="logout">退出</a>`;
+                }
+                
+                userActions.innerHTML = userHtml;
+                
+                // 添加退出登录功能
+                document.getElementById('logout').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.reload();
+                });
+            }
+        });
+        
+        async function updateCartCount() {
+            const token = localStorage.getItem('token');
+            const cartCount = document.getElementById('cart-count');
+            
+            if (!token) {
+                cartCount.style.display = 'none';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/cart', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const cart = await response.json();
+                    const totalItems = cart.items.reduce((total, item) => total + item.quantity, 0);
+                    
+                    if (totalItems > 0) {
+                        cartCount.textContent = totalItems;
+                        cartCount.style.display = 'flex';
+                    } else {
+                        cartCount.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('获取购物车信息失败:', error);
+                cartCount.style.display = 'none';
+            }
+        }
+        
+        async function addToCart(productId) {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                alert('请先登录');
+                window.location.href = '/login';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ productId, quantity: 1 })
+                });
+                
+                if (response.ok) {
+                    alert('商品已添加到购物车');
+                    updateCartCount();
+                } else {
+                    const data = await response.json();
+                    alert(`添加失败: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('添加到购物车失败:', error);
+                alert('添加到购物车失败，请稍后重试');
+            }
+        }
+    </script>
+</body>
+</html>
