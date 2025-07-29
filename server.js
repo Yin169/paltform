@@ -44,13 +44,6 @@ mongoose.connection.on('disconnected', () => {
   console.log('Mongoose disconnected');
 });
 
-// 当应用关闭时断开数据库连接
-process.on('SIGINT', async () => {
-  await mongoose.connection.close();
-  console.log('Mongoose disconnected through app termination');
-  process.exit(0);
-});
-
 // 路由
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);

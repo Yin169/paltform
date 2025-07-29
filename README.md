@@ -25,23 +25,6 @@
 - Node.js >= 14.x
 - MongoDB
 
-## MongoDB Atlas 配置
-
-要使用 MongoDB Atlas 云数据库，请按照以下步骤操作：
-
-1. 在 [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) 上创建一个账户
-2. 创建一个新的集群
-3. 在 "Database Access" 部分创建一个数据库用户
-4. 在 "Network Access" 部分添加你的 IP 地址到白名单（或者添加 `0.0.0.0/0` 以允许所有 IP）
-5. 在 "Clusters" 部分点击 "Connect"，选择 "Connect your application"
-6. 复制连接字符串并替换 `.env` 文件中的 `MONGODB_URI` 值
-7. 将 `<username>` 和 `<password>` 替换为你创建的数据库用户的凭据
-
-示例连接字符串:
-```
-mongodb+srv://yourUsername:yourPassword@cluster0.abc123.mongodb.net/ecommerce?retryWrites=true&w=majority
-```
-
 ### 安装步骤
 
 1. 克隆仓库:
