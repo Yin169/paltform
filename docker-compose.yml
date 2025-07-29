@@ -16,7 +16,7 @@ services:
   mongo:
     image: mongo:latest
     ports:
-      - "10000:10000"
+      - "1000:1000"
     volumes:
       - mongo-data:/data/db
     restart: unless-stopped

@@ -54,6 +54,38 @@
 6. 访问应用:
    浏览器打开 `http://localhost:3000`
 
+## 部署到Render
+
+### 设置MongoDB Atlas数据库
+
+由于Render不提供MongoDB数据库服务，您需要使用MongoDB Atlas（MongoDB官方云数据库服务）：
+
+1. 访问 [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) 并创建一个免费账户
+2. 创建一个新的集群（选择免费的M0沙盒计划）
+3. 在"Network Access"中，将您的IP地址添加到允许列表（或者允许从任何地方访问 0.0.0.0/0 用于测试）
+4. 在"Database Access"中创建一个数据库用户
+5. 获取连接字符串：
+   - 点击"Connect"按钮
+   - 选择"Connect your application"
+   - 选择Node.js驱动程序
+   - 复制连接字符串
+
+### 在Render上部署
+
+1. 将代码推送到GitHub/GitLab/Bitbucket仓库
+2. 登录Render并创建新的Web Service
+3. 连接您的Git仓库
+4. 配置以下设置：
+   - Name: 为您的应用命名
+   - Runtime: Node
+   - Build Command: `npm install`
+   - Start Command: `node server.js`
+5. 在Environment Variables中添加：
+   - `MONGODB_URI`: 您的MongoDB Atlas连接字符串（记得替换<password>为实际密码）
+   - `JWT_SECRET`: 您的JWT密钥
+   - `NODE_ENV`: production
+6. 点击"Create Web Service"开始部署
+
 ## 使用Docker运行
 
 ### 使用Docker Compose（推荐）
