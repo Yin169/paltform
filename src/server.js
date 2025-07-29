@@ -80,6 +80,14 @@ app.get('/seller', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/seller.html'));
 });
 
+app.get('/stores', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/stores.html'));
+});
+
+app.get('/store', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/store.html'));
+});
+
 // 处理所有未匹配的路由，返回首页以支持前端路由
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
