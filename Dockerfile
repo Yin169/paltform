@@ -21,3 +21,4 @@ EXPOSE 3000
 
 # 启动应用
 CMD [ "npm", "start" ]
+ENTRYPOINT [ "npm run simulate -- --users 20 --products 50 --orders 0.5" ]
