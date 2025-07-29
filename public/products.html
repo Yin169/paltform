@@ -4,168 +4,348 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>商品列表 - 电商交易平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --accent-color: #f72585;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --border-color: #dee2e6;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.15);
         }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fb;
+            color: #333;
+            line-height: 1.6;
+        }
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 20px;
         }
+        
+        /* Header Styles */
         header {
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+        
         .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #4CAF50;
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
         }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
         .nav a {
-            margin-left: 20px;
+            color: white;
             text-decoration: none;
-            color: #333;
+            margin-left: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 4px;
         }
+        
+        .nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
         .user-info {
             display: flex;
             align-items: center;
-            gap: 15px;
-        }
-        .products {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
         }
-        .product-card {
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            border-radius: 8px;
+        
+        .user-info a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
+        
+        .user-info a:hover {
+            opacity: 0.8;
+        }
+        
+        .cart-icon {
+            position: relative;
+            font-size: 22px;
+        }
+        
+        #cart-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        /* Page Title */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            color: var(--secondary-color);
+        }
+        
+        /* Search Bar */
+        .search-bar {
+            background-color: white;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .search-bar input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .search-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .search-btn:hover {
+            background: var(--secondary-color);
+        }
+        
+        /* Products Grid */
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .product-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .product-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        
         .product-card img {
             width: 100%;
-            height: 200px;
+            height: 100%;
             object-fit: cover;
-            border-radius: 4px;
+            transition: transform 0.3s ease;
         }
+        
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
         .product-card h3 {
-            margin-top: 10px;
-            margin-bottom: 10px;
+            margin: 0 0 10px;
+            font-size: 1.3rem;
+            color: var(--dark-color);
         }
-        .product-card .price {
-            font-weight: bold;
-            color: #4CAF50;
-            font-size: 18px;
-            margin: 10px 0;
-        }
-        .product-card .description {
-            color: #666;
+        
+        .product-description {
+            color: var(--gray-color);
             margin-bottom: 15px;
             height: 60px;
             overflow: hidden;
         }
+        
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 15px 0;
+        }
+        
         .actions {
             display: flex;
             gap: 10px;
         }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            border-radius: 4px;
+        
+        .btn {
             flex: 1;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .add-to-cart {
-            background-color: #2196F3;
-        }
-        .add-to-cart:hover {
-            background-color: #1976D2;
-        }
-        .search-bar {
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            border-radius: 8px;
-        }
-        .search-bar input {
-            width: 70%;
             padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
         }
-        .search-bar button {
-            width: 25%;
-            margin-left: 20px;
+        
+        .add-to-cart {
+            background-color: var(--primary-color);
+            color: white;
         }
+        
+        .add-to-cart:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .view-details {
+            background-color: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+        
+        .view-details:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
         .no-products {
             text-align: center;
+            padding: 50px;
+            color: var(--gray-color);
+            font-size: 1.2rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
             grid-column: 1 / -1;
-            padding: 40px;
-            background-color: #fff;
-            border-radius: 8px;
         }
-        .cart-icon {
-            position: relative;
-            cursor: pointer;
-        }
-        .cart-count {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background-color: #f44336;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav a {
+                margin: 5px 10px;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .search-bar {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <div class="logo">电商交易平台</div>
-            <nav class="nav">
-                <a href="/">首页</a>
-                <a href="/products">商品</a>
-                <a href="/cart">购物车</a>
-            </nav>
-            <div class="user-info">
-                <div class="cart-icon" onclick="window.location.href='/cart'">
-                    <span>🛒</span>
-                    <div class="cart-count" id="cart-count">0</div>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    电商交易平台
                 </div>
-                <div id="user-actions">
-                    <a href="/login">登录</a>
-                    <a href="/register">注册</a>
+                <nav class="nav">
+                    <a href="/"><i class="fas fa-home"></i> 首页</a>
+                    <a href="/products"><i class="fas fa-box"></i> 商品</a>
+                    <a href="/cart"><i class="fas fa-shopping-cart"></i> 购物车</a>
+                </nav>
+                <div class="user-info">
+                    <div id="user-actions">
+                        <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
+                        <a href="/register"><i class="fas fa-user-plus"></i> 注册</a>
+                    </div>
+                    <a href="/cart" class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-count">0</span>
+                    </a>
                 </div>
             </div>
         </header>
 
-        <div class="search-bar">
-            <input type="text" id="search-input" placeholder="搜索商品...">
-            <button onclick="searchProducts()">搜索</button>
+        <div class="page-header">
+            <h1 class="page-title">商品列表</h1>
         </div>
 
-        <h2>商品列表</h2>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="搜索商品...">
+            <button class="search-btn" onclick="searchProducts()"><i class="fas fa-search"></i> 搜索</button>
+        </div>
+
         <div class="products" id="products-container">
             <!-- 商品将通过JavaScript动态加载 -->
         </div>
@@ -175,8 +355,8 @@
         // 页面加载时获取商品
         document.addEventListener('DOMContentLoaded', function() {
             loadProducts();
-            updateCartCount();
             checkUserStatus();
+            updateCartCount();
         });
 
         // 检查用户登录状态
@@ -187,10 +367,10 @@
             if (token) {
                 const user = JSON.parse(localStorage.getItem('user'));
                 userActions.innerHTML = `
-                    <span>欢迎, ${user.username}</span>
-                    <a href="#" onclick="logout()">退出</a>
-                    ${user.role === 'admin' ? '<a href="/admin">管理后台</a>' : ''}
-                    <a href="/orders">我的订单</a>
+                    <span><i class="fas fa-user"></i> ${user.username}</span>
+                    <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
+                    ${user.role === 'admin' ? '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>' : ''}
+                    <a href="/orders"><i class="fas fa-list"></i> 我的订单</a>
                 `;
             }
         }
@@ -217,13 +397,17 @@
                 
                 container.innerHTML = products.map(product => `
                     <div class="product-card">
-                        <img src="${product.imageUrl || 'https://via.placeholder.com/300x200?text=商品图片'}" alt="${product.name}">
-                        <h3>${product.name}</h3>
-                        <div class="description">${product.description}</div>
-                        <div class="price">¥${product.price.toFixed(2)}</div>
-                        <div class="actions">
-                            <button class="add-to-cart" onclick="addToCart('${product._id}', 1)">加入购物车</button>
-                            <button onclick="viewProduct('${product._id}')">查看详情</button>
+                        <div class="product-image">
+                            <img src="${product.imageUrl || 'https://via.placeholder.com/300x200?text=商品图片'}" alt="${product.name}">
+                        </div>
+                        <div class="product-info">
+                            <h3>${product.name}</h3>
+                            <div class="product-description">${product.description}</div>
+                            <div class="product-price">¥${product.price.toFixed(2)}</div>
+                            <div class="actions">
+                                <button class="btn add-to-cart" onclick="addToCart('${product._id}', 1)"><i class="fas fa-cart-plus"></i> 加入购物车</button>
+                                <button class="btn view-details" onclick="viewProduct('${product._id}')"><i class="fas fa-eye"></i> 查看详情</button>
+                            </div>
                         </div>
                     </div>
                 `).join('');
@@ -236,9 +420,51 @@
 
         // 搜索商品
         async function searchProducts() {
-            const searchTerm = document.getElementById('search-input').value;
-            // 简单实现，实际应调用搜索API
-            console.log('搜索:', searchTerm);
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            
+            if (!searchTerm) {
+                loadProducts();
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/products');
+                const products = await response.json();
+                
+                const filteredProducts = products.filter(product => 
+                    product.name.toLowerCase().includes(searchTerm) || 
+                    product.description.toLowerCase().includes(searchTerm) ||
+                    product.category.toLowerCase().includes(searchTerm)
+                );
+                
+                const container = document.getElementById('products-container');
+                
+                if (filteredProducts.length === 0) {
+                    container.innerHTML = '<div class="no-products">未找到匹配的商品</div>';
+                    return;
+                }
+                
+                container.innerHTML = filteredProducts.map(product => `
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="${product.imageUrl || 'https://via.placeholder.com/300x200?text=商品图片'}" alt="${product.name}">
+                        </div>
+                        <div class="product-info">
+                            <h3>${product.name}</h3>
+                            <div class="product-description">${product.description}</div>
+                            <div class="product-price">¥${product.price.toFixed(2)}</div>
+                            <div class="actions">
+                                <button class="btn add-to-cart" onclick="addToCart('${product._id}', 1)"><i class="fas fa-cart-plus"></i> 加入购物车</button>
+                                <button class="btn view-details" onclick="viewProduct('${product._id}')"><i class="fas fa-eye"></i> 查看详情</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('搜索商品失败:', error);
+                document.getElementById('products-container').innerHTML = 
+                    '<div class="no-products">搜索失败，请稍后重试</div>';
+            }
         }
 
         // 查看商品详情
