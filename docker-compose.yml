@@ -6,9 +6,20 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - MONGODB_URI=${MONGODB_URI}
-      - JWT_SECRET=${JWT_SECRET}
+      - MONGODB_URI=mongodb://mongo:27017/ecommerce
+      - JWT_SECRET=your_jwt_secret_here
       - NODE_ENV=production
+    depends_on:
+      - mongo
     restart: unless-stopped
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
     volumes:
-      - ./public/graphs:/usr/src/app/public/graphs
+      - mongo-data:/data/db
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
