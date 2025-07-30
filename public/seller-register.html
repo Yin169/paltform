@@ -148,10 +148,11 @@
                     localStorage.setItem('user', JSON.stringify(data.user));
                     window.location.href = '/seller';
                 } else {
-                    errorMessage.textContent = data.message;
+                    errorMessage.textContent = data.message || '注册失败，请检查输入信息';
                     errorMessage.style.display = 'block';
                 }
             } catch (error) {
+                console.error('Seller registration error:', error);
                 errorMessage.textContent = '注册过程中发生错误，请稍后重试';
                 errorMessage.style.display = 'block';
             }
