@@ -571,7 +571,7 @@
                             <button class="quantity-btn" onclick="updateQuantity(-1)">
                                 <i class="fas fa-minus"></i>
                             </button>
-                            <input type="number" id="quantity" class="quantity-input" value="1" min="1" max="${product.quantity}">
+                            <input type="number" id="quantity" class="quantity-input" value="1" min="1" max="${product.quantity}" oninput="validateQuantity(this, ${product.quantity})">
                             <button class="quantity-btn" onclick="updateQuantity(1)">
                                 <i class="fas fa-plus"></i>
                             </button>
@@ -595,10 +595,25 @@
             let quantity = parseInt(quantityInput.value) + change;
             const maxQuantity = parseInt(quantityInput.max);
             
-            if (quantity < 1) quantity = 1;
+            if (isNaN(quantity) || quantity < 1) quantity = 1;
             if (quantity > maxQuantity) quantity = maxQuantity;
             
             quantityInput.value = quantity;
+        }
+
+        // 验证数量输入
+        function validateQuantity(input, maxQuantity) {
+            let quantity = parseInt(input.value);
+            
+            if (isNaN(quantity) || quantity < 1) {
+                quantity = 1;
+            }
+            
+            if (quantity > maxQuantity) {
+                quantity = maxQuantity;
+            }
+            
+            input.value = quantity;
         }
 
         // 显示消息
