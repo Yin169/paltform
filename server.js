@@ -77,9 +77,14 @@ app.get('/profile', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'profile.html'));
 });
 
-// 账号管理页面路由
+// 账号管理页面路由（重定向到用户中心）
 app.get('/account', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'account.html'));
+  res.redirect('/user-center');
+});
+
+// 用户中心页面路由
+app.get('/user-center', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'user-center.html'));
 });
 
 // 订单页面路由
@@ -105,11 +110,6 @@ app.get('/register', (req, res) => {
 // 卖家注册页面路由
 app.get('/seller-register', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'seller-register.html'));
-});
-
-// 用户中心页面路由
-app.get('/user-center', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'user-center.html'));
 });
 
 // 数据可视化页面路由

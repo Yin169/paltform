@@ -53,12 +53,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
         }
         
         .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
+            font-size: 28px;
+            font-weight: 700;
             display: flex;
             align-items: center;
         }
@@ -67,18 +66,14 @@
             margin-right: 10px;
         }
         
-        .nav {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        
         .nav a {
             color: white;
             text-decoration: none;
-            margin: 0 10px;
-            padding: 5px 10px;
+            margin-left: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
             border-radius: 4px;
-            transition: background-color 0.3s;
         }
         
         .nav a:hover {
@@ -88,15 +83,14 @@
         .user-info {
             display: flex;
             align-items: center;
+            gap: 20px;
         }
         
         .user-info a {
             color: white;
             text-decoration: none;
-            margin-left: 15px;
-            padding: 5px 10px;
-            border-radius: 4px;
-            transition: background-color 0.3s;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
         
         .user-info a:hover {
@@ -208,46 +202,169 @@
         
         .section-title {
             font-size: 1.5rem;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-            color: var(--dark-color);
+            color: var(--secondary-color);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
+        /* Dashboard Styles */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .stat-card i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .stat-card .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* Profile Styles */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
+            background-color: var(--light-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--gray-color);
+        }
+        
+        .profile-info h2 {
+            margin-bottom: 10px;
+        }
+        
+        .profile-info p {
+            margin-bottom: 5px;
+            color: var(--gray-color);
+        }
+        
+        .profile-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .detail-card {
+            background: var(--light-color);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .detail-card h3 {
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .detail-card p {
+            margin-bottom: 10px;
+        }
+        
+        /* Form Styles */
         .form-group {
             margin-bottom: 20px;
         }
         
-        .form-group label {
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        
+        .form-col {
+            flex: 1;
+            padding: 0 10px;
+            min-width: 250px;
+        }
+        
+        .form-label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-weight: 500;
         }
         
         .form-control {
             width: 100%;
-            padding: 12px;
+            padding: 12px 15px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
         }
         
         .btn {
-            display: inline-block;
             padding: 12px 25px;
-            background-color: var(--primary-color);
-            color: white;
             border: none;
             border-radius: 6px;
-            cursor: pointer;
             font-size: 1rem;
-            transition: all 0.3s;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
         
-        .btn:hover {
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
             background-color: var(--secondary-color);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-hover);
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
         }
         
         .btn-outline {
@@ -261,41 +378,76 @@
             color: white;
         }
         
-        .btn-danger {
-            background-color: #dc3545;
+        /* Address List */
+        .address-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
         }
         
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-        
-        .card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: var(--shadow);
+        .address-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             padding: 20px;
-            margin-bottom: 20px;
+            position: relative;
         }
         
-        .card-title {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            color: var(--dark-color);
+        .address-card.active {
+            border-color: var(--primary-color);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .address-card h4 {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .address-card p {
+            margin-bottom: 5px;
+            color: var(--gray-color);
+        }
+        
+        .address-actions {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+        
+        .address-actions button {
+            background: none;
+            border: none;
+            color: var(--gray-color);
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 1rem;
+        }
+        
+        .address-actions button:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Order List */
+        .order-list {
+            margin-top: 20px;
         }
         
         .order-item {
-            border-bottom: 1px solid var(--border-color);
-            padding: 15px 0;
-        }
-        
-        .order-item:last-child {
-            border-bottom: none;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
         
         .order-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
         }
         
         .order-id {
@@ -313,14 +465,24 @@
             color: #856404;
         }
         
-        .status-shipped {
+        .status-processing {
             background-color: #d1ecf1;
             color: #0c5460;
+        }
+        
+        .status-shipped {
+            background-color: #cce5ff;
+            color: #004085;
         }
         
         .status-delivered {
             background-color: #d4edda;
             color: #155724;
+        }
+        
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
         }
         
         .order-products {
@@ -344,121 +506,85 @@
         .order-total {
             font-weight: bold;
             text-align: right;
+            margin-top: 10px;
         }
         
-        .address-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+        /* Notification Options */
+        .notification-options {
+            margin: 20px 0;
         }
         
-        .address-card {
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
+        .notification-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
             padding: 15px;
-            position: relative;
+            background: var(--light-color);
+            border-radius: 6px;
         }
         
-        .address-card.active {
-            border-color: var(--primary-color);
-            background-color: rgba(67, 97, 238, 0.05);
+        .notification-option input {
+            margin-right: 15px;
         }
         
-        .address-card h4 {
-            margin-bottom: 10px;
+        .notification-option label {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .address-card p {
-            margin-bottom: 5px;
+        /* Bank Accounts */
+        .bank-account-list {
+            margin-top: 20px;
         }
         
-        .address-actions {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-        }
-        
-        .address-actions button {
-            background: none;
-            border: none;
-            color: var(--gray-color);
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        
-        .address-actions button:hover {
-            color: var(--primary-color);
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 50px 0;
-        }
-        
-        .loading i {
-            font-size: 2rem;
-            color: var(--primary-color);
+        .bank-account-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
             margin-bottom: 15px;
         }
         
-        .error {
+        /* Loading and Error States */
+        .loading, .error {
             text-align: center;
-            padding: 50px 20px;
-            color: #dc3545;
+            padding: 50px;
+            color: var(--gray-color);
         }
         
-        .error i {
+        .loading i, .error i {
             font-size: 3rem;
             margin-bottom: 20px;
         }
         
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
             border-radius: 6px;
-            color: white;
-            font-weight: 500;
-            box-shadow: var(--shadow-hover);
-            z-index: 1000;
-            transform: translateX(200%);
-            transition: transform 0.3s ease-in-out;
+            margin-bottom: 20px;
+            display: none;
         }
         
-        .notification.show {
-            transform: translateX(0);
-        }
-        
-        .notification.success {
-            background-color: #28a745;
-        }
-        
-        .notification.error {
-            background-color: #dc3545;
-        }
-        
-        .notification.warning {
-            background-color: #ffc107;
-            color: #212529;
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
         }
         
         /* Responsive Design */
         @media (max-width: 768px) {
-            .user-center-container {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                flex: 0 0 auto;
-            }
-            
             .header-content {
                 flex-direction: column;
                 gap: 15px;
             }
             
             .nav {
+                display: flex;
                 flex-wrap: wrap;
                 justify-content: center;
             }
@@ -471,6 +597,29 @@
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 15px;
+            }
+            
+            .user-center-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                flex: 0 0 auto;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                margin: 0;
+            }
+            
+            .form-col {
+                padding: 0;
+                min-width: 100%;
+                margin-bottom: 15px;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -487,6 +636,7 @@
                     <a href="/"><i class="fas fa-home"></i> 首页</a>
                     <a href="/products"><i class="fas fa-box"></i> 商品</a>
                     <a href="/cart"><i class="fas fa-shopping-cart"></i> 购物车</a>
+                    <a href="/user-center"><i class="fas fa-user-circle"></i> 用户中心</a>
                 </nav>
                 <div class="user-info">
                     <div id="user-actions">
@@ -500,6 +650,8 @@
                 </div>
             </div>
         </header>
+            </div>
+        </header>
 
         <div class="page-header">
             <h1 class="page-title"><i class="fas fa-user-circle"></i> 用户中心</h1>
@@ -507,16 +659,18 @@
 
         <div class="user-center-container">
             <div class="sidebar">
-                <h3><i class="fas fa-user"></i> 用户中心</h3>
+                <h3><i class="fas fa-bars"></i> 用户菜单</h3>
                 <ul class="sidebar-menu">
-                    <li><a href="#" class="active" data-section="profile"><i class="fas fa-user-circle"></i> 个人资料</a></li>
-                    <li><a href="#" data-section="account"><i class="fas fa-cog"></i> 账号设置</a></li>
+                    <li><a href="#" class="active" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> 控制面板</a></li>
+                    <li><a href="#" data-section="profile"><i class="fas fa-user"></i> 个人资料</a></li>
                     <li><a href="#" data-section="addresses"><i class="fas fa-map-marker-alt"></i> 地址管理</a></li>
-                    <li><a href="#" data-section="orders"><i class="fas fa-list"></i> 我的订单</a></li>
                     <li><a href="#" data-section="password"><i class="fas fa-lock"></i> 修改密码</a></li>
+                    <li><a href="#" data-section="notifications"><i class="fas fa-bell"></i> 通知方式</a></li>
+                    <li><a href="#" data-section="bank-accounts"><i class="fas fa-credit-card"></i> 银行账号</a></li>
+                    <li><a href="#" data-section="delete-account"><i class="fas fa-user-times"></i> 关闭账号</a></li>
                 </ul>
             </div>
-
+            
             <div class="main-content">
                 <div id="user-center-content">
                     <div class="loading">
@@ -528,57 +682,85 @@
         </div>
     </div>
 
-    <div id="notification" class="notification"></div>
-
     <script>
+        // 当前用户数据
+        let currentUser = null;
+        let allOrders = [];
+        
         // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function() {
-            loadUserProfile();
             checkUserStatus();
             updateCartCount();
-            
-            // 添加菜单点击事件
-            document.querySelectorAll('.sidebar-menu a').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
-                    this.classList.add('active');
-                    showSection(this.dataset.section);
-                });
-            });
+            loadUserInfo();
         });
 
-        // 检查用户登录状态
+        // 绑定侧边栏菜单事件
+        function bindSidebarMenuEvents() {
+            // 使用事件委托，将事件绑定到父元素上
+            const sidebarMenu = document.querySelector('.sidebar-menu');
+            if (sidebarMenu) {
+                // 先移除已有的事件监听器（如果有的话）
+                sidebarMenu.removeEventListener('click', handleSidebarClick);
+                // 添加新的事件监听器
+                sidebarMenu.addEventListener('click', handleSidebarClick);
+            }
+        }
+
+        // 处理侧边栏点击事件
+        function handleSidebarClick(e) {
+            // 检查点击的是否是菜单链接
+            if (e.target.tagName === 'A' && e.target.dataset.section) {
+                e.preventDefault();
+                // 移除所有激活状态
+                document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+                // 激活当前点击的菜单项
+                e.target.classList.add('active');
+                // 显示对应的内容部分
+                showSection(e.target.dataset.section);
+            }
+        }
+
+        // 检查用户状态
         async function checkUserStatus() {
             const token = localStorage.getItem('token');
             const userActions = document.getElementById('user-actions');
             
-            if (token) {
-                try {
-                    const response = await fetch('/api/users/profile', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-                    
-                    if (response.ok) {
-                        const user = await response.json();
-                        userActions.innerHTML = `
-                            <span><i class="fas fa-user"></i> ${user.username}</span>
-                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 登出</a>
-                            ${user.role === 'admin' ? '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>' : ''}
-                            <a href="/user-center"><i class="fas fa-user-circle"></i> 用户中心</a>
-                        `;
-                    } else {
-                        // 如果用户状态检查失败，可能是因为令牌无效
-                        if (response.status === 401) {
-                            localStorage.removeItem('token');
-                            localStorage.removeItem('user');
-                        }
+            if (!token) {
+                userActions.innerHTML = `
+                    <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
+                    <a href="/register"><i class="fas fa-user-plus"></i> 注册</a>
+                `;
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/users/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
                     }
-                } catch (error) {
-                    console.error('检查用户状态失败:', error);
+                });
+                
+                if (response.ok) {
+                    const user = await response.json();
+                    currentUser = user;
+                    userActions.innerHTML = `
+                        <span><i class="fas fa-user"></i> ${user.username}</span>
+                        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
+                        ${user.role === 'admin' ? '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>' : ''}
+                        ${user.role === 'seller' ? '<a href="/seller"><i class="fas fa-store"></i> 卖家中心</a>' : ''}
+                    `;
+                } else if (response.status === 401) {
+                    // Token无效，清除本地存储
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    userActions.innerHTML = `
+                        <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
+                        <a href="/register"><i class="fas fa-user-plus"></i> 注册</a>
+                    `;
                 }
+            } catch (error) {
+                console.error('检查用户状态失败:', error);
+                // 即使检查失败，也保持当前的用户操作界面
             }
         }
 
@@ -606,6 +788,7 @@
                         const cart = await response.json();
                         const totalItems = cart.items.reduce((total, item) => total + item.quantity, 0);
                         cartCountElement.textContent = totalItems;
+                        cartCountElement.style.display = totalItems > 0 ? 'flex' : 'none';
                     }
                 } catch (error) {
                     console.error('获取购物车数量失败:', error);
@@ -613,19 +796,21 @@
             }
         }
 
-        // 显示通知
-        function showNotification(message, type = 'success') {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = `notification ${type} show`;
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
+        // 显示错误消息
+        function showErrorMessage(message) {
+            const errorElement = document.getElementById('error-message');
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+                
+                setTimeout(() => {
+                    errorElement.style.display = 'none';
+                }, 5000);
+            }
         }
 
         // 加载用户信息
-        async function loadUserProfile() {
+        async function loadUserInfo() {
             const token = localStorage.getItem('token');
             
             if (!token) {
@@ -634,59 +819,36 @@
             }
             
             try {
-                // 并行获取用户信息
-                const [profileResponse, userResponse, ordersResponse] = await Promise.all([
-                    fetch('/api/profiles/user', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    }),
-                    fetch('/api/users/profile', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    }),
-                    fetch('/api/orders', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    })
-                ]);
+                const response = await fetch('/api/users/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 
-                if (profileResponse.ok && userResponse.ok) {
-                    const profile = await profileResponse.json();
-                    const user = await userResponse.json();
-                    let orders = [];
-                    
-                    // 检查订单响应
-                    if (ordersResponse.ok) {
-                        orders = await ordersResponse.json();
-                        // 确保orders是数组
-                        if (!Array.isArray(orders)) {
-                            console.error('订单数据不是数组:', orders);
-                            orders = [];
-                        }
-                    } else {
-                        console.error('获取订单失败:', ordersResponse.status);
+                if (response.ok) {
+                    const user = await response.json();
+                    currentUser = user;
+                    // 保存用户数据到localStorage
+                    try {
+                        localStorage.setItem('user', JSON.stringify(user));
+                    } catch (e) {
+                        console.error('保存用户数据失败:', e);
                     }
-                    
-                    // 显示默认的个人资料部分
-                    displayUserProfile(profile, user, orders);
+                    // 显示默认的控制面板部分
+                    showSection('dashboard');
+                    // 绑定菜单事件
+                    bindSidebarMenuEvents();
+                } else if (response.status === 401) {
+                    // Token无效，跳转到登录页
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '/login';
                 } else {
-                    // 添加更详细的错误信息
-                    let errorMessage = '加载用户信息失败';
-                    if (!profileResponse.ok) {
-                        errorMessage += ' (用户画像加载失败: ' + profileResponse.status + ')';
-                    }
-                    if (!userResponse.ok) {
-                        errorMessage += ' (用户资料加载失败: ' + userResponse.status + ')';
-                    }
-                    
                     document.getElementById('user-center-content').innerHTML = `
                         <div class="error">
                             <i class="fas fa-exclamation-triangle"></i>
-                            <p>${errorMessage}</p>
-                            <button class="btn" style="background: var(--primary-color); color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-top: 20px;" onclick="loadUserProfile()">重新加载</button>
+                            <p>加载用户信息失败</p>
+                            <button class="btn btn-primary" style="margin-top: 20px;" onclick="loadUserInfo()">重新加载</button>
                         </div>
                     `;
                 }
@@ -696,385 +858,722 @@
                     <div class="error">
                         <i class="fas fa-exclamation-triangle"></i>
                         <p>网络错误，请检查连接后重试</p>
-                        <button class="btn" style="background: var(--primary-color); color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-top: 20px;" onclick="loadUserProfile()">重新加载</button>
+                        <button class="btn btn-primary" style="margin-top: 20px;" onclick="loadUserInfo()">重新加载</button>
                     </div>
                 `;
             }
         }
 
-        // 显示用户信息
-        function displayUserProfile(profile, user, orders) {
-            const content = document.getElementById('user-center-content');
-            content.innerHTML = `
-                <div id="profile-section" class="section active">
-                    <h2 class="section-title"><i class="fas fa-user-circle"></i> 个人资料</h2>
-                    <div class="card">
-                        <form id="profile-form">
-                            <div class="form-group">
-                                <label for="username">用户名</label>
-                                <input type="text" id="username" class="form-control" value="${user.username}" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label for="email">邮箱</label>
-                                <input type="email" id="email" class="form-control" value="${user.email}" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label for="phone">手机号</label>
-                                <input type="tel" id="phone" class="form-control" value="${user.phone || ''}">
-                            </div>
-                            <div class="form-group">
-                                <label for="bio">个人简介</label>
-                                <textarea id="bio" class="form-control" rows="3">${user.profile?.bio || ''}</textarea>
-                            </div>
-                            <button type="button" class="btn" onclick="updateProfile()">保存资料</button>
-                        </form>
-                    </div>
-                </div>
-                
-                <div id="account-section" class="section">
-                    <h2 class="section-title"><i class="fas fa-cog"></i> 账号设置</h2>
-                    <div class="card">
-                        <h3 class="card-title">账号信息</h3>
-                        <p><strong>注册时间:</strong> ${new Date(user.createdAt).toLocaleDateString()}</p>
-                        <p><strong>账号状态:</strong> ${user.isActive ? '正常' : '已禁用'}</p>
-                        <p><strong>用户角色:</strong> ${user.role === 'admin' ? '管理员' : user.role === 'seller' ? '卖家' : '普通用户'}</p>
-                        
-                        <h3 class="card-title" style="margin-top: 30px;">关闭账号</h3>
-                        <p>关闭账号后，您的所有信息将被永久删除，无法恢复。</p>
-                        <button class="btn btn-danger" onclick="deleteAccount()">关闭账号</button>
-                    </div>
-                </div>
-                
-                <div id="addresses-section" class="section">
-                    <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> 地址管理</h2>
-                    <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <h3 class="card-title">收货地址</h3>
-                            <button class="btn" onclick="showAddAddressForm()"><i class="fas fa-plus"></i> 添加地址</button>
-                        </div>
-                        
-                        <div id="address-form-container" style="display: none; margin-bottom: 30px;">
-                            <form id="address-form">
-                                <input type="hidden" id="address-id">
-                                <div class="form-group">
-                                    <label for="address-name">收货人姓名</label>
-                                    <input type="text" id="address-name" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="address-phone">手机号</label>
-                                    <input type="tel" id="address-phone" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="address-province">省份</label>
-                                    <input type="text" id="address-province" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="address-city">城市</label>
-                                    <input type="text" id="address-city" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="address-district">区/县</label>
-                                    <input type="text" id="address-district" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="address-detail">详细地址</label>
-                                    <input type="text" id="address-detail" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>
-                                        <input type="checkbox" id="address-default"> 设为默认地址
-                                    </label>
-                                </div>
-                                <button type="button" class="btn" onclick="saveAddress()">保存地址</button>
-                                <button type="button" class="btn btn-outline" onclick="cancelAddressForm()" style="margin-left: 10px;">取消</button>
-                            </form>
-                        </div>
-                        
-                        <div id="addresses-list">
-                            ${renderAddresses(user.addresses || [])}
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="orders-section" class="section">
-                    <h2 class="section-title"><i class="fas fa-list"></i> 我的订单</h2>
-                    <div id="orders-list">
-                        ${renderOrders(orders)}
-                    </div>
-                </div>
-                
-                <div id="password-section" class="section">
-                    <h2 class="section-title"><i class="fas fa-lock"></i> 修改密码</h2>
-                    <div class="card">
-                        <form id="password-form">
-                            <div class="form-group">
-                                <label for="current-password">当前密码</label>
-                                <input type="password" id="current-password" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="new-password">新密码</label>
-                                <input type="password" id="new-password" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="confirm-password">确认新密码</label>
-                                <input type="password" id="confirm-password" class="form-control" required>
-                            </div>
-                            <button type="button" class="btn" onclick="changePassword()">修改密码</button>
-                        </form>
-                    </div>
-                </div>
-            `;
-        }
-
-        // 渲染地址列表
-        function renderAddresses(addresses) {
-            if (!addresses || addresses.length === 0) {
-                return '<p>暂无收货地址</p>';
-            }
-            
-            return `
-                <div class="address-list">
-                    ${addresses.map(address => `
-                        <div class="address-card ${address.isDefault ? 'active' : ''}">
-                            <div class="address-actions">
-                                <button onclick="editAddress('${address._id}')"><i class="fas fa-edit"></i></button>
-                                <button onclick="deleteAddress('${address._id}')"><i class="fas fa-trash"></i></button>
-                            </div>
-                            <h4>${address.name}</h4>
-                            <p>${address.phone}</p>
-                            <p>${address.province} ${address.city} ${address.district}</p>
-                            <p>${address.detail}</p>
-                            ${address.isDefault ? '<span class="badge" style="background: var(--primary-color); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">默认地址</span>' : ''}
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        // 渲染订单列表
-        function renderOrders(orders) {
-            if (!orders || orders.length === 0) {
-                return '<p>暂无订单</p>';
-            }
-            
-            return `
-                <div class="order-list">
-                    ${orders.map(order => `
-                        <div class="order-item">
-                            <div class="order-header">
-                                <div class="order-id">订单号: ${order._id}</div>
-                                <div class="order-status status-${order.status}">${getOrderStatusText(order.status)}</div>
-                            </div>
-                            <div class="order-products">
-                                ${(order.items || []).map(item => `
-                                    <div class="order-product">
-                                        <div>
-                                            <div>${item.product?.name || '商品名称'}</div>
-                                            <div>数量: ${item.quantity} 价格: ¥${item.price}</div>
-                                        </div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                            <div class="order-total">总计: ¥${order.totalAmount}</div>
-                            <div>下单时间: ${new Date(order.createdAt).toLocaleString()}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        // 获取订单状态文本
-        function getOrderStatusText(status) {
-            const statusMap = {
-                pending: '待付款',
-                paid: '已付款',
-                shipped: '已发货',
-                delivered: '已送达',
-                cancelled: '已取消'
-            };
-            return statusMap[status] || status;
-        }
-
         // 显示指定部分
         function showSection(section) {
-            // 隐藏所有部分
-            document.querySelectorAll('.section').forEach(sec => {
-                sec.classList.remove('active');
-            });
+            const contentContainer = document.getElementById('user-center-content');
             
-            // 显示指定部分
-            const sectionElement = document.getElementById(`${section}-section`);
-            if (sectionElement) {
-                sectionElement.classList.add('active');
-            }
-        }
-
-        // 更新个人资料
-        async function updateProfile() {
-            const token = localStorage.getItem('token');
-            const phone = document.getElementById('phone').value;
-            const bio = document.getElementById('bio').value;
-            
-            try {
-                const response = await fetch('/api/users/profile', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ phone, profile: { bio } })
-                });
-                
-                if (response.ok) {
-                    showNotification('资料更新成功');
-                    // 重新加载用户信息
-                    loadUserProfile();
-                } else {
-                    const error = await response.json();
-                    showNotification('更新失败: ' + (error.message || '未知错误'), 'error');
+            // 如果没有用户数据，则尝试从localStorage获取
+            if (!currentUser) {
+                try {
+                    const userData = localStorage.getItem('user');
+                    if (userData) {
+                        currentUser = JSON.parse(userData);
+                    }
+                } catch (e) {
+                    console.error('解析用户数据失败:', e);
                 }
-            } catch (error) {
-                console.error('更新资料失败:', error);
-                showNotification('网络错误，请稍后重试', 'error');
             }
+            
+            // 如果仍然没有用户数据，尝试重新加载
+            if (!currentUser) {
+                loadUserInfo();
+                return;
+            }
+            
+            switch(section) {
+                case 'dashboard':
+                    renderDashboard(contentContainer, currentUser);
+                    break;
+                case 'profile':
+                    renderProfileSection(contentContainer, currentUser);
+                    break;
+                case 'addresses':
+                    renderAddressesSection(contentContainer, currentUser);
+                    break;
+                case 'password':
+                    renderPasswordSection(contentContainer);
+                    break;
+                case 'notifications':
+                    renderNotificationsSection(contentContainer, currentUser);
+                    break;
+                case 'bank-accounts':
+                    renderBankAccountsSection(contentContainer);
+                    break;
+                case 'delete-account':
+                    renderDeleteAccountSection(contentContainer);
+                    break;
+                default:
+                    renderDashboard(contentContainer, currentUser);
+            }
+            
+            // 在内容更新后重新绑定菜单事件
+            setTimeout(bindSidebarMenuEvents, 100);
         }
 
-        // 修改密码
-        async function changePassword() {
-            const token = localStorage.getItem('token');
-            const currentPassword = document.getElementById('current-password').value;
-            const newPassword = document.getElementById('new-password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
+        // 渲染控制面板
+        function renderDashboard(container, user) {
+            // 加载订单数据
+            // loadOrdersForDashboard(user);  // 订单功能已移除
             
-            if (newPassword !== confirmPassword) {
-                showNotification('新密码与确认密码不一致', 'error');
+            container.innerHTML = `
+                <div class="section active">
+                    <h2 class="section-title"><i class="fas fa-tachometer-alt"></i> 控制面板</h2>
+                    
+                    <div class="dashboard-stats">
+                        <div class="stat-card">
+                            <i class="fas fa-user"></i>
+                            <div class="label">用户名</div>
+                            <div class="number">${user.username}</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <i class="fas fa-envelope"></i>
+                            <div class="label">邮箱</div>
+                            <div class="number">${user.email}</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div class="label">地址数</div>
+                            <div class="number">${user.addresses?.length || 0}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h2>${user.username}</h2>
+                            <p><i class="fas fa-envelope"></i> ${user.email}</p>
+                            <p><i class="fas fa-phone"></i> ${user.phone || '未填写'}</p>
+                            <p><i class="fas fa-calendar"></i> 注册于 ${new Date(user.createdAt).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-details">
+                        <div class="detail-card">
+                            <h3><i class="fas fa-user-circle"></i> 个人资料</h3>
+                            <p><strong>昵称:</strong> ${user.profile?.nickname || '未填写'}</p>
+                            <p><strong>性别:</strong> ${user.profile?.gender === 'male' ? '男' : user.profile?.gender === 'female' ? '女' : '保密'}</p>
+                            <p><strong>生日:</strong> ${user.profile?.birthday || '未填写'}</p>
+                            <button class="btn btn-outline" onclick="showSection('profile')" style="margin-top: 15px;">
+                                <i class="fas fa-edit"></i> 编辑资料
+                            </button>
+                        </div>
+                        
+                        <div class="detail-card">
+                            <h3><i class="fas fa-map-marker-alt"></i> 默认地址</h3>
+                            ${getDefaultAddressHTML(user.addresses)}
+                            <button class="btn btn-outline" onclick="showSection('addresses')" style="margin-top: 15px;">
+                                <i class="fas fa-edit"></i> 管理地址
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-card">
+                        <h3><i class="fas fa-list"></i> 最近活动</h3>
+                        <p>暂无最近活动记录</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 获取默认地址HTML
+        function getDefaultAddressHTML(addresses) {
+            if (!addresses || addresses.length === 0) {
+                return '<p>暂无地址信息</p>';
+            }
+            
+            const defaultAddress = addresses.find(addr => addr.isDefault) || addresses[0];
+            return `
+                <p><strong>收货人:</strong> ${defaultAddress.recipientName}</p>
+                <p><strong>电话:</strong> ${defaultAddress.recipientPhone}</p>
+                <p><strong>地址:</strong> ${defaultAddress.province}${defaultAddress.city}${defaultAddress.street}</p>
+            `;
+        }
+
+        // 加载用于控制面板的订单数据
+        async function loadOrdersForDashboard(user) {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
                 return;
             }
             
             try {
-                const response = await fetch('/api/users/change-password', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ currentPassword, newPassword })
-                });
-                
-                if (response.ok) {
-                    showNotification('密码修改成功');
-                    // 清空表单
-                    document.getElementById('password-form').reset();
-                } else {
-                    const error = await response.json();
-                    showNotification('修改失败: ' + (error.message || '未知错误'), 'error');
-                }
-            } catch (error) {
-                console.error('修改密码失败:', error);
-                showNotification('网络错误，请稍后重试', 'error');
-            }
-        }
-
-        // 删除账号
-        async function deleteAccount() {
-            if (!confirm('确定要关闭账号吗？此操作不可恢复！')) {
-                return;
-            }
-            
-            const token = localStorage.getItem('token');
-            
-            try {
-                const response = await fetch('/api/users/profile', {
-                    method: 'DELETE',
+                const response = await fetch('/api/orders', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
                 
                 if (response.ok) {
-                    // 清除本地存储并重定向到首页
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                    showNotification('账号已关闭');
-                    setTimeout(() => {
-                        window.location.href = '/';
-                    }, 2000);
-                } else {
-                    const error = await response.json();
-                    showNotification('关闭账号失败: ' + (error.message || '未知错误'), 'error');
+                    const orders = await response.json();
+                    allOrders = orders;
+                    
+                    // 更新订单数量
+                    document.getElementById('order-count').textContent = orders.length;
+                    
+                    // 显示最近订单
+                    renderRecentOrders(orders.slice(0, 3));
                 }
             } catch (error) {
-                console.error('关闭账号失败:', error);
-                showNotification('网络错误，请稍后重试', 'error');
+                console.error('加载订单数据失败:', error);
             }
+        }
+
+        // 渲染最近订单
+        function renderRecentOrders(orders) {
+            const recentOrdersContainer = document.getElementById('recent-orders');
+            
+            if (!orders || orders.length === 0) {
+                recentOrdersContainer.innerHTML = '<p>暂无订单</p>';
+                return;
+            }
+            
+            let ordersHTML = '';
+            orders.forEach(order => {
+                ordersHTML += `
+                    <div class="order-item">
+                        <div class="order-header">
+                            <span class="order-id">订单号: ${order._id.substring(0, 8)}</span>
+                            <span class="order-status status-${order.status}">${getOrderStatusText(order.status)}</span>
+                        </div>
+                        <div class="order-products">
+                            <p>${order.items.length} 件商品</p>
+                        </div>
+                        <div class="order-total">
+                            总计: ¥${order.totalAmount.toFixed(2)}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            recentOrdersContainer.innerHTML = ordersHTML;
+        }
+
+        // 获取订单状态文本
+        function getOrderStatusText(status) {
+            const statusMap = {
+                'pending': '待付款',
+                'processing': '处理中',
+                'shipped': '已发货',
+                'delivered': '已送达',
+                'cancelled': '已取消'
+            };
+            return statusMap[status] || status;
+        }
+
+        // 渲染个人资料部分
+        function renderProfileSection(container, user) {
+            container.innerHTML = `
+                <div class="section active">
+                    <h2 class="section-title"><i class="fas fa-user"></i> 个人资料</h2>
+                    <div class="success-message" id="profile-success"></div>
+                    <div class="error-message" id="profile-error"></div>
+                    
+                    <form id="profile-form">
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label class="form-label">用户名</label>
+                                    <input type="text" class="form-control" value="${user.username}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label class="form-label">邮箱地址</label>
+                                    <input type="email" class="form-control" value="${user.email}" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label class="form-label">手机号码</label>
+                                    <input type="tel" class="form-control" name="phone" value="${user.phone || ''}">
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label class="form-label">昵称</label>
+                                    <input type="text" class="form-control" name="nickname" value="${user.profile?.nickname || ''}">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">个人简介</label>
+                            <textarea class="form-control" name="bio" rows="4">${user.profile?.bio || ''}</textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label class="form-label">性别</label>
+                                    <select class="form-control" name="gender">
+                                        <option value="">保密</option>
+                                        <option value="male" ${user.profile?.gender === 'male' ? 'selected' : ''}>男</option>
+                                        <option value="female" ${user.profile?.gender === 'female' ? 'selected' : ''}>女</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label class="form-label">生日</label>
+                                    <input type="date" class="form-control" name="birthday" value="${user.profile?.birthday || ''}">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> 保存资料</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            // 添加表单提交事件
+            setTimeout(() => {
+                const profileForm = document.getElementById('profile-form');
+                if (profileForm) {
+                    profileForm.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        await updateProfile(this);
+                    });
+                }
+            }, 100);
+        }
+
+        // 更新个人资料
+        async function updateProfile(form) {
+            const token = localStorage.getItem('token');
+            const successMessage = document.getElementById('profile-success');
+            const errorMessage = document.getElementById('profile-error');
+            
+            // 隐藏消息
+            if (successMessage) successMessage.style.display = 'none';
+            if (errorMessage) errorMessage.style.display = 'none';
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            const formData = new FormData(form);
+            const profileData = {
+                phone: formData.get('phone'),
+                profile: {
+                    nickname: formData.get('nickname'),
+                    bio: formData.get('bio'),
+                    gender: formData.get('gender'),
+                    birthday: formData.get('birthday')
+                }
+            };
+            
+            try {
+                const response = await fetch('/api/users/profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(profileData)
+                });
+                
+                if (response.ok) {
+                    const updatedUser = await response.json();
+                    currentUser = updatedUser;
+                    
+                    // 保存用户数据到localStorage
+                    try {
+                        localStorage.setItem('user', JSON.stringify(updatedUser));
+                    } catch (e) {
+                        console.error('保存用户数据失败:', e);
+                    }
+                    
+                    if (successMessage) {
+                        successMessage.textContent = '个人资料更新成功！';
+                        successMessage.style.display = 'block';
+                    }
+                    
+                    // 更新用户状态显示
+                    checkUserStatus();
+                } else {
+                    const error = await response.json();
+                    if (errorMessage) {
+                        errorMessage.textContent = error.message || '更新失败，请重试';
+                        errorMessage.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('更新个人资料失败:', error);
+                if (errorMessage) {
+                    errorMessage.textContent = '网络错误，请检查连接后重试';
+                    errorMessage.style.display = 'block';
+                }
+            }
+        }
+
+        // 渲染地址管理部分
+        function renderAddressesSection(container, user) {
+            container.innerHTML = `
+                <div class="section active">
+                    <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> 地址管理</h2>
+                    <div class="success-message" id="address-success"></div>
+                    <div class="error-message" id="address-error"></div>
+                    
+                    <button class="btn btn-primary" style="margin-bottom: 20px;" onclick="showAddAddressForm()">
+                        <i class="fas fa-plus"></i> 添加新地址
+                    </button>
+                    
+                    <div id="address-form-container" style="display: none; margin-bottom: 30px;">
+                        <h3 id="address-form-title">添加地址</h3>
+                        <form id="address-form">
+                            <input type="hidden" id="address-id" name="addressId">
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <div class="form-group">
+                                        <label class="form-label">地址类型</label>
+                                        <select class="form-control" name="type" required>
+                                            <option value="home">家庭地址</option>
+                                            <option value="work">工作地址</option>
+                                            <option value="billing">账单地址</option>
+                                            <option value="shipping">配送地址</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-col">
+                                    <div class="form-group">
+                                        <label class="form-label">设为默认地址</label>
+                                        <div style="padding: 12px 0;">
+                                            <input type="checkbox" id="isDefault" name="isDefault">
+                                            <label for="isDefault" style="margin-left: 8px;">默认地址</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <div class="form-group">
+                                        <label class="form-label">收货人姓名</label>
+                                        <input type="text" class="form-control" name="recipientName" required>
+                                    </div>
+                                </div>
+                                <div class="form-col">
+                                    <div class="form-group">
+                                        <label class="form-label">收货人电话</label>
+                                        <input type="tel" class="form-control" name="recipientPhone" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <div class="form-group">
+                                        <label class="form-label">国家</label>
+                                        <input type="text" class="form-control" name="country" value="中国" required>
+                                    </div>
+                                </div>
+                                <div class="form-col">
+                                    <div class="form-group">
+                                        <label class="form-label">邮编</label>
+                                        <input type="text" class="form-control" name="zipCode">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">省份</label>
+                                <input type="text" class="form-control" name="state" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">城市</label>
+                                <input type="text" class="form-control" name="city" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">详细地址</label>
+                                <input type="text" class="form-control" name="street" placeholder="街道地址" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary" id="address-form-submit"><i class="fas fa-save"></i> 保存地址</button>
+                                <button type="button" class="btn btn-outline" onclick="cancelAddressForm()" style="margin-left: 10px;">取消</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="address-list" id="addresses-container">
+                        ${renderAddressesList(user.addresses || [])}
+                    </div>
+                </div>
+            `;
+            
+            // 添加地址表单提交事件
+            setTimeout(() => {
+                const addressForm = document.getElementById('address-form');
+                if (addressForm) {
+                    addressForm.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        const addressId = document.getElementById('address-id').value;
+                        if (addressId) {
+                            await updateAddress(addressId, this);
+                        } else {
+                            await addAddress(this);
+                        }
+                    });
+                }
+            }, 100);
+        }
+
+        // 渲染地址列表
+        function renderAddressesList(addresses) {
+            if (!addresses || addresses.length === 0) {
+                return '<p>暂无地址信息</p>';
+            }
+            
+            let addressesHTML = '';
+            addresses.forEach(address => {
+                addressesHTML += `
+                    <div class="address-card ${address.isDefault ? 'active' : ''}">
+                        <h4>
+                            <i class="fas fa-home"></i> 
+                            ${address.type === 'home' ? '家庭地址' : 
+                              address.type === 'work' ? '工作地址' : 
+                              address.type === 'billing' ? '账单地址' : '配送地址'}
+                            ${address.isDefault ? '<span style="color: var(--primary-color); font-size: 0.9rem;">(默认)</span>' : ''}
+                        </h4>
+                        <p><strong>收货人:</strong> ${address.recipientName}</p>
+                        <p><strong>电话:</strong> ${address.recipientPhone}</p>
+                        <p><strong>地址:</strong> ${address.country}${address.state}${address.city}${address.street}</p>
+                        <p><strong>邮编:</strong> ${address.zipCode || '无'}</p>
+                        
+                        <div class="address-actions">
+                            <button onclick="editAddress('${address._id}')" title="编辑">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteAddress('${address._id}')" title="删除">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            return addressesHTML;
         }
 
         // 显示添加地址表单
         function showAddAddressForm() {
-            document.getElementById('address-form-container').style.display = 'block';
+            document.getElementById('address-form-title').textContent = '添加地址';
             document.getElementById('address-id').value = '';
             document.getElementById('address-form').reset();
+            document.getElementById('address-form-container').style.display = 'block';
+        }
+
+        // 取消地址表单
+        function cancelAddressForm() {
+            document.getElementById('address-form-container').style.display = 'none';
         }
 
         // 编辑地址
         function editAddress(addressId) {
-            // 这里应该从用户数据中找到对应的地址并填充表单
-            // 为简化实现，这里只显示表单
+            const address = currentUser.addresses.find(addr => addr._id === addressId);
+            if (!address) return;
+            
+            document.getElementById('address-form-title').textContent = '编辑地址';
+            document.getElementById('address-id').value = address._id;
+            document.getElementById('address-form').elements['type'].value = address.type;
+            document.getElementById('address-form').elements['isDefault'].checked = address.isDefault;
+            document.getElementById('address-form').elements['recipientName'].value = address.recipientName;
+            document.getElementById('address-form').elements['recipientPhone'].value = address.recipientPhone;
+            document.getElementById('address-form').elements['country'].value = address.country;
+            document.getElementById('address-form').elements['zipCode'].value = address.zipCode || '';
+            document.getElementById('address-form').elements['state'].value = address.state;
+            document.getElementById('address-form').elements['city'].value = address.city;
+            document.getElementById('address-form').elements['street'].value = address.street;
+            
             document.getElementById('address-form-container').style.display = 'block';
-            document.getElementById('address-id').value = addressId;
-            // 实际应用中应该填充表单数据
         }
 
-        // 保存地址
-        async function saveAddress() {
+        // 添加地址
+        async function addAddress(form) {
             const token = localStorage.getItem('token');
-            const addressId = document.getElementById('address-id').value;
-            const name = document.getElementById('address-name').value;
-            const phone = document.getElementById('address-phone').value;
-            const province = document.getElementById('address-province').value;
-            const city = document.getElementById('address-city').value;
-            const district = document.getElementById('address-district').value;
-            const detail = document.getElementById('address-detail').value;
-            const isDefault = document.getElementById('address-default').checked;
+            const successMessage = document.getElementById('address-success');
+            const errorMessage = document.getElementById('address-error');
+            const submitButton = document.getElementById('address-form-submit');
             
-            const addressData = { name, phone, province, city, district, detail, isDefault };
+            // 隐藏消息
+            if (successMessage) successMessage.style.display = 'none';
+            if (errorMessage) errorMessage.style.display = 'none';
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            // 禁用提交按钮
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 保存中...';
+            }
+            
+            const formData = new FormData(form);
+            const addressData = {
+                type: formData.get('type'),
+                isDefault: formData.get('isDefault') === 'on',
+                recipientName: formData.get('recipientName'),
+                recipientPhone: formData.get('recipientPhone'),
+                country: formData.get('country'),
+                zipCode: formData.get('zipCode'),
+                state: formData.get('state'),
+                city: formData.get('city'),
+                street: formData.get('street')
+            };
             
             try {
-                let response;
-                if (addressId) {
-                    // 更新地址
-                    response = await fetch(`/api/users/address/${addressId}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify(addressData)
-                    });
-                } else {
-                    // 添加地址
-                    response = await fetch('/api/users/address', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify(addressData)
-                    });
-                }
+                const response = await fetch('/api/users/addresses', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(addressData)
+                });
                 
                 if (response.ok) {
-                    showNotification(addressId ? '地址更新成功' : '地址添加成功');
-                    cancelAddressForm();
-                    // 重新加载用户信息
-                    loadUserProfile();
+                    const updatedUser = await response.json();
+                    currentUser = updatedUser;
+                    
+                    // 保存用户数据到localStorage
+                    try {
+                        localStorage.setItem('user', JSON.stringify(updatedUser));
+                    } catch (e) {
+                        console.error('保存用户数据失败:', e);
+                    }
+                    
+                    if (successMessage) {
+                        successMessage.textContent = '地址添加成功！';
+                        successMessage.style.display = 'block';
+                    }
+                    
+                    // 重新渲染地址部分
+                    renderAddressesSection(document.querySelector('.main-content'), updatedUser);
                 } else {
                     const error = await response.json();
-                    showNotification('保存失败: ' + (error.message || '未知错误'), 'error');
+                    if (errorMessage) {
+                        errorMessage.textContent = error.message || '添加失败，请重试';
+                        errorMessage.style.display = 'block';
+                    }
                 }
             } catch (error) {
-                console.error('保存地址失败:', error);
-                showNotification('网络错误，请稍后重试', 'error');
+                console.error('添加地址失败:', error);
+                if (errorMessage) {
+                    errorMessage.textContent = '网络错误，请检查连接后重试';
+                    errorMessage.style.display = 'block';
+                }
+            } finally {
+                // 恢复提交按钮
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = '<i class="fas fa-save"></i> 保存地址';
+                }
+            }
+        }
+
+        // 更新地址
+        async function updateAddress(addressId, form) {
+            const token = localStorage.getItem('token');
+            const successMessage = document.getElementById('address-success');
+            const errorMessage = document.getElementById('address-error');
+            const submitButton = document.getElementById('address-form-submit');
+            
+            // 隐藏消息
+            if (successMessage) successMessage.style.display = 'none';
+            if (errorMessage) errorMessage.style.display = 'none';
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            // 禁用提交按钮
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 保存中...';
+            }
+            
+            const formData = new FormData(form);
+            const addressData = {
+                type: formData.get('type'),
+                isDefault: formData.get('isDefault') === 'on',
+                recipientName: formData.get('recipientName'),
+                recipientPhone: formData.get('recipientPhone'),
+                country: formData.get('country'),
+                zipCode: formData.get('zipCode'),
+                state: formData.get('state'),
+                city: formData.get('city'),
+                street: formData.get('street')
+            };
+            
+            try {
+                const response = await fetch(`/api/users/addresses/${addressId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(addressData)
+                });
+                
+                if (response.ok) {
+                    const updatedUser = await response.json();
+                    currentUser = updatedUser;
+                    
+                    // 保存用户数据到localStorage
+                    try {
+                        localStorage.setItem('user', JSON.stringify(updatedUser));
+                    } catch (e) {
+                        console.error('保存用户数据失败:', e);
+                    }
+                    
+                    if (successMessage) {
+                        successMessage.textContent = '地址更新成功！';
+                        successMessage.style.display = 'block';
+                    }
+                    
+                    // 重新渲染地址部分
+                    renderAddressesSection(document.querySelector('.main-content'), updatedUser);
+                } else {
+                    const error = await response.json();
+                    if (errorMessage) {
+                        errorMessage.textContent = error.message || '更新失败，请重试';
+                        errorMessage.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('更新地址失败:', error);
+                if (errorMessage) {
+                    errorMessage.textContent = '网络错误，请检查连接后重试';
+                    errorMessage.style.display = 'block';
+                }
+            } finally {
+                // 恢复提交按钮
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = '<i class="fas fa-save"></i> 保存地址';
+                }
             }
         }
 
@@ -1085,9 +1584,20 @@
             }
             
             const token = localStorage.getItem('token');
+            const successMessage = document.getElementById('address-success');
+            const errorMessage = document.getElementById('address-error');
+            
+            // 隐藏消息
+            if (successMessage) successMessage.style.display = 'none';
+            if (errorMessage) errorMessage.style.display = 'none';
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
             
             try {
-                const response = await fetch(`/api/users/address/${addressId}`, {
+                const response = await fetch(`/api/users/addresses/${addressId}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -1095,23 +1605,844 @@
                 });
                 
                 if (response.ok) {
-                    showNotification('地址删除成功');
-                    // 重新加载用户信息
-                    loadUserProfile();
+                    const updatedUser = await response.json();
+                    currentUser = updatedUser;
+                    
+                    // 保存用户数据到localStorage
+                    try {
+                        localStorage.setItem('user', JSON.stringify(updatedUser));
+                    } catch (e) {
+                        console.error('保存用户数据失败:', e);
+                    }
+                    
+                    if (successMessage) {
+                        successMessage.textContent = '地址删除成功！';
+                        successMessage.style.display = 'block';
+                    }
+                    
+                    // 重新渲染地址部分
+                    renderAddressesSection(document.querySelector('.main-content'), updatedUser);
                 } else {
                     const error = await response.json();
-                    showNotification('删除失败: ' + (error.message || '未知错误'), 'error');
+                    if (errorMessage) {
+                        errorMessage.textContent = error.message || '删除失败，请重试';
+                        errorMessage.style.display = 'block';
+                    }
                 }
             } catch (error) {
                 console.error('删除地址失败:', error);
-                showNotification('网络错误，请稍后重试', 'error');
+                if (errorMessage) {
+                    errorMessage.textContent = '网络错误，请检查连接后重试';
+                    errorMessage.style.display = 'block';
+                }
             }
         }
 
-        // 取消地址表单
-        function cancelAddressForm() {
-            document.getElementById('address-form-container').style.display = 'none';
-            document.getElementById('address-form').reset();
+        // 查看订单详情
+        async function viewOrderDetails(orderId) {
+            // 这里可以实现查看订单详情的逻辑
+            alert(`查看订单详情: ${orderId}`);
+        }
+
+        // 取消订单
+        async function cancelOrder(orderId) {
+            if (!confirm('确定要取消这个订单吗？')) {
+                return;
+            }
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/orders/${orderId}/cancel`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    alert('订单已成功取消');
+                    // 重新加载订单数据
+                    loadOrdersData();
+                } else {
+                    const error = await response.json();
+                    alert(error.message || '取消订单失败，请重试');
+                }
+            } catch (error) {
+                console.error('取消订单失败:', error);
+                alert('网络错误，取消订单失败');
+            }
+        }
+
+        // 渲染订单部分
+        function renderOrdersSection(container) {
+            // 先显示加载状态
+            container.innerHTML = `
+                <div class="section active">
+                    <h2 class="section-title"><i class="fas fa-list"></i> 我的订单</h2>
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>正在加载订单信息...</p>
+                    </div>
+                </div>
+            `;
+            
+            // 异步加载订单数据
+            loadOrdersData();
+            // 确保事件绑定
+            setTimeout(bindSidebarMenuEvents, 100);
+        }
+
+        // 加载订单数据
+        async function loadOrdersData() {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/orders', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const orders = await response.json();
+                    allOrders = orders;
+                    displayOrders(orders);
+                    // 确保事件绑定
+                    setTimeout(bindSidebarMenuEvents, 100);
+                } else {
+                    document.querySelector('.main-content').innerHTML = `
+                        <div class="section active">
+                            <h2 class="section-title"><i class="fas fa-list"></i> 我的订单</h2>
+                            <div class="error">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <p>加载订单失败，请稍后重试</p>
+                                <button class="btn btn-primary" style="margin-top: 20px;" onclick="loadOrdersData()">重新加载</button>
+                            </div>
+                        </div>
+                    `;
+                    // 确保事件绑定
+                    setTimeout(bindSidebarMenuEvents, 100);
+                }
+            } catch (error) {
+                console.error('加载订单失败:', error);
+                document.querySelector('.main-content').innerHTML = `
+                    <div class="section active">
+                        <h2 class="section-title"><i class="fas fa-list"></i> 我的订单</h2>
+                        <div class="error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>网络错误，加载订单失败</p>
+                            <button class="btn btn-primary" style="margin-top: 20px;" onclick="loadOrdersData()">重新加载</button>
+                        </div>
+                    </div>
+                `;
+                // 确保事件绑定
+                setTimeout(bindSidebarMenuEvents, 100);
+            }
+        }
+
+        // 显示订单列表
+        function displayOrders(orders) {
+            const container = document.querySelector('.main-content');
+            
+            if (!orders || orders.length === 0) {
+                container.innerHTML = `
+                    <div class="section active">
+                        <h2 class="section-title"><i class="fas fa-list"></i> 我的订单</h2>
+                        <div class="no-orders">
+                            <i class="fas fa-clipboard-list"></i>
+                            <h3>暂无订单</h3>
+                            <p>您还没有任何订单记录</p>
+                            <a href="/products" style="display: inline-block; background: var(--primary-color); color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px;">去购物</a>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let ordersHtml = `
+                <div class="section active">
+                    <h2 class="section-title"><i class="fas fa-list"></i> 我的订单</h2>
+                    <div class="order-list">
+            `;
+            
+            orders.forEach(order => {
+                // 只有待付款和处理中的订单可以取消
+                const canCancel = order.status === 'pending' || order.status === 'processing';
+                
+                ordersHtml += `
+                    <div class="order-item">
+                        <div class="order-header">
+                            <span class="order-id"><i class="fas fa-barcode"></i> ${order._id.substring(0, 8)}</span>
+                            <span class="order-status status-${order.status}">${getOrderStatusText(order.status)}</span>
+                        </div>
+                        
+                        <div class="order-products">
+                `;
+                
+                order.items.forEach(item => {
+                    ordersHtml += `
+                        <div class="order-product">
+                            <img src="${item.product.imageUrl || '/images/placeholder.png'}" alt="${item.product.name}">
+                            <div>
+                                <div>${item.product.name}</div>
+                                <div>¥${item.price.toFixed(2)} × ${item.quantity}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                ordersHtml += `
+                        </div>
+                        
+                        <div class="order-total">
+                            总计: ¥${order.totalAmount.toFixed(2)}
+                        </div>
+                        
+                        <div style="margin-top: 15px; text-align: right;">
+                            <button class="btn btn-outline" onclick="viewOrderDetails('${order._id}')">
+                                <i class="fas fa-eye"></i> 查看详情
+                            </button>
+                            ${canCancel ? 
+                            `<button class="btn btn-danger" onclick="cancelOrder('${order._id}')" style="margin-left: 10px;">
+                                <i class="fas fa-times"></i> 取消订单
+                            </button>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            ordersHtml += `
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = ordersHtml;
+        }
+
+        // 查看订单详情
+        async function viewOrderDetails(orderId) {
+            // 这里可以实现查看订单详情的逻辑
+            alert(`查看订单详情: ${orderId}`);
+        }
+
+        // 渲染修改密码部分
+        function renderPasswordSection(container) {
+            container.innerHTML = `
+                <div class="section active">
+                    <h2 class="section-title"><i class="fas fa-lock"></i> 修改密码</h2>
+                    <div class="success-message" id="password-success"></div>
+                    <div class="error-message" id="password-error"></div>
+                    
+                    <form id="password-form">
+                        <div class="form-group">
+                            <label class="form-label">当前密码</label>
+                            <input type="password" class="form-control" name="currentPassword" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">新密码</label>
+                            <input type="password" class="form-control" name="newPassword" required>
+                            <small class="form-text">密码长度至少8位，包含字母和数字</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">确认新密码</label>
+                            <input type="password" class="form-control" name="confirmPassword" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-key"></i> 修改密码</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            // 添加表单提交事件
+            setTimeout(() => {
+                const passwordForm = document.getElementById('password-form');
+                if (passwordForm) {
+                    passwordForm.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        await changePassword(this);
+                    });
+                }
+            }, 100);
+        }
+
+        // 修改密码
+        async function changePassword(form) {
+            const token = localStorage.getItem('token');
+            const successMessage = document.getElementById('password-success');
+            const errorMessage = document.getElementById('password-error');
+            
+            // 隐藏消息
+            if (successMessage) successMessage.style.display = 'none';
+            if (errorMessage) errorMessage.style.display = 'none';
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            const formData = new FormData(form);
+            const passwordData = {
+                currentPassword: formData.get('currentPassword'),
+                newPassword: formData.get('newPassword'),
+                confirmPassword: formData.get('confirmPassword')
+            };
+            
+            // 验证新密码和确认密码是否一致
+            if (passwordData.newPassword !== passwordData.confirmPassword) {
+                if (errorMessage) {
+                    errorMessage.textContent = '新密码和确认密码不一致';
+                    errorMessage.style.display = 'block';
+                }
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/users/change-password', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(passwordData)
+                });
+                
+                if (response.ok) {
+                    if (successMessage) {
+                        successMessage.textContent = '密码修改成功！';
+                        successMessage.style.display = 'block';
+                    }
+                    
+                    // 清空表单
+                    form.reset();
+                } else {
+                    const error = await response.json();
+                    if (errorMessage) {
+                        errorMessage.textContent = error.message || '修改失败，请重试';
+                        errorMessage.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('修改密码失败:', error);
+                if (errorMessage) {
+                    errorMessage.textContent = '网络错误，请检查连接后重试';
+                    errorMessage.style.display = 'block';
+                }
+            }
+        }
+
+        // 渲染通知方式部分
+        function renderNotificationsSection(container, user) {
+            // 获取通知偏好数据
+            const notificationPreferences = user.notificationPreferences || {
+                email: true,
+                sms: false,
+                push: true
+            };
+            
+            container.innerHTML = `
+                <div class="section active">
+                    <h2 class="section-title"><i class="fas fa-bell"></i> 通知方式</h2>
+                    <div class="success-message" id="notification-success"></div>
+                    <div class="error-message" id="notification-error"></div>
+                    
+                    <form id="notification-form">
+                        <p>请选择您希望接收通知的方式：</p>
+                        
+                        <div class="notification-options">
+                            <div class="notification-option">
+                                <input type="checkbox" id="email-notification" name="email" ${notificationPreferences.email ? 'checked' : ''}>
+                                <label for="email-notification"><i class="fas fa-envelope"></i> 邮件通知</label>
+                            </div>
+                            
+                            <div class="notification-option">
+                                <input type="checkbox" id="sms-notification" name="sms" ${notificationPreferences.sms ? 'checked' : ''}>
+                                <label for="sms-notification"><i class="fas fa-sms"></i> 短信通知</label>
+                            </div>
+                            
+                            <div class="notification-option">
+                                <input type="checkbox" id="push-notification" name="push" ${notificationPreferences.push ? 'checked' : ''}>
+                                <label for="push-notification"><i class="fas fa-bell"></i> 推送通知</label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" style="margin-top: 30px;">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> 保存设置</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            // 添加表单提交事件
+            setTimeout(() => {
+                const notificationForm = document.getElementById('notification-form');
+                if (notificationForm) {
+                    notificationForm.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        await updateNotifications(this);
+                    });
+                }
+            }, 100);
+        }
+
+        // 更新通知设置
+        async function updateNotifications(form) {
+            const token = localStorage.getItem('token');
+            const successMessage = document.getElementById('notification-success');
+            const errorMessage = document.getElementById('notification-error');
+            
+            // 隐藏消息
+            if (successMessage) successMessage.style.display = 'none';
+            if (errorMessage) errorMessage.style.display = 'none';
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            const formData = new FormData(form);
+            const notificationData = {
+                notificationPreferences: {
+                    email: formData.get('email') === 'on',
+                    sms: formData.get('sms') === 'on',
+                    push: formData.get('push') === 'on'
+                }
+            };
+            
+            try {
+                const response = await fetch('/api/users/notifications', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(notificationData)
+                });
+                
+                if (response.ok) {
+                    const updatedUser = await response.json();
+                    currentUser = updatedUser;
+                    
+                    // 保存用户数据到localStorage
+                    try {
+                        localStorage.setItem('user', JSON.stringify(updatedUser));
+                    } catch (e) {
+                        console.error('保存用户数据失败:', e);
+                    }
+                    
+                    if (successMessage) {
+                        successMessage.textContent = '通知设置更新成功！';
+                        successMessage.style.display = 'block';
+                    }
+                } else {
+                    const error = await response.json();
+                    if (errorMessage) {
+                        errorMessage.textContent = error.message || '更新失败，请重试';
+                        errorMessage.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('更新通知设置失败:', error);
+                if (errorMessage) {
+                    errorMessage.textContent = '网络错误，请检查连接后重试';
+                    errorMessage.style.display = 'block';
+                }
+            }
+        }
+
+        // 渲染银行账号部分
+        function renderBankAccountsSection(container) {
+            container.innerHTML = `
+                <div class="section active">
+                    <h2 class="section-title"><i class="fas fa-credit-card"></i> 银行账号</h2>
+                    <div class="success-message" id="bank-account-success"></div>
+                    <div class="error-message" id="bank-account-error"></div>
+                    
+                    <button class="btn btn-primary" style="margin-bottom: 20px;" onclick="showAddBankAccountForm()">
+                        <i class="fas fa-plus"></i> 添加银行账号
+                    </button>
+                    
+                    <div id="bank-account-form-container" style="display: none; margin-bottom: 30px;">
+                        <h3 id="bank-account-form-title">添加银行账号</h3>
+                        <form id="bank-account-form">
+                            <input type="hidden" id="bank-account-id" name="bankAccountId">
+                            <div class="form-group">
+                                <label class="form-label">银行名称</label>
+                                <input type="text" class="form-control" name="bankName" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <div class="form-group">
+                                        <label class="form-label">账户类型</label>
+                                        <select class="form-control" name="accountType" required>
+                                            <option value="checking">活期账户</option>
+                                            <option value="savings">储蓄账户</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-col">
+                                    <div class="form-group">
+                                        <label class="form-label">设为默认账户</label>
+                                        <div style="padding: 12px 0;">
+                                            <input type="checkbox" id="isDefaultAccount" name="isDefault">
+                                            <label for="isDefaultAccount" style="margin-left: 8px;">默认账户</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">账户持有人姓名</label>
+                                <input type="text" class="form-control" name="accountHolderName" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <div class="form-group">
+                                        <label class="form-label">账号</label>
+                                        <input type="text" class="form-control" name="accountNumber" required>
+                                    </div>
+                                </div>
+                                <div class="form-col">
+                                    <div class="form-group">
+                                        <label class="form-label">银行代码</label>
+                                        <input type="text" class="form-control" name="routingNumber" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary" id="bank-account-form-submit"><i class="fas fa-save"></i> 保存账户</button>
+                                <button type="button" class="btn btn-outline" onclick="cancelBankAccountForm()" style="margin-left: 10px;">取消</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="bank-account-list" id="bank-accounts-container">
+                        <p>暂无银行账户信息</p>
+                    </div>
+                </div>
+            `;
+            
+            // 添加银行账户表单提交事件
+            setTimeout(() => {
+                const bankAccountForm = document.getElementById('bank-account-form');
+                if (bankAccountForm) {
+                    bankAccountForm.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        const bankAccountId = document.getElementById('bank-account-id').value;
+                        if (bankAccountId) {
+                            await updateBankAccount(bankAccountId, this);
+                        } else {
+                            await addBankAccount(this);
+                        }
+                    });
+                }
+            }, 100);
+        }
+
+        // 显示添加银行账户表单
+        function showAddBankAccountForm() {
+            document.getElementById('bank-account-form-title').textContent = '添加银行账号';
+            document.getElementById('bank-account-id').value = '';
+            document.getElementById('bank-account-form').reset();
+            document.getElementById('bank-account-form-container').style.display = 'block';
+        }
+
+        // 取消银行账户表单
+        function cancelBankAccountForm() {
+            document.getElementById('bank-account-form-container').style.display = 'none';
+        }
+
+        // 添加银行账户
+        async function addBankAccount(form) {
+            const token = localStorage.getItem('token');
+            const successMessage = document.getElementById('bank-account-success');
+            const errorMessage = document.getElementById('bank-account-error');
+            const submitButton = document.getElementById('bank-account-form-submit');
+            
+            // 隐藏消息
+            if (successMessage) successMessage.style.display = 'none';
+            if (errorMessage) errorMessage.style.display = 'none';
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            // 禁用提交按钮
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 保存中...';
+            }
+            
+            const formData = new FormData(form);
+            const bankAccountData = {
+                bankName: formData.get('bankName'),
+                accountType: formData.get('accountType'),
+                isDefault: formData.get('isDefault') === 'on',
+                accountHolderName: formData.get('accountHolderName'),
+                accountNumber: formData.get('accountNumber'),
+                routingNumber: formData.get('routingNumber')
+            };
+            
+            try {
+                const response = await fetch('/api/users/bank-accounts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(bankAccountData)
+                });
+                
+                if (response.ok) {
+                    const updatedUser = await response.json();
+                    currentUser = updatedUser;
+                    
+                    // 保存用户数据到localStorage
+                    try {
+                        localStorage.setItem('user', JSON.stringify(updatedUser));
+                    } catch (e) {
+                        console.error('保存用户数据失败:', e);
+                    }
+                    
+                    if (successMessage) {
+                        successMessage.textContent = '银行账户添加成功！';
+                        successMessage.style.display = 'block';
+                    }
+                    
+                    // 重新渲染银行账户部分
+                    renderBankAccountsSection(document.querySelector('.main-content'));
+                } else {
+                    const error = await response.json();
+                    if (errorMessage) {
+                        errorMessage.textContent = error.message || '添加失败，请重试';
+                        errorMessage.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('添加银行账户失败:', error);
+                if (errorMessage) {
+                    errorMessage.textContent = '网络错误，请检查连接后重试';
+                    errorMessage.style.display = 'block';
+                }
+            } finally {
+                // 恢复提交按钮
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = '<i class="fas fa-save"></i> 保存账户';
+                }
+            }
+        }
+
+        // 更新银行账户
+        async function updateBankAccount(bankAccountId, form) {
+            const token = localStorage.getItem('token');
+            const successMessage = document.getElementById('bank-account-success');
+            const errorMessage = document.getElementById('bank-account-error');
+            const submitButton = document.getElementById('bank-account-form-submit');
+            
+            // 隐藏消息
+            if (successMessage) successMessage.style.display = 'none';
+            if (errorMessage) errorMessage.style.display = 'none';
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            // 禁用提交按钮
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 保存中...';
+            }
+            
+            const formData = new FormData(form);
+            const bankAccountData = {
+                bankName: formData.get('bankName'),
+                accountType: formData.get('accountType'),
+                isDefault: formData.get('isDefault') === 'on',
+                accountHolderName: formData.get('accountHolderName'),
+                accountNumber: formData.get('accountNumber'),
+                routingNumber: formData.get('routingNumber')
+            };
+            
+            try {
+                const response = await fetch(`/api/users/bank-accounts/${bankAccountId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(bankAccountData)
+                });
+                
+                if (response.ok) {
+                    const updatedUser = await response.json();
+                    currentUser = updatedUser;
+                    
+                    // 保存用户数据到localStorage
+                    try {
+                        localStorage.setItem('user', JSON.stringify(updatedUser));
+                    } catch (e) {
+                        console.error('保存用户数据失败:', e);
+                    }
+                    
+                    if (successMessage) {
+                        successMessage.textContent = '银行账户更新成功！';
+                        successMessage.style.display = 'block';
+                    }
+                    
+                    // 重新渲染银行账户部分
+                    renderBankAccountsSection(document.querySelector('.main-content'));
+                } else {
+                    const error = await response.json();
+                    if (errorMessage) {
+                        errorMessage.textContent = error.message || '更新失败，请重试';
+                        errorMessage.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('更新银行账户失败:', error);
+                if (errorMessage) {
+                    errorMessage.textContent = '网络错误，请检查连接后重试';
+                    errorMessage.style.display = 'block';
+                }
+            } finally {
+                // 恢复提交按钮
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = '<i class="fas fa-save"></i> 保存账户';
+                }
+            }
+        }
+
+        // 渲染关闭账号部分
+        function renderDeleteAccountSection(container) {
+            container.innerHTML = `
+                <div class="section active">
+                    <h2 class="section-title"><i class="fas fa-user-times"></i> 关闭账号</h2>
+                    <div class="error-message" id="delete-account-error"></div>
+                    
+                    <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                        <h3 style="color: #856404; margin-top: 0;"><i class="fas fa-exclamation-triangle"></i> 重要提醒</h3>
+                        <p>关闭账号将导致以下后果：</p>
+                        <ul>
+                            <li>永久删除您的所有个人信息</li>
+                            <li>无法再访问您的订单历史</li>
+                            <li>无法找回您的账户和数据</li>
+                            <li>您发布的商品将被下架</li>
+                            <li>您参与的未完成交易将被取消</li>
+                        </ul>
+                    </div>
+                    
+                    <form id="delete-account-form">
+                        <div class="form-group">
+                            <label class="form-label">请输入您的密码确认操作</label>
+                            <input type="password" class="form-control" name="password" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">请输入"确认删除"以继续</label>
+                            <input type="text" class="form-control" name="confirmation" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-user-times"></i> 永久关闭账号</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            // 添加表单提交事件
+            setTimeout(() => {
+                const deleteAccountForm = document.getElementById('delete-account-form');
+                if (deleteAccountForm) {
+                    deleteAccountForm.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        await deleteAccount(this);
+                    });
+                }
+            }, 100);
+        }
+
+        // 关闭账号
+        async function deleteAccount(form) {
+            const token = localStorage.getItem('token');
+            const errorMessage = document.getElementById('delete-account-error');
+            
+            // 隐藏消息
+            if (errorMessage) errorMessage.style.display = 'none';
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            const formData = new FormData(form);
+            const deleteData = {
+                password: formData.get('password'),
+                confirmation: formData.get('confirmation')
+            };
+            
+            // 验证确认文本
+            if (deleteData.confirmation !== '确认删除') {
+                if (errorMessage) {
+                    errorMessage.textContent = '请输入"确认删除"以继续';
+                    errorMessage.style.display = 'block';
+                }
+                return;
+            }
+            
+            if (!confirm('您确定要永久关闭账号吗？此操作无法撤销！')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/users/delete', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(deleteData)
+                });
+                
+                if (response.ok) {
+                    // 清除本地存储并跳转到首页
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    alert('账号已成功关闭，感谢您使用我们的服务。');
+                    window.location.href = '/';
+                } else {
+                    const error = await response.json();
+                    if (errorMessage) {
+                        errorMessage.textContent = error.message || '关闭账号失败，请重试';
+                        errorMessage.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('关闭账号失败:', error);
+                if (errorMessage) {
+                    errorMessage.textContent = '网络错误，请检查连接后重试';
+                    errorMessage.style.display = 'block';
+                }
+            }
         }
     </script>
 </body>
