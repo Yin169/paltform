@@ -479,12 +479,24 @@
                     const cart = await response.json();
                     displayCart(cart);
                 } else {
+                    // 添加更详细的错误信息
+                    let errorMessage = "加载购物车失败";
+                    if (response.status === 401) {
+                        errorMessage = "登录已过期，请重新登录";
+                        // 清除过期的token
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                    } else if (response.status === 500) {
+                        errorMessage = "服务器错误，请稍后重试";
+                    }
+                    
                     document.getElementById('cart-content').innerHTML = `
                         <div class="empty-cart">
                             <i class="fas fa-exclamation-triangle"></i>
-                            <h3>加载购物车失败</h3>
-                            <p>请稍后重试或重新登录</p>
-                            <button class="btn" style="background: var(--primary-color); color: white; padding: 12px 30px; border: none; border-radius: 8px; cursor: pointer;" onclick="loadCart()">重新加载</button>
+                            <h3>${errorMessage}</h3>
+                            <p>状态码: ${response.status}</p>
+                            <button class="btn" style="background: var(--primary-color); color: white; padding: 12px 30px; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px;" onclick="loadCart()">重新加载</button>
+                            <a href="/login" class="btn" style="display: inline-block; background: var(--primary-color); color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; margin-top: 15px; margin-left: 10px;">重新登录</a>
                         </div>
                     `;
                 }
@@ -495,6 +507,7 @@
                         <i class="fas fa-exclamation-triangle"></i>
                         <h3>加载购物车失败</h3>
                         <p>请检查网络连接后重试</p>
+                        <p>错误详情: ${error.message}</p>
                         <button class="btn" style="background: var(--primary-color); color: white; padding: 12px 30px; border: none; border-radius: 8px; cursor: pointer;" onclick="loadCart()">重新加载</button>
                     </div>
                 `;

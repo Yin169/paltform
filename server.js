@@ -11,13 +11,10 @@ const profileRoutes = require('./routes/profileRoutes');
 const graphRoutes = require('./routes/graphRoutes');
 const simulationRoutes = require('./routes/simulationRoutes');
 const sellerRoutes = require('./routes/sellerRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// 中间件
-app.use(express.json());
-app.use(express.static('public'));
 
 // 数据库连接
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce';
@@ -44,17 +41,7 @@ mongoose.connection.on('disconnected', () => {
   console.log('Mongoose disconnected');
 });
 
-// 路由
-app.use('/api/users', userRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/profiles', profileRoutes);
-app.use('/api/graph', graphRoutes);
-app.use('/api/simulation', simulationRoutes);
-app.use('/api/seller', sellerRoutes);
-
-// 添加静态页面路由
+// 页面路由（在静态文件服务之前定义）
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -80,6 +67,55 @@ app.get('/cart', (req, res) => {
 app.get('/products', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'products.html'));
 });
+
+// 个人资料页面路由
+app.get('/profile', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+});
+
+// 账号管理页面路由
+app.get('/account', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'account.html'));
+});
+
+// 订单页面路由
+app.get('/orders', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'orders.html'));
+});
+
+// 商店列表页面路由
+app.get('/stores', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'stores.html'));
+});
+
+// 登录页面路由
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// 注册页面路由
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'register.html'));
+});
+
+// 卖家注册页面路由
+app.get('/seller-register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'seller-register.html'));
+});
+
+// API路由
+app.use('/api/users', userRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/profiles', profileRoutes);
+app.use('/api/graph', graphRoutes);
+app.use('/api/simulation', simulationRoutes);
+app.use('/api/seller', sellerRoutes);
+app.use('/api/cart', cartRoutes);
+
+// 静态文件服务（在路由之后定义）
+app.use(express.static('public'));
 
 app.listen(PORT, () => {
   console.log(`服务器运行在端口 ${PORT}`);
