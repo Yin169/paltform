@@ -108,6 +108,12 @@ app.get('/user-center', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'user-center.html'));
 });
 
+// 数据可视化页面路由
+app.get('/graph', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'graph.html'));
+});
+
+
 // API路由
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
