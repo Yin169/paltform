@@ -77,9 +77,9 @@ app.get('/profile', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'profile.html'));
 });
 
-// 账号管理页面路由（重定向到用户中心）
+// 账号管理页面路由
 app.get('/account', (req, res) => {
-  res.redirect('/user-center');
+  res.sendFile(path.join(__dirname, 'public', 'account.html'));
 });
 
 // 用户中心页面路由
