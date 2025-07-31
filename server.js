@@ -20,6 +20,9 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json({ limit: '10mb' })); // 添加JSON解析中间件
 app.use(express.urlencoded({ extended: true, limit: '10mb' })); // 添加URL编码解析中间件
 
+// 静态文件服务
+app.use(express.static('public'));
+
 // 数据库连接
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce';
 
@@ -45,7 +48,7 @@ mongoose.connection.on('disconnected', () => {
   console.log('Mongoose disconnected');
 });
 
-// 页面路由（在静态文件服务之前定义）
+// 页面路由（保持原有内容不变，但注意这些路由仍然在静态文件服务之后）
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
