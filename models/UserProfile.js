@@ -225,7 +225,6 @@ const userProfileSchema = new mongoose.Schema({
 });
 
 // 索引
-userProfileSchema.index({ user: 1 });
 userProfileSchema.index({ 'demographics.ageGroup': 1 });
 userProfileSchema.index({ 'demographics.gender': 1 });
 userProfileSchema.index({ 'behavior.totalSpent': -1 });

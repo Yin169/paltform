@@ -97,8 +97,14 @@ const UserSchema = new mongoose.Schema({
     default: true
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 });
+
+// 添加索引
+UserSchema.index({ email: 1 });
+UserSchema.index({ username: 1 });
 
 // 密码加密中间件
 UserSchema.pre('save', async function(next) {
@@ -107,7 +113,7 @@ UserSchema.pre('save', async function(next) {
   }
   
   try {
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(12);
     this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (err) {
@@ -128,9 +134,6 @@ UserSchema.virtual('fullName').get(function() {
   return this.username;
 });
 
-// 确保虚拟字段被序列化
-UserSchema.set('toJSON', {
-  virtuals: true
-});
+// 确保虚拟字段被序列化已移至Schema选项中
 
 module.exports = mongoose.model('User', UserSchema);

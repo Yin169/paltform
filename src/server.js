@@ -29,7 +29,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/cart', cartRoutes);
-app.use('/api/profile', profileRoutes);
+app.use('/api/profiles', profileRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/graph', graphRoutes);
 app.use('/api/simulation', simulationRoutes);
@@ -68,6 +68,14 @@ app.get('/profile', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/profile.html'));
 });
 
+app.get('/account', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/account.html'));
+});
+
+app.get('/user-center', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/user-center.html'));
+});
+
 app.get('/seller-register', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/seller-register.html'));
 });
@@ -101,10 +109,7 @@ app.get('*', (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce')
 .then(() => console.log('MongoDB连接成功'))
 .catch(err => console.log('MongoDB连接失败:', err));
 
