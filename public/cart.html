@@ -324,25 +324,50 @@
         /* Empty Cart */
         .empty-cart {
             text-align: center;
-            padding: 60px 20px;
+            padding: 50px 20px;
+            color: var(--gray-color);
         }
         
         .empty-cart i {
-            font-size: 5rem;
-            color: #d1d1d1;
+            font-size: 4rem;
             margin-bottom: 20px;
+            color: #dee2e6;
         }
         
         .empty-cart h3 {
-            font-size: 2rem;
+            margin-bottom: 15px;
             color: var(--dark-color);
-            margin-bottom: 20px;
         }
         
-        .empty-cart p {
-            color: var(--gray-color);
-            font-size: 1.2rem;
-            margin-bottom: 30px;
+        .error-state {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .error-state i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .retry-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-top: 15px;
+        }
+        
+        .retry-button:hover {
+            background-color: var(--secondary-color);
         }
         
         /* Responsive Design */
@@ -480,22 +505,30 @@
                     const cart = await response.json();
                     displayCart(cart);
                 } else {
-                    // 添加更详细的错误信息
                     let errorMessage = "加载购物车失败";
+                    let errorDetails = "";
+                    
                     if (response.status === 401) {
                         errorMessage = "登录已过期，请重新登录";
+                        errorDetails = "您的登录状态已过期，请重新登录以继续操作";
                         // 清除过期的token
                         localStorage.removeItem('token');
                         localStorage.removeItem('user');
                     } else if (response.status === 500) {
-                        errorMessage = "服务器错误，请稍后重试";
+                        errorMessage = "服务器错误";
+                        errorDetails = "服务器暂时无法处理您的请求，请稍后重试";
+                    } else if (response.status === 404) {
+                        errorMessage = "未找到购物车";
+                        errorDetails = "系统未找到您的购物车信息";
+                    } else {
+                        errorDetails = `HTTP 错误: ${response.status}`;
                     }
                     
                     document.getElementById('cart-content').innerHTML = `
                         <div class="empty-cart">
                             <i class="fas fa-exclamation-triangle"></i>
                             <h3>${errorMessage}</h3>
-                            <p>状态码: ${response.status}</p>
+                            <p>${errorDetails}</p>
                             <button class="btn" style="background: var(--primary-color); color: white; padding: 12px 30px; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px;" onclick="loadCart()">重新加载</button>
                             <a href="/login" class="btn" style="display: inline-block; background: var(--primary-color); color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; margin-top: 15px; margin-left: 10px;">重新登录</a>
                         </div>
@@ -506,12 +539,191 @@
                 document.getElementById('cart-content').innerHTML = `
                     <div class="empty-cart">
                         <i class="fas fa-exclamation-triangle"></i>
-                        <h3>加载购物车失败</h3>
-                        <p>请检查网络连接后重试</p>
-                        <p>错误详情: ${error.message}</p>
-                        <button class="btn" style="background: var(--primary-color); color: white; padding: 12px 30px; border: none; border-radius: 8px; cursor: pointer;" onclick="loadCart()">重新加载</button>
+                        <h3>网络错误</h3>
+                        <p>无法连接到服务器，请检查网络连接后重试</p>
+                        <button class="btn" style="background: var(--primary-color); color: white; padding: 12px 30px; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px;" onclick="loadCart()">重新加载</button>
                     </div>
                 `;
+            }
+        }
+
+        // 添加商品到购物车
+        async function addToCart(productId, quantity = 1) {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ productId, quantity })
+                });
+                
+                if (response.ok) {
+                    const cart = await response.json();
+                    alert('商品已添加到购物车');
+                    updateCartCount(); // 更新头部购物车数量
+                } else {
+                    const data = await response.json();
+                    let errorMessage = data.message || '添加商品失败';
+                    
+                    if (response.status === 401) {
+                        errorMessage = "登录已过期，请重新登录";
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                    } else if (response.status === 500) {
+                        errorMessage = "服务器错误，请稍后重试";
+                    }
+                    
+                    alert(errorMessage);
+                }
+            } catch (error) {
+                console.error('添加商品到购物车失败:', error);
+                alert('网络错误，添加商品失败，请稍后重试');
+            }
+        }
+
+        // 更新购物车商品数量
+        async function updateQuantity(productId, quantity) {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            // 验证数量
+            if (quantity <= 0) {
+                alert('商品数量必须大于0');
+                loadCart(); // 重新加载以恢复正确的数量
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/cart/update', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ productId, quantity })
+                });
+                
+                if (response.ok) {
+                    loadCart(); // 重新加载购物车
+                    updateCartCount(); // 更新头部购物车数量
+                } else {
+                    const data = await response.json();
+                    let errorMessage = data.message || '更新商品数量失败';
+                    
+                    if (response.status === 401) {
+                        errorMessage = "登录已过期，请重新登录";
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                    } else if (response.status === 500) {
+                        errorMessage = "服务器错误，请稍后重试";
+                    }
+                    
+                    alert(errorMessage);
+                    loadCart(); // 重新加载以恢复正确的数量
+                }
+            } catch (error) {
+                console.error('更新商品数量失败:', error);
+                alert('网络错误，更新商品数量失败，请稍后重试');
+                loadCart(); // 重新加载以恢复正确的数量
+            }
+        }
+
+        // 移除商品
+        async function removeItem(productId) {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/cart/remove', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ productId })
+                });
+                
+                if (response.ok) {
+                    loadCart(); // 重新加载购物车
+                    updateCartCount(); // 更新头部购物车数量
+                } else {
+                    const data = await response.json();
+                    let errorMessage = data.message || '移除商品失败';
+                    
+                    if (response.status === 401) {
+                        errorMessage = "登录已过期，请重新登录";
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                    } else if (response.status === 500) {
+                        errorMessage = "服务器错误，请稍后重试";
+                    }
+                    
+                    alert(errorMessage);
+                }
+            } catch (error) {
+                console.error('移除商品失败:', error);
+                alert('网络错误，移除商品失败，请稍后重试');
+            }
+        }
+
+        // 清空购物车
+        async function clearCart() {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            if (!confirm('确定要清空购物车吗？')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/cart/clear', {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    loadCart(); // 重新加载购物车
+                    updateCartCount(); // 更新头部购物车数量
+                } else {
+                    const data = await response.json();
+                    let errorMessage = data.message || '清空购物车失败';
+                    
+                    if (response.status === 401) {
+                        errorMessage = "登录已过期，请重新登录";
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                    } else if (response.status === 500) {
+                        errorMessage = "服务器错误，请稍后重试";
+                    }
+                    
+                    alert(errorMessage);
+                }
+            } catch (error) {
+                console.error('清空购物车失败:', error);
+                alert('网络错误，清空购物车失败，请稍后重试');
             }
         }
 
@@ -593,172 +805,6 @@
                     </div>
                 </div>
             `;
-        }
-
-        // 更新商品数量
-        async function updateQuantity(productId, quantity) {
-            const token = localStorage.getItem('token');
-            
-            if (!token) {
-                window.location.href = '/login';
-                return;
-            }
-            
-            // 如果数量为0或负数，则从购物车中移除
-            if (quantity <= 0) {
-                removeFromCart(productId);
-                return;
-            }
-            
-            try {
-                const response = await fetch('/api/cart/update', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ productId, quantity: parseInt(quantity) })
-                });
-                
-                if (response.ok) {
-                    loadCart(); // 重新加载购物车
-                } else {
-                    const data = await response.json();
-                    alert(data.message);
-                }
-            } catch (error) {
-                console.error('更新商品数量失败:', error);
-                alert('更新商品数量失败，请稍后重试');
-            }
-        }
-
-        // 从购物车移除商品
-        async function removeFromCart(productId) {
-            const token = localStorage.getItem('token');
-            
-            if (!token) {
-                window.location.href = '/login';
-                return;
-            }
-            
-            try {
-                const response = await fetch('/api/cart/remove', {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ productId })
-                });
-                
-                if (response.ok) {
-                    loadCart(); // 重新加载购物车
-                    updateCartCount(); // 更新头部购物车数量
-                } else {
-                    const data = await response.json();
-                    alert(data.message);
-                }
-            } catch (error) {
-                console.error('移除商品失败:', error);
-                alert('移除商品失败，请稍后重试');
-            }
-        }
-
-        // 清空购物车
-        async function clearCart() {
-            const token = localStorage.getItem('token');
-            
-            if (!token) {
-                window.location.href = '/login';
-                return;
-            }
-            
-            if (!confirm('确定要清空购物车吗？')) {
-                return;
-            }
-            
-            try {
-                const response = await fetch('/api/cart/clear', {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                
-                if (response.ok) {
-                    loadCart(); // 重新加载购物车
-                    updateCartCount(); // 更新头部购物车数量
-                } else {
-                    const data = await response.json();
-                    alert(data.message);
-                }
-            } catch (error) {
-                console.error('清空购物车失败:', error);
-                alert('清空购物车失败，请稍后重试');
-            }
-        }
-
-        // 结算
-        async function checkout() {
-            const token = localStorage.getItem('token');
-            
-            if (!token) {
-                window.location.href = '/login';
-                return;
-            }
-            
-            // 获取购物车数据
-            try {
-                const response = await fetch('/api/cart', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const cart = await response.json();
-                    
-                    if (!cart.items || cart.items.length === 0) {
-                        alert('购物车为空，无法结算');
-                        return;
-                    }
-                    
-                    // 准备订单数据
-                    const orderData = {
-                        items: cart.items.map(item => ({
-                            product: item.product._id,
-                            quantity: item.quantity
-                        })),
-                        shippingAddress: {} // 简化处理，实际应用中应该收集地址信息
-                    };
-                    
-                    // 创建订单
-                    const orderResponse = await fetch('/api/orders', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify(orderData)
-                    });
-                    
-                    if (orderResponse.ok) {
-                        const order = await orderResponse.json();
-                        alert('订单创建成功！订单号：' + order._id);
-                        // 重新加载购物车（应该为空了）
-                        loadCart();
-                        updateCartCount(); // 更新头部购物车数量
-                    } else {
-                        const errorData = await orderResponse.json();
-                        alert('订单创建失败：' + errorData.message);
-                    }
-                } else {
-                    alert('获取购物车信息失败');
-                }
-            } catch (error) {
-                console.error('结算过程中发生错误:', error);
-                alert('结算过程中发生错误，请稍后重试');
-            }
         }
 
         // 更新购物车数量

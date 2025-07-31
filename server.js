@@ -16,6 +16,10 @@ const cartRoutes = require('./routes/cartRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// 中间件
+app.use(express.json({ limit: '10mb' })); // 添加JSON解析中间件
+app.use(express.urlencoded({ extended: true, limit: '10mb' })); // 添加URL编码解析中间件
+
 // 数据库连接
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce';
 

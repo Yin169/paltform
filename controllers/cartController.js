@@ -22,14 +22,32 @@ const getCart = async (req, res) => {
 
     res.json(cart);
   } catch (err) {
-    res.status(500).json({ message: '服务器错误', error: err.message });
+    console.error('获取购物车失败:', err);
+    res.status(500).json({ 
+      message: '服务器错误', 
+      error: process.env.NODE_ENV === 'development' ? err.message : '获取购物车失败'
+    });
   }
 };
 
 // 添加商品到购物车
 const addToCart = async (req, res) => {
   try {
-    const { productId, quantity } = req.body;
+    // 检查请求体是否存在
+    if (!req.body) {
+      return res.status(400).json({ message: '请求体不能为空' });
+    }
+    
+    const { productId, quantity = 1 } = req.body;
+    
+    // 验证参数
+    if (!productId) {
+      return res.status(400).json({ message: '商品ID不能为空' });
+    }
+    
+    if (quantity <= 0) {
+      return res.status(400).json({ message: '商品数量必须大于0' });
+    }
     
     // 检查商品是否存在
     const product = await Product.findById(productId);
@@ -99,122 +117,143 @@ const addToCart = async (req, res) => {
     
     res.json(cart);
   } catch (err) {
-    res.status(500).json({ message: '服务器错误', error: err.message });
+    console.error('添加商品到购物车失败:', err);
+    res.status(500).json({ 
+      message: '服务器错误', 
+      error: process.env.NODE_ENV === 'development' ? err.message : '添加商品到购物车失败'
+    });
   }
 };
 
 // 更新购物车商品数量
 const updateCartItem = async (req, res) => {
   try {
+    // 检查请求体是否存在
+    if (!req.body) {
+      return res.status(400).json({ message: '请求体不能为空' });
+    }
+    
     const { productId, quantity } = req.body;
+    
+    // 验证参数
+    if (!productId) {
+      return res.status(400).json({ message: '商品ID不能为空' });
+    }
+    
+    if (quantity === undefined || quantity <= 0) {
+      return res.status(400).json({ message: '商品数量必须大于0' });
+    }
     
     // 检查商品是否存在
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ message: '商品未找到' });
     }
-
+    
     // 检查库存
-    if (quantity > product.quantity) {
+    if (product.quantity < quantity) {
       return res.status(400).json({ 
         message: `商品库存不足，仅剩 ${product.quantity} 件` 
       });
     }
-
+    
     // 查找购物车
     const cart = await Cart.findOne({ user: req.user._id });
-    
     if (!cart) {
       return res.status(404).json({ message: '购物车未找到' });
     }
-
-    // 查找商品项
+    
+    // 查找购物车中的商品项
     const itemIndex = cart.items.findIndex(
       item => item.product.toString() === productId
     );
-
+    
     if (itemIndex === -1) {
       return res.status(404).json({ message: '购物车中未找到该商品' });
     }
-
-    // 更新数量或删除项目
-    if (quantity <= 0) {
-      cart.items.splice(itemIndex, 1);
-    } else {
-      cart.items[itemIndex].quantity = quantity;
-    }
-
+    
+    // 更新商品数量
+    cart.items[itemIndex].quantity = quantity;
+    
     await cart.save();
     await cart.populate({
       path: 'items.product',
       select: 'name price quantity imageUrl'
     });
     
-    // 更新用户画像
-    await updateUserProfile(req.user._id);
-    
     res.json(cart);
   } catch (err) {
-    res.status(500).json({ message: '服务器错误', error: err.message });
+    console.error('更新购物车商品数量失败:', err);
+    res.status(500).json({ 
+      message: '服务器错误', 
+      error: process.env.NODE_ENV === 'development' ? err.message : '更新购物车商品数量失败'
+    });
   }
 };
 
 // 从购物车移除商品
 const removeFromCart = async (req, res) => {
   try {
+    // 检查请求体是否存在
+    if (!req.body) {
+      return res.status(400).json({ message: '请求体不能为空' });
+    }
+    
     const { productId } = req.body;
     
-    const cart = await Cart.findOne({ user: req.user._id });
+    // 验证参数
+    if (!productId) {
+      return res.status(400).json({ message: '商品ID不能为空' });
+    }
     
+    // 查找购物车
+    const cart = await Cart.findOne({ user: req.user._id });
     if (!cart) {
       return res.status(404).json({ message: '购物车未找到' });
     }
-
-    // 查找商品项
-    const itemIndex = cart.items.findIndex(
-      item => item.product.toString() === productId
+    
+    // 过滤掉要移除的商品
+    cart.items = cart.items.filter(
+      item => item.product.toString() !== productId
     );
-
-    if (itemIndex === -1) {
-      return res.status(404).json({ message: '购物车中未找到该商品' });
-    }
-
-    // 移除项目
-    cart.items.splice(itemIndex, 1);
-
+    
     await cart.save();
     await cart.populate({
       path: 'items.product',
       select: 'name price quantity imageUrl'
     });
     
-    // 更新用户画像
-    await updateUserProfile(req.user._id);
-    
     res.json(cart);
   } catch (err) {
-    res.status(500).json({ message: '服务器错误', error: err.message });
+    console.error('从购物车移除商品失败:', err);
+    res.status(500).json({ 
+      message: '服务器错误', 
+      error: process.env.NODE_ENV === 'development' ? err.message : '从购物车移除商品失败'
+    });
   }
 };
 
 // 清空购物车
 const clearCart = async (req, res) => {
   try {
+    // 查找购物车
     const cart = await Cart.findOne({ user: req.user._id });
-    
     if (!cart) {
       return res.status(404).json({ message: '购物车未找到' });
     }
-
-    cart.items = [];
-    await cart.save();
     
-    // 更新用户画像
-    await updateUserProfile(req.user._id);
+    // 清空购物车项目
+    cart.items = [];
+    
+    await cart.save();
     
     res.json({ message: '购物车已清空' });
   } catch (err) {
-    res.status(500).json({ message: '服务器错误', error: err.message });
+    console.error('清空购物车失败:', err);
+    res.status(500).json({ 
+      message: '服务器错误', 
+      error: process.env.NODE_ENV === 'development' ? err.message : '清空购物车失败'
+    });
   }
 };
 
