@@ -68,9 +68,6 @@ app.get('/profile', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/profile.html'));
 });
 
-app.get('/account', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/account.html'));
-});
 
 app.get('/user-center', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/user-center.html'));
