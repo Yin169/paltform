@@ -411,37 +411,32 @@
             checkUserStatus();
         });
 
-        // 检查用户登录状态
+        // 检查用户状态
         async function checkUserStatus() {
             const token = localStorage.getItem('token');
             const userActions = document.getElementById('user-actions');
             
-            if (!token) {
-                window.location.href = '/login';
-                return;
-            }
-            
-            try {
-                const response = await fetch('/api/users/profile', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
+            if (token) {
+                try {
+                    const response = await fetch('/api/users/profile', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const user = await response.json();
+                        userActions.innerHTML = `
+                            <span><i class="fas fa-user"></i> ${user.username}</span>
+                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
+                            ${user.role === 'admin' ? '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>' : ''}
+                            ${user.role === 'seller' ? '<a href="/seller"><i class="fas fa-store"></i> 卖家中心</a>' : ''}
+                            <a href="/user-center"><i class="fas fa-user-circle"></i> 用户中心</a>
+                        `;
                     }
-                });
-                
-                if (response.ok) {
-                    const user = await response.json();
-                    userActions.innerHTML = `
-                        <span><i class="fas fa-user"></i> ${user.username}</span>
-                        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
-                        ${user.role === 'admin' ? '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>' : ''}
-                        <a href="/orders"><i class="fas fa-list"></i> 我的订单</a>
-                    `;
-                } else {
-                    window.location.href = '/login';
+                } catch (error) {
+                    console.error('检查用户状态失败:', error);
                 }
-            } catch (error) {
-                console.error('检查用户状态失败:', error);
-                window.location.href = '/login';
             }
         }
 

@@ -1738,6 +1738,34 @@
                 showNotification('更新商品失败: ' + error.message, 'error');
             }
         });
+
+        // 检查用户状态
+        async function checkUserStatus() {
+            const token = localStorage.getItem('token');
+            const userActions = document.getElementById('user-actions');
+            
+            if (token) {
+                try {
+                    const response = await fetch('/api/users/profile', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const user = await response.json();
+                        userActions.innerHTML = `
+                            <span><i class="fas fa-user"></i> ${user.username}</span>
+                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
+                            ${user.role === 'admin' ? '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>' : ''}
+                            <a href="/user-center"><i class="fas fa-user-circle"></i> 用户中心</a>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('检查用户状态失败:', error);
+                }
+            }
+        }
     </script>
 </body>
 </html>

@@ -420,42 +420,11 @@
             updateCartCount();
         });
 
-        // 检查用户登录状态
+        // 检查用户状态
         async function checkUserStatus() {
             const token = localStorage.getItem('token');
             const userActions = document.getElementById('user-actions');
             
-            // 首先尝试使用localStorage中的用户信息（如果存在）
-            const storedUser = localStorage.getItem('user');
-            if (token && storedUser) {
-                try {
-                    const user = JSON.parse(storedUser);
-                    // 立即显示用户基本信息
-                    let userLinks = `
-                        <span><i class="fas fa-user"></i> ${user.username}</span>
-                        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
-                    `;
-                    
-                    // 根据用户角色添加相应链接
-                    if (user.role === 'admin') {
-                        userLinks += '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>';
-                    }
-                    
-                    if (user.role === 'seller' || user.role === 'admin') {
-                        userLinks += '<a href="/seller"><i class="fas fa-store"></i> 卖家中心</a>';
-                    }
-                    
-                    userLinks += `
-                        <a href="/orders"><i class="fas fa-list"></i> 我的订单</a>
-                    `;
-                    
-                    userActions.innerHTML = userLinks;
-                } catch (e) {
-                    console.error('解析存储的用户信息失败:', e);
-                }
-            }
-            
-            // 然后通过API验证令牌并更新用户信息
             if (token) {
                 try {
                     const response = await fetch('/api/users/profile', {
@@ -466,49 +435,16 @@
                     
                     if (response.ok) {
                         const user = await response.json();
-                        // 更新localStorage中的用户信息
-                        localStorage.setItem('user', JSON.stringify(user));
-                        
-                        // 更新UI显示
-                        let userLinks = `
+                        userActions.innerHTML = `
                             <span><i class="fas fa-user"></i> ${user.username}</span>
                             <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
-                        `;
-                        
-                        // 根据用户角色添加相应链接
-                        if (user.role === 'admin') {
-                            userLinks += '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>';
-                        }
-                        
-                        if (user.role === 'seller' || user.role === 'admin') {
-                            userLinks += '<a href="/seller"><i class="fas fa-store"></i> 卖家中心</a>';
-                        }
-                        
-                        userLinks += `
-                            <a href="/orders"><i class="fas fa-list"></i> 我的订单</a>
-                        `;
-                        
-                        userActions.innerHTML = userLinks;
-                    } else {
-                        const errorData = await response.json();
-                        console.log('用户状态检查失败:', errorData.message);
-                        // Token无效，清除本地存储
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('user');
-                        userActions.innerHTML = `
-                            <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
-                            <a href="/register"><i class="fas fa-user-plus"></i> 注册</a>
+                            ${user.role === 'admin' ? '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>' : ''}
+                            ${user.role === 'seller' ? '<a href="/seller"><i class="fas fa-store"></i> 卖家中心</a>' : ''}
+                            <a href="/user-center"><i class="fas fa-user-circle"></i> 用户中心</a>
                         `;
                     }
                 } catch (error) {
                     console.error('检查用户状态失败:', error);
-                    // 发生错误时，清除本地存储
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                    userActions.innerHTML = `
-                        <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
-                        <a href="/register"><i class="fas fa-user-plus"></i> 注册</a>
-                    `;
                 }
             }
         }

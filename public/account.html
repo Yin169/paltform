@@ -497,7 +497,7 @@
             });
         });
 
-        // 检查用户登录状态
+        // 检查用户状态
         async function checkUserStatus() {
             const token = localStorage.getItem('token');
             const userActions = document.getElementById('user-actions');
@@ -517,7 +517,7 @@
                             <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 登出</a>
                             ${user.role === 'admin' ? '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>' : ''}
                             <a href="/orders"><i class="fas fa-list"></i> 我的订单</a>
-                            <a href="/profile"><i class="fas fa-user-circle"></i> 我的</a>
+                            <a href="/user-center"><i class="fas fa-user-circle"></i> 用户中心</a>
                         `;
                     }
                 } catch (error) {

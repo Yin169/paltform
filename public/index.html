@@ -347,13 +347,10 @@
                     电商交易平台
                 </div>
                 <nav class="nav">
-                    <a href="/products">商品</a>
-                    <a href="/cart">购物车</a>
-                    <a href="/stores">商铺</a>
-                    <a href="/login">登录</a>
-                    <a href="/register">注册</a>
-                    <a href="/seller-register">卖家注册</a>
-                    <a href="#" id="seller-store-link" style="display: none;">我的商铺</a>
+                    <a href="/"><i class="fas fa-home"></i> 首页</a>
+                    <a href="/products"><i class="fas fa-box"></i> 商品</a>
+                    <a href="/stores"><i class="fas fa-store"></i> 商店</a>
+                    <a href="/cart"><i class="fas fa-shopping-cart"></i> 购物车</a>
                 </nav>
                 <div class="user-info">
                     <div id="user-actions">
@@ -590,6 +587,40 @@
                         <button class="btn" onclick="loadStores()" style="margin-top: 15px;">重新加载</button>
                     </div>
                 `;
+            }
+        }
+        
+        // 检查用户状态并更新UI
+        async function checkUserStatus() {
+            const token = localStorage.getItem('token');
+            const userActions = document.getElementById('user-actions');
+            
+            if (token) {
+                try {
+                    // 获取用户信息
+                    const response = await fetch('/api/users/profile', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const user = await response.json();
+                        userActions.innerHTML = `
+                            <span><i class="fas fa-user"></i> ${user.username}</span>
+                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
+                            ${user.role === 'admin' ? '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>' : ''}
+                            ${user.role === 'seller' ? '<a href="/seller"><i class="fas fa-store"></i> 卖家中心</a>' : ''}
+                            <a href="/user-center"><i class="fas fa-user-circle"></i> 用户中心</a>
+                        `;
+                    } else {
+                        // Token无效，清除本地存储
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                    }
+                } catch (error) {
+                    console.error('检查用户状态失败:', error);
+                }
             }
         }
     </script>

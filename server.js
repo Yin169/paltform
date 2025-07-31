@@ -103,6 +103,11 @@ app.get('/seller-register', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'seller-register.html'));
 });
 
+// 用户中心页面路由
+app.get('/user-center', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'user-center.html'));
+});
+
 // API路由
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
