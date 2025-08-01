@@ -6,30 +6,28 @@
     <title>用户登录 - 电商交易平台</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/styles/main.css">
-    <style>
-        body {
-            background-color: #f5f7fb;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
         <header>
             <div class="header-content">
-                <div class="logo">
+                <a href="/" class="logo">
                     <i class="fas fa-shopping-bag"></i>
                     电商交易平台
-                </div>
+                </a>
                 <nav class="nav">
                     <a href="/">首页</a>
                     <a href="/products">商品</a>
-                    <a href="/login">登录</a>
-                    <a href="/register">注册</a>
+                    <a href="/stores"><i class="fas fa-store"></i> 商铺</a>
                     <a href="/cart">购物车</a>
                 </nav>
                 <div class="user-info">
                     <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
                     <a href="/register"><i class="fas fa-user-plus"></i> 注册</a>
+                    <a href="/cart" class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-count">0</span>
+                    </a>
                 </div>
             </div>
         </header>

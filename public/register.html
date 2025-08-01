@@ -16,20 +16,23 @@
     <div class="container">
         <header>
             <div class="header-content">
-                <div class="logo">
+                <a href="/" class="logo">
                     <i class="fas fa-shopping-bag"></i>
                     电商交易平台
-                </div>
+                </a>
                 <nav class="nav">
-                    <a href="/">首页</a>
-                    <a href="/products">商品</a>
-                    <a href="/login">登录</a>
-                    <a href="/register">注册</a>
-                    <a href="/cart">购物车</a>
+                    <a href="/"><i class="fas fa-home"></i> 首页</a>
+                    <a href="/products"><i class="fas fa-box"></i> 商品</a>
+                    <a href="/stores"><i class="fas fa-store"></i> 商铺</a>
+                    <a href="/cart"><i class="fas fa-shopping-cart"></i> 购物车</a>
                 </nav>
                 <div class="user-info">
                     <a href="/login"><i class="fas fa-sign-in-alt"></i> 登录</a>
                     <a href="/register"><i class="fas fa-user-plus"></i> 注册</a>
+                    <a href="/cart" class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-count">0</span>
+                    </a>
                 </div>
             </div>
         </header>
@@ -38,6 +41,7 @@
             <div class="auth-form">
                 <h2 class="form-title">用户注册</h2>
                 <div class="error-message" id="error-message"></div>
+                <div class="success-message" id="success-message"></div>
                 <form id="register-form">
                     <div class="form-group">
                         <label for="username">用户名</label>
@@ -52,8 +56,8 @@
                         <input type="password" id="password" name="password" required placeholder="请输入您的密码">
                     </div>
                     <div class="form-group">
-                        <label for="confirm-password">确认密码</label>
-                        <input type="password" id="confirm-password" name="confirm-password" required placeholder="请再次输入您的密码">
+                        <label for="confirmPassword">确认密码</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="请再次输入密码">
                     </div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-block">注册</button>
@@ -61,7 +65,6 @@
                 </form>
                 <div class="form-footer">
                     <p>已有账户？ <a href="/login">立即登录</a></p>
-                    <p>想成为卖家？ <a href="/seller-register">卖家注册</a></p>
                 </div>
             </div>
         </div>
@@ -77,7 +80,11 @@
             const confirmPassword = document.getElementById('confirm-password').value;
             const errorMessage = document.getElementById('error-message');
             
-            // 检查密码是否匹配
+            // 清除之前的消息
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            // 简单验证
             if (password !== confirmPassword) {
                 errorMessage.textContent = '两次输入的密码不一致';
                 errorMessage.style.display = 'block';
@@ -96,10 +103,13 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    // 注册成功，保存token到localStorage
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    window.location.href = '/';
+                    successMessage.textContent = '注册成功！即将跳转到登录页面...';
+                    successMessage.style.display = 'block';
+                    
+                    // 3秒后跳转到登录页面
+                    setTimeout(() => {
+                        window.location.href = '/login.html';
+                    }, 3000);
                 } else {
                     errorMessage.textContent = data.message;
                     errorMessage.style.display = 'block';

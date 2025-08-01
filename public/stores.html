@@ -247,6 +247,7 @@
                         const user = await response.json();
                         let userLinks = `
                             <span><i class="fas fa-user"></i> ${user.username}</span>
+                            <a href="/messages.html"><i class="fas fa-envelope"></i> 消息</a>
                             <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
                         `;
                         

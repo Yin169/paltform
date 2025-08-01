@@ -575,6 +575,7 @@
                         currentUser = user;
                         userActions.innerHTML = `
                             <span><i class="fas fa-user"></i> ${user.username}</span>
+                            <a href="/messages.html"><i class="fas fa-envelope"></i> 消息</a>
                             <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出</a>
                             ${user.role === 'admin' ? '<a href="/admin"><i class="fas fa-cog"></i> 管理后台</a>' : ''}
                             ${user.role === 'seller' ? '<a href="/seller"><i class="fas fa-store"></i> 卖家中心</a>' : ''}
